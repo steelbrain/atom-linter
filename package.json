@@ -1,0 +1,23 @@
+{
+  "name": "atom-linter",
+  "version": "1.0.0",
+  "description": "base atom linter classes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AtomLinter/atom-linter.git"
+  },
+  "keywords": [
+    "atom",
+    "linter"
+  ],
+  "author": "Dmitry Tsoy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AtomLinter/atom-linter/issues"
+  },
+  "homepage": "https://github.com/AtomLinter/atom-linter#readme"
+}
