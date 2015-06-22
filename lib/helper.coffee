@@ -28,8 +28,9 @@ class Helpers
       setTimeout ->
         spawnedProcess.kill()
         atom.notifications.addError(
-          "command `#{command}` timed out after #{executionTimeout} ms"
+          "command `#{command}` timed out after #{executionTime} ms"
         )
+        reject()
       , executionTime
 
 module.exports = Helpers
