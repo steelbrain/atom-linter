@@ -1,4 +1,4 @@
-{BufferedProcess} = require 'atom'
+ChildProcess = require 'child_process'
 Path = require 'path'
 FS = require 'fs'
 
@@ -10,27 +10,28 @@ class Helpers
       if FS.existsSync(target)
         return target
       climb.pop()
-  @exec: (command, cwd, args)->
+  @exec: (command, cwd, stdin)->
     executionTime = 5000
     return new Promise (resolve, reject) ->
-      toReturn = {stdout: [], stderr: []}
       timeout = null
-      spawnedProcess = new BufferedProcess(
-        command: command
-        args: args
-        options: {cwd}
-        stdout: (data) -> toReturn.stdout.push(data)
-        stderr: (data) -> toReturn.stderr.push(data)
-        exit: ->
-          clearTimeout(timeout)
-          resolve({stdout: toReturn.stdout.join(''), stderr: toReturn.stderr.join('')})
-      )
+      console.log command.join(' ')
+      spawnedProcess = ChildProcess.exec "#{command.join(' ')}", {cwd}, (err, stdout, stderr)->
+        clearTimeout(timeout)
+        if err and (not stderr) and (not stdout)
+          reject(err)
+        else
+          resolve({stdout, stderr})
+      if stdin
+        spawnedProcess.stdin.write(stdin)
+        spawnedProcess.stdin.end()
+
       timeout = setTimeout ->
         spawnedProcess.kill()
+        errText = "command `#{command}` timed out after #{executionTime} ms"
         atom.notifications.addError(
-          "command `#{command}` timed out after #{executionTime} ms"
+          errText
         )
-        reject()
+        reject(new Error(errText))
       , executionTime
 
 module.exports = Helpers
