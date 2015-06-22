@@ -69,8 +69,6 @@ class Helpers
         endLine = match.endLine
         endCol = match.endCol
 
-      console.log startLine
-
       startLine = parseInt(startLine)
       startCol = parseInt(startCol)
       endLine = parseInt(endLine)
