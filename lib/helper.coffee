@@ -25,7 +25,7 @@ class Helpers
           clearTimeout(timeout)
           resolve({stdout: toReturn.stdout.join(''), stderr: toReturn.stderr.join('')})
       )
-      setTimeout ->
+      timeout = setTimeout ->
         spawnedProcess.kill()
         atom.notifications.addError(
           "command `#{command}` timed out after #{executionTime} ms"
