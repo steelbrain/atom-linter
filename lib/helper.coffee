@@ -1,3 +1,4 @@
+{BufferedProcess} = require 'atom'
 Path = require 'path'
 FS = require 'fs'
 
@@ -15,9 +16,9 @@ class Helpers
       toReturn = {stdout: [], stderr: []}
       timeout = null
       spawnedProcess = new BufferedProcess(
-        command
-        args
-        {cwd}
+        command: command
+        args: args
+        options: {cwd}
         stdout: (data) -> toReturn.stdout.push(data)
         stderr: (data) -> toReturn.stderr.push(data)
         exit: ->
