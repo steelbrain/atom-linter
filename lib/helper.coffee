@@ -14,7 +14,6 @@ class Helpers
     executionTime = 5000
     return new Promise (resolve, reject) ->
       timeout = null
-      console.log command.join(' ')
       spawnedProcess = ChildProcess.exec "#{command.join(' ')}", {cwd}, (err, stdout, stderr)->
         clearTimeout(timeout)
         if err and (not stderr) and (not stdout)
