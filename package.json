@@ -2,7 +2,7 @@
   "name": "atom-linter",
   "version": "1.0.0",
   "description": "base atom linter classes",
-  "main": "index.js",
+  "main": "lib/helpers",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
