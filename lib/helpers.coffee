@@ -7,30 +7,29 @@ module.exports = Helpers =
 
   exec: (command, args = [], options = {}) ->
     options.stream ?= 'stdout'
-    throw new Error "Nothing to execute." if not arguments.length
+    throw new Error "Nothing to execute." unless arguments.length
     return new Promise (resolve, reject) ->
-      process = child_process.spawn(command, args, options)
-      options.stream = 'stdout' if not options.stream
+      spawnedProcess = child_process.spawn(command, args, options)
       data = []
       if options.stream is 'stdout'
-        process.stdout.on 'data', (d) -> data.push(d.toString())
+        spawnedProcess.stdout.on 'data', (d) -> data.push(d.toString())
       else if options.stream is 'stderr'
-        process.stderr.on 'data', (d) -> data.push(d.toString())
+        spawnedProcess.stderr.on 'data', (d) -> data.push(d.toString())
       if options.stdin
-        process.stdin.write(options.stdin.toString())
-        process.stdin.end() # We have to end it or the programs will keep waiting forever
-      process.on 'error', (err) ->
+        spawnedProcess.stdin.write(options.stdin.toString())
+        spawnedProcess.stdin.end() # We have to end it or the programs will keep waiting forever
+      spawnedProcess.on 'error', (err) ->
         reject(err)
-      process.on 'close', ->
+      spawnedProcess.on 'close', ->
         resolve(data.join(''))
 
   # This should only be used if the linter is only working with files in their
   #   base directory. Else wise they should use `Helpers#exec`.
   execFilePath: (command, args = [], filePath, options = {}) ->
-    throw new Error "Nothing to execute." if not arguments.length
-    throw new Error "No File Path to work with." if not filePath
+    throw new Error "Nothing to execute." unless arguments.length
+    throw new Error "No File Path to work with." unless filePath
     return new Promise (resolve) ->
-      options.cwd = path.dirname(filePath) if not options.cwd
+      options.cwd = path.dirname(filePath) unless options.cwd
       args.push(filePath)
       resolve(Helpers.exec(command, args, options))
 
@@ -52,6 +51,7 @@ module.exports = Helpers =
   # We place priority on `lineStart` and `lineEnd` over `line.`
   # We place priority on `colStart` and `colEnd` over `col.`
   parse: (data, rawRegex, options = {baseReduction: 1}) ->
+    throw new Error "Nothing to parse" unless arguments.length
     toReturn = []
     if xcache.has(rawRegex)
       regex = xcache.get(rawRegex)
@@ -60,7 +60,7 @@ module.exports = Helpers =
     for line in data
       match = XRegExp.exec(line, regex)
       if match
-        options.baseReduction = 1 if not options.baseReduction
+        options.baseReduction = 1 unless options.baseReduction
         lineStart = 0
         lineStart = match.line - options.baseReduction if match.line
         lineStart = match.lineStart - options.baseReduction if match.lineStart
