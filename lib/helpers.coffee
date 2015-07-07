@@ -1,5 +1,6 @@
 child_process = require 'child_process'
 path = require 'path'
+xcache = new Map
 module.exports = Helpers =
   # Based on an API demoed out in:
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
@@ -45,10 +46,13 @@ module.exports = Helpers =
   # colEnd: column to end highlight (optional)
   # We place priority on `lineStart` and `lineEnd` over `line.`
   # We place priority on `colStart` and `colEnd` over `col.`
-  parse: (data, regex, options = {baseReduction: 1}) ->
-    new Promise (resolve, reject) ->
+  parse: (data, rawRegex, options = {baseReduction: 1}) ->
+    new Promise (resolve) ->
       toReturn = []
-      regex = XRegExp(regex)
+      if xcache.has(rawRegex)
+        regex = xcache.get(rawRegex)
+      else
+        xcache.set(rawRegex, regex = XRegExp(rawRegex))
       for line in data
         match = XRegExp.exec(line, regex)
         if match
