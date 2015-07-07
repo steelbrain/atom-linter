@@ -95,5 +95,8 @@ module.exports = Helpers =
       currentDir = startDir.join(path.sep)
       for name in names
         filePath = path.join(currentDir, name)
-        return filePath if fs.accessSync(filePath, fs.R_OK)
+        try
+          fs.accessSync(filePath, fs.R_OK)
+          return filePath
+      startDir.pop()
     return null
