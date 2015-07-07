@@ -46,3 +46,14 @@ describe 'linter helpers', ->
         helpers.parse()
       catch erro then gotError = true
       expect(gotError).toBe(true)
+    it "works", ->
+      regex = 'type:(?<type>.+) message:(?<message>.+)'
+      input = ['type:type message:message']
+      output = [(
+        type: 'type'
+        text: 'message'
+        filePath: undefined
+        range: [[0, 0], [0, 0]]
+      )]
+      results = helpers.parse(input, regex)
+      expect(results).toEqual(output)
