@@ -5,7 +5,8 @@ module.exports = Helpers =
   # Based on an API demoed out in:
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
 
-  exec: (command, args = [], options = {stream: 'stdout'}) ->
+  exec: (command, args = [], options = {}) ->
+    options.stream ?= 'stdout'
     throw new Error "Nothing to execute." if not arguments.length
     return new Promise (resolve, reject) ->
       process = child_process.spawn(command, args, options)
