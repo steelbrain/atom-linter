@@ -11,5 +11,9 @@ describe 'linter helpers', ->
       expect(gotError).toBe(true)
     it 'works', ->
       waitsForPromise ->
-        helpers.exec('cat', [testFile]).then (text)->
+        helpers.exec('cat', [testFile]).then (text) ->
           expect(text).toBe(fs.readFileSync(testFile).toString())
+    it 'lets you choose streams', ->
+      waitsForPromise ->
+        helpers.exec('cat', [testFile], stream: 'stderr').then (text) ->
+          expect(text).toBe('')
