@@ -26,7 +26,7 @@ module.exports = Helpers =
   execFilePath: (command, args = [], filePath, options = {}) ->
     throw new Error "Nothing to execute." if not arguments.length
     throw new Error "No File Path to work with." if not filePath
-    return new Promise (resolve, reject) ->
+    return new Promise (resolve) ->
       options.cwd = path.dirname(filePath) if not options.cwd
       args.push(filePath)
       resolve(Helpers.exec(command, args, options))
