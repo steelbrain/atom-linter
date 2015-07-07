@@ -1,8 +1,8 @@
+fs = require 'fs'
+helpers = require '../lib/helpers'
+testFile = __dirname + '/fixtures/test.txt'
+testContents = fs.readFileSync(testFile).toString()
 describe 'linter helpers', ->
-  helpers = require '../lib/helpers'
-  fs = require 'fs'
-  testFile = __dirname + '/fixtures/test.txt'
-  testContents = fs.readFileSync(testFile).toString()
   describe '::exec', ->
     it 'cries when no argument is passed', ->
       gotError = false
@@ -57,3 +57,12 @@ describe 'linter helpers', ->
       )]
       results = helpers.parse(input, regex)
       expect(results).toEqual(output)
+  describe '::findFile', ->
+    it 'cries wen no argument is passed', ->
+      gotError = false
+      try
+        helpers.parse()
+      catch erro then gotError = true
+      expect(gotError).toBe(true)
+    it 'works', ->
+      expect(helpers.findFile(__dirname, 'package.json')).toBe(fs.realpathSync(__dirname + '/../package.json'))

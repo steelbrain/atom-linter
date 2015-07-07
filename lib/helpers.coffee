@@ -1,5 +1,7 @@
 child_process = require 'child_process'
 path = require 'path'
+fs = require 'fs'
+path = require 'path'
 xcache = new Map
 XRegExp = null
 module.exports = Helpers =
@@ -84,3 +86,17 @@ module.exports = Helpers =
           range: [[lineStart, colStart], [lineEnd, colEnd]]
         )
     return toReturn
+  findFile: (startDir, names) ->
+    throw new Error "Specify a filename to find" unless arguments.length
+    unless names instanceof Array
+      names = [names]
+    startDir = startDir.split(path.sep)
+    while startDir.length
+      currentDir = startDir.join(path.sep)
+      for name in names
+        filePath = path.join(currentDir, name)
+        try
+          fs.accessSync(filePath, fs.R_OK)
+          return filePath
+      startDir.pop()
+    return null
