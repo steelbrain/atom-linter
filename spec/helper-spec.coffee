@@ -57,3 +57,10 @@ describe 'linter helpers', ->
       )]
       results = helpers.parse(input, regex)
       expect(results).toEqual(output)
+  describe '::findFile', ->
+    it 'cries wen no argument is passed', ->
+      gotError = false
+      try
+        helpers.parse()
+      catch erro then gotError = true
+      expect(gotError).toBe(true)
