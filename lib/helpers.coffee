@@ -11,8 +11,10 @@ module.exports = Helpers =
       process = child_process.spawn(command, args, options)
       options.stream = 'stdout' if not options.stream
       data = []
-      process.stdout.on 'data', (d) -> data.push(d.toString()) if options.stream == 'stdout'
-      process.stderr.on 'data', (d) -> data.push(d.toString()) if options.stream == 'stderr'
+      if options.stream is 'stdout'
+        process.stdout.on 'data', (d) -> data.push(d.toString())
+      else if options.stream is 'stderr'
+        process.stderr.on 'data', (d) -> data.push(d.toString())
       process.stdin.write(options.stdin.toString()) if options.stdin
       process.on 'error', (err) ->
         reject(err)
