@@ -22,3 +22,20 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec('cat', [], stream: 'stdout', stdin: testContents).then (text) ->
           expect(text).toBe(testContents)
+  describe '::execFilePath', ->
+    it 'cries when no argument is passed', ->
+      gotError = false
+      try
+        helpers.execFilePath()
+      catch erro then gotError = true
+      expect(gotError).toBe(true)
+    it 'cries when no filepath is passed', ->
+      gotError = false
+      try
+        helpers.execFilePath('cat', [])
+      catch erro then gotError = true
+      expect(gotError).toBe(true)
+    it 'works', ->
+      waitsForPromise ->
+        helpers.execFilePath('cat', [], testFile).then (text) ->
+          expect(text).toBe(testContents)
