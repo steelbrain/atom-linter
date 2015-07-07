@@ -15,7 +15,9 @@ module.exports = Helpers =
         process.stdout.on 'data', (d) -> data.push(d.toString())
       else if options.stream is 'stderr'
         process.stderr.on 'data', (d) -> data.push(d.toString())
-      process.stdin.write(options.stdin.toString()) if options.stdin
+      if options.stdin
+        process.stdin.write(options.stdin.toString())
+        process.stdin.end() # We have to end it or the programs will keep waiting forever
       process.on 'error', (err) ->
         reject(err)
       process.on 'close', ->
