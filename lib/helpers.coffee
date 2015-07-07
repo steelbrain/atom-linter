@@ -19,7 +19,7 @@ module.exports = Helpers =
       process.on 'error', (err) ->
         reject(err)
       process.on 'close', ->
-        resolve(data)
+        resolve(data.join(''))
 
   # This should only be used if the linter is only working with files in their
   #   base directory. Else wise they should use `Helpers#exec`.
