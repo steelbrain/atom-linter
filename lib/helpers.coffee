@@ -1,3 +1,5 @@
+child_process = require 'child_process'
+path = require 'path'
 module.exports = Helpers =
   # Based on an API demoed out in:
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
