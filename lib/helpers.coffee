@@ -52,34 +52,33 @@ module.exports = Helpers =
   # We place priority on `lineStart` and `lineEnd` over `line.`
   # We place priority on `colStart` and `colEnd` over `col.`
   parse: (data, rawRegex, options = {baseReduction: 1}) ->
-    new Promise (resolve) ->
-      toReturn = []
-      if xcache.has(rawRegex)
-        regex = xcache.get(rawRegex)
-      else
-        xcache.set(rawRegex, regex = XRegExp(rawRegex))
-      for line in data
-        match = XRegExp.exec(line, regex)
-        if match
-          options.baseReduction = 1 if not options.baseReduction
-          lineStart = 0
-          lineStart = match.line - options.baseReduction if match.line
-          lineStart = match.lineStart - options.baseReduction if match.lineStart
-          colStart = 0
-          colStart = match.col - options.baseReduction if match.col
-          colStart = match.colStart - options.baseReduction if match.colStart
-          lineEnd = 0
-          lineEnd = match.line - options.baseReduction if match.line
-          lineEnd = match.lineEnd - options.baseReduction if match.lineEnd
-          colEnd = 0
-          colEnd = match.col - options.baseReduction if match.col
-          colEnd = match.colEnd - options.baseReduction if match.colEnd
-          filePath = match.file
-          filePath = options.filePath if options.filePath
-          toReturn.push(
-            type: match.type,
-            text: match.message,
-            filePath: filePath,
-            range: [[lineStart, colStart], [lineEnd, colEnd]]
-          )
-      resolve(toReturn)
+    toReturn = []
+    if xcache.has(rawRegex)
+      regex = xcache.get(rawRegex)
+    else
+      xcache.set(rawRegex, regex = XRegExp(rawRegex))
+    for line in data
+      match = XRegExp.exec(line, regex)
+      if match
+        options.baseReduction = 1 if not options.baseReduction
+        lineStart = 0
+        lineStart = match.line - options.baseReduction if match.line
+        lineStart = match.lineStart - options.baseReduction if match.lineStart
+        colStart = 0
+        colStart = match.col - options.baseReduction if match.col
+        colStart = match.colStart - options.baseReduction if match.colStart
+        lineEnd = 0
+        lineEnd = match.line - options.baseReduction if match.line
+        lineEnd = match.lineEnd - options.baseReduction if match.lineEnd
+        colEnd = 0
+        colEnd = match.col - options.baseReduction if match.col
+        colEnd = match.colEnd - options.baseReduction if match.colEnd
+        filePath = match.file
+        filePath = options.filePath if options.filePath
+        toReturn.push(
+          type: match.type,
+          text: match.message,
+          filePath: filePath,
+          range: [[lineStart, colStart], [lineEnd, colEnd]]
+        )
+    return toReturn
