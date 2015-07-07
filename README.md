@@ -6,7 +6,7 @@ and make things easier for yourself.
 
 #### API
 
-```
+```js
 class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static execFilePath(command: String, args: Array<string> = [], filePath: String, options:Object = {})
