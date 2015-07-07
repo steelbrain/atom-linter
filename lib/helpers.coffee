@@ -1,6 +1,7 @@
 child_process = require 'child_process'
 path = require 'path'
 xcache = new Map
+XRegExp = null
 module.exports = Helpers =
   # Based on an API demoed out in:
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
@@ -52,6 +53,7 @@ module.exports = Helpers =
   # We place priority on `colStart` and `colEnd` over `col.`
   parse: (data, rawRegex, options = {baseReduction: 1}) ->
     throw new Error "Nothing to parse" unless arguments.length
+    XRegExp ?= require 'xregexp'
     toReturn = []
     if xcache.has(rawRegex)
       regex = xcache.get(rawRegex)

@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/AtomLinter/atom-linter/issues"
   },
-  "homepage": "https://github.com/AtomLinter/atom-linter#readme"
+  "homepage": "https://github.com/AtomLinter/atom-linter#readme",
+  "dependencies": {
+    "xregexp": "latest"
+  }
 }
