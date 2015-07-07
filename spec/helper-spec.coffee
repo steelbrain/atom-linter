@@ -39,3 +39,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.execFilePath('cat', [], testFile).then (text) ->
           expect(text).toBe(testContents)
+  describe '::parse', ->
+    it 'cries when no argument is passed', ->
+      gotError = false
+      try
+        helpers.parse()
+      catch erro then gotError = true
+      expect(gotError).toBe(true)
