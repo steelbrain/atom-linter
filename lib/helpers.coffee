@@ -9,10 +9,20 @@ module.exports = Helpers =
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
 
   exec: (command, args = [], options = {}) ->
-    options.stream ?= 'stdout'
     throw new Error "Nothing to execute." unless arguments.length
+    return @_exec(command, args, options, false)
+
+  execNode: (filePath, args = [], options = {}) ->
+    throw new Error "Nothing to execute." unless arguments.length
+    return @_exec(command, args, options, true)
+
+  _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
+    options.stream ?= 'stdout'
     return new Promise (resolve, reject) ->
-      spawnedProcess = child_process.spawn(command, args, options)
+      if isNodeExecutable
+        spawnedProcess = child_process.fork(command, args, options)
+      else
+        spawnedProcess = child_process.spawn(command, args, options)
       data = []
       if options.stream is 'stdout'
         spawnedProcess.stdout.on 'data', (d) -> data.push(d.toString())
