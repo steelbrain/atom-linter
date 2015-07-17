@@ -14,13 +14,16 @@ module.exports = Helpers =
 
   execNode: (filePath, args = [], options = {}) ->
     throw new Error "Nothing to execute." unless arguments.length
-    return @_exec(command, args, options, true)
+    args.unshift(filePath)
+    return @_exec(process.execPath, args, options, true)
 
   _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
     options.stream ?= 'stdout'
     return new Promise (resolve, reject) ->
       if isNodeExecutable
-        spawnedProcess = child_process.fork(command, args, options)
+        options.env ?= {}
+        options.env.ATOM_SHELL_INTERNAL_RUN_AS_NODE = '1' # Needed for electron
+        spawnedProcess = child_process.spawn(command, args, options)
       else
         spawnedProcess = child_process.spawn(command, args, options)
       data = []
