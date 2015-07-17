@@ -48,7 +48,7 @@ describe 'linter helpers', ->
       expect(gotError).toBe(true)
     it "works", ->
       regex = 'type:(?<type>.+) message:(?<message>.+)'
-      input = ['type:type message:message']
+      input = 'type:type message:message'
       output = [(
         type: 'type'
         text: 'message'
