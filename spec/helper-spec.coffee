@@ -5,11 +5,9 @@ testContents = fs.readFileSync(testFile).toString()
 describe 'linter helpers', ->
   describe '::exec', ->
     it 'cries when no argument is passed', ->
-      gotError = false
-      try
+      expect ->
         helpers.exec()
-      catch erro then gotError = true
-      expect(gotError).toBe(true)
+      .toThrow()
     it 'works', ->
       waitsForPromise ->
         helpers.exec('cat', [testFile]).then (text) ->
@@ -22,13 +20,28 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec('cat', [], stream: 'stdout', stdin: testContents).then (text) ->
           expect(text).toBe(testContents)
+  describe '::execNode', ->
+    it 'cries when no argument is passed', ->
+      expect ->
+        helpers.execNode()
+      .toThrow()
+    it 'works', ->
+      waitsForPromise ->
+        helpers.execNode(__dirname + '/fixtures/something.js').then (data) ->
+          expect(data).toBe('STDOUT')
+    it 'lets you choose streams', ->
+      waitsForPromise ->
+        helpers.execNode(__dirname + '/fixtures/something.js', [], {stream: 'stderr'}).then (data) ->
+          expect(data).toBe('STDERR')
+    it 'accepts stdin', ->
+      waitsForPromise ->
+        helpers.execNode(__dirname + '/fixtures/something.js', ['input'], {stream: 'stdout', stdin: 'Wow'}).then (data) ->
+          expect(data).toBe('STDOUTWow')
   describe '::execFilePath', ->
     it 'cries when no argument is passed', ->
-      gotError = false
-      try
+      expect ->
         helpers.execFilePath()
-      catch erro then gotError = true
-      expect(gotError).toBe(true)
+      .toThrow()
     it 'cries when no filepath is passed', ->
       gotError = false
       try
@@ -41,11 +54,9 @@ describe 'linter helpers', ->
           expect(text).toBe(testContents)
   describe '::parse', ->
     it 'cries when no argument is passed', ->
-      gotError = false
-      try
+      expect ->
         helpers.parse()
-      catch erro then gotError = true
-      expect(gotError).toBe(true)
+      .toThrow()
     it "cries when data isn't string", ->
       expect ->
         helpers.parse([], '')
@@ -63,10 +74,8 @@ describe 'linter helpers', ->
       expect(results).toEqual(output)
   describe '::findFile', ->
     it 'cries wen no argument is passed', ->
-      gotError = false
-      try
-        helpers.parse()
-      catch erro then gotError = true
-      expect(gotError).toBe(true)
+      expect ->
+        helpers.findFile()
+      .toThrow()
     it 'works', ->
       expect(helpers.findFile(__dirname, 'package.json')).toBe(fs.realpathSync(__dirname + '/../package.json'))
