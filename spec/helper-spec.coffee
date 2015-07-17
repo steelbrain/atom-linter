@@ -46,6 +46,10 @@ describe 'linter helpers', ->
         helpers.parse()
       catch erro then gotError = true
       expect(gotError).toBe(true)
+    it "cries when data isn't string", ->
+      expect ->
+        helpers.parse([], '')
+      .toThrow("Input must be a string")
     it "works", ->
       regex = 'type:(?<type>.+) message:(?<message>.+)'
       input = 'type:type message:message'
