@@ -23,9 +23,7 @@ module.exports = Helpers =
       if isNodeExecutable
         options.env ?= {}
         options.env.ATOM_SHELL_INTERNAL_RUN_AS_NODE = '1' # Needed for electron
-        spawnedProcess = child_process.spawn(command, args, options)
-      else
-        spawnedProcess = child_process.spawn(command, args, options)
+      spawnedProcess = child_process.spawn(command, args, options)
       data = []
       if options.stream is 'stdout'
         spawnedProcess.stdout.on 'data', (d) -> data.push(d.toString())
