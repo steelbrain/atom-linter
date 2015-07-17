@@ -61,7 +61,8 @@ module.exports = Helpers =
       regex = xcache.get(rawRegex)
     else
       xcache.set(rawRegex, regex = XRegExp(rawRegex))
-    for line in data
+    throw new Error("Input must be a string") unless typeof data is 'string'
+    for line in data.split(/\r?\n/)
       match = XRegExp.exec(line, regex)
       if match
         options.baseReduction = 1 unless options.baseReduction
