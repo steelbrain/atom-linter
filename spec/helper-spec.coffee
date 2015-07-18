@@ -37,21 +37,6 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.execNode(__dirname + '/fixtures/something.js', ['input'], {stream: 'stdout', stdin: 'Wow'}).then (data) ->
           expect(data).toBe('STDOUTWow')
-  describe '::execFilePath', ->
-    it 'cries when no argument is passed', ->
-      expect ->
-        helpers.execFilePath()
-      .toThrow()
-    it 'cries when no filepath is passed', ->
-      gotError = false
-      try
-        helpers.execFilePath('cat', [])
-      catch erro then gotError = true
-      expect(gotError).toBe(true)
-    it 'works', ->
-      waitsForPromise ->
-        helpers.execFilePath('cat', [], testFile).then (text) ->
-          expect(text).toBe(testContents)
   describe '::parse', ->
     it 'cries when no argument is passed', ->
       expect ->
