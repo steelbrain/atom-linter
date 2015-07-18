@@ -37,16 +37,6 @@ module.exports = Helpers =
       spawnedProcess.on 'close', ->
         resolve(data.join(''))
 
-  # This should only be used if the linter is only working with files in their
-  #   base directory. Else wise they should use `Helpers#exec`.
-  execFilePath: (command, args = [], filePath, options = {}) ->
-    throw new Error "Nothing to execute." unless arguments.length
-    throw new Error "No File Path to work with." unless filePath
-    return new Promise (resolve) ->
-      options.cwd = path.dirname(filePath) unless options.cwd
-      args.push(filePath)
-      resolve(Helpers.exec(command, args, options))
-
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
   #
