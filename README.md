@@ -9,7 +9,7 @@ and make things easier for yourself.
 ```js
 class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
-  static execFilePath(command: String, args: Array<string> = [], filePath: String, options:Object = {})
+  static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static parse(data: String, regex: String, options: Object = {baseReduction: 1})
 }
 ```
