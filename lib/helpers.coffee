@@ -9,9 +9,20 @@ module.exports = Helpers =
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
 
   exec: (command, args = [], options = {}) ->
-    options.stream ?= 'stdout'
     throw new Error "Nothing to execute." unless arguments.length
+    return @_exec(command, args, options, false)
+
+  execNode: (filePath, args = [], options = {}) ->
+    throw new Error "Nothing to execute." unless arguments.length
+    args.unshift(filePath)
+    return @_exec(process.execPath, args, options, true)
+
+  _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
+    options.stream ?= 'stdout'
     return new Promise (resolve, reject) ->
+      if isNodeExecutable
+        options.env ?= {}
+        options.env.ATOM_SHELL_INTERNAL_RUN_AS_NODE = '1' # Needed for electron
       spawnedProcess = child_process.spawn(command, args, options)
       data = []
       if options.stream is 'stdout'
