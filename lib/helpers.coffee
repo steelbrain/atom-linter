@@ -19,6 +19,7 @@ module.exports = Helpers =
 
   _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
     options.stream ?= 'stdout'
+    options.env ?= process.env
     return new Promise (resolve, reject) ->
       if isNodeExecutable
         options.env ?= {}
