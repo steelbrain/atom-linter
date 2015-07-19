@@ -1,6 +1,6 @@
 {
   "name": "atom-linter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "base atom linter classes",
   "main": "lib/helpers",
   "scripts": {
