@@ -82,8 +82,11 @@ module.exports = Helpers =
         colEnd = match.colEnd - options.baseReduction if match.colEnd
         filePath = match.file
         filePath = options.filePath if options.filePath
+        type = 'Error'
+        type = match.type if match.type
+        type = options.type if options.type
         toReturn.push(
-          type: match.type,
+          type: type,
           text: match.message,
           filePath: filePath,
           range: [[lineStart, colStart], [lineEnd, colEnd]]
