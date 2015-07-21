@@ -25,18 +25,22 @@ module.exports = Helpers =
         options.env ?= {}
         options.env.ATOM_SHELL_INTERNAL_RUN_AS_NODE = '1' # Needed for electron
       spawnedProcess = child_process.spawn(command, args, options)
-      data = []
-      if options.stream is 'stdout'
-        spawnedProcess.stdout.on 'data', (d) -> data.push(d.toString())
-      else if options.stream is 'stderr'
-        spawnedProcess.stderr.on 'data', (d) -> data.push(d.toString())
+      data = stdout: [], stderr: []
+      spawnedProcess.stdout.on 'data', (d) -> data.stdout.push(d.toString())
+      spawnedProcess.stderr.on 'data', (d) -> data.stderr.push(d.toString())
       if options.stdin
         spawnedProcess.stdin.write(options.stdin.toString())
         spawnedProcess.stdin.end() # We have to end it or the programs will keep waiting forever
       spawnedProcess.on 'error', (err) ->
         reject(err)
       spawnedProcess.on 'close', ->
-        resolve(data.join(''))
+        if options.stream is 'stdout'
+          if data.stderr.length
+            reject(data.stderr.join(''))
+          else
+            resolve(data.stdout.join(''))
+        else
+          resolve(data.stderr.join(''))
 
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
