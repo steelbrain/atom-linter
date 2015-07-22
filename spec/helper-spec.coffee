@@ -31,7 +31,7 @@ describe 'linter helpers', ->
           expect(data).toBe('STDOUT')
     it 'lets you choose streams', ->
       waitsForPromise ->
-        helpers.execNode(__dirname + '/fixtures/something.js', [], {stream: 'stderr'}).then (data) ->
+        helpers.execNode(__dirname + '/fixtures/stderr.js', [], {stream: 'stderr'}).then (data) ->
           expect(data).toBe('STDERR')
     it 'accepts stdin', ->
       waitsForPromise ->
