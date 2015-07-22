@@ -1,4 +1,4 @@
-child_process = require 'child_process'
+{BufferedProcess, BufferedNodeProcess} = require('atom')
 path = require 'path'
 fs = require 'fs'
 path = require 'path'
@@ -14,26 +14,15 @@ module.exports = Helpers =
 
   execNode: (filePath, args = [], options = {}) ->
     throw new Error "Nothing to execute." unless arguments.length
-    args.unshift(filePath)
-    return @_exec(process.execPath, args, options, true)
+    return @_exec(filePath, args, options, true)
 
   _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
     options.stream ?= 'stdout'
-    options.env ?= process.env
     return new Promise (resolve, reject) ->
-      if isNodeExecutable
-        options.env ?= {}
-        options.env.ATOM_SHELL_INTERNAL_RUN_AS_NODE = '1' # Needed for electron
-      spawnedProcess = child_process.spawn(command, args, options)
       data = stdout: [], stderr: []
-      spawnedProcess.stdout.on 'data', (d) -> data.stdout.push(d.toString())
-      spawnedProcess.stderr.on 'data', (d) -> data.stderr.push(d.toString())
-      if options.stdin
-        spawnedProcess.stdin.write(options.stdin.toString())
-        spawnedProcess.stdin.end() # We have to end it or the programs will keep waiting forever
-      spawnedProcess.on 'error', (err) ->
-        reject(err)
-      spawnedProcess.on 'close', ->
+      stdout = (output) -> data.stdout.push(output.toString())
+      stderr = (output) -> data.stderr.push(output.toString())
+      exit = ->
         if options.stream is 'stdout'
           if data.stderr.length
             reject(data.stderr.join(''))
@@ -41,6 +30,14 @@ module.exports = Helpers =
             resolve(data.stdout.join(''))
         else
           resolve(data.stderr.join(''))
+      if isNodeExecutable
+        spawnedProcess = new BufferedNodeProcess({command, args, stdout, stderr, exit})
+      else
+        spawnedProcess = new BufferedProcess({command, args, stdout, stderr, exit})
+      spawnedProcess.onWillThrowError(reject)
+      if options.stdin
+        spawnedProcess.process.stdin.write(options.stdin.toString())
+        spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
 
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
