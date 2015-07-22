@@ -20,6 +20,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec('cat', [], stream: 'stdout', stdin: testContents).then (text) ->
           expect(text).toBe(testContents)
+    it "throws if stderr is written to but wasn't expected", ->
+      waitsForPromise ->
+        helpers.exec(__dirname + '/fixtures/stderr.sh', []).catch (message) ->
+          expect(message).toBe("STDERR\n")
   describe '::execNode', ->
     it 'cries when no argument is passed', ->
       expect ->
@@ -37,6 +41,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.execNode(__dirname + '/fixtures/something.js', ['input'], {stream: 'stdout', stdin: 'Wow'}).then (data) ->
           expect(data).toBe('STDOUTWow')
+    it "throws if stderr is written to but wasn't expected", ->
+      waitsForPromise ->
+        helpers.execNode(__dirname + '/fixtures/stderr.js', []).catch (message) ->
+          expect(message).toBe('STDERR')
   describe '::parse', ->
     it 'cries when no argument is passed', ->
       expect ->
