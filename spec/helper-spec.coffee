@@ -1,7 +1,7 @@
 fs = require 'fs'
 helpers = require '../lib/helpers'
 testFile = __dirname + '/fixtures/test.txt'
-testContents = fs.readFileSync(testFile).toString()
+testContents = fs.readFileSync(testFile).toString().trim()
 describe 'linter helpers', ->
   describe '::exec', ->
     it 'cries when no argument is passed', ->
