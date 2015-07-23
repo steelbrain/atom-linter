@@ -39,9 +39,13 @@ describe 'linter helpers', ->
 
     describe 'throwOnStdErr option', ->
       it 'throws unexpected error when set to true', ->
+        gotError = false
         waitsForPromise ->
-          helpers.exec(__dirname + '/fixtures/stderr.sh', [], throwOnStdErr: true).catch (message) ->
+          helpers.exec(__dirname + '/fixtures/stderr.sh', [], throwOnStdErr: true).catch( (message) ->
+            gotError = true
             expect(message).toBe("STDERR\n")
+          ).then ->
+            expect(gotError).toBe(true)
       it 'suppresses unexpected errors when set to false', ->
         gotError = false
         waitsForPromise ->
