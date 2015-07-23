@@ -32,9 +32,8 @@ module.exports = Helpers =
           resolve(data.stderr.join(''))
       if isNodeExecutable
         options.env ?= {}
-        for prop in process.env
-          if process.env.hasOwnProperty(prop) and prop isnt 'OS'
-            options.env[prop] = process.env[prop]
+        for prop,value of process.env
+          options.env[prop] = value unless prop is 'OS'
         spawnedProcess = new BufferedNodeProcess({command, args, options, stdout, stderr, exit})
       else
         spawnedProcess = new BufferedProcess({command, args, stdout, stderr, exit})
@@ -108,3 +107,4 @@ module.exports = Helpers =
           return filePath
       startDir.pop()
     return null
+
