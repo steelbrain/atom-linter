@@ -3,6 +3,7 @@ helpers = require '../lib/helpers'
 testFile = __dirname + '/fixtures/test.txt'
 testContents = fs.readFileSync(testFile).toString()
 describe 'linter helpers', ->
+
   describe '::exec*', ->
     it 'cries when no argument is passed', ->
       expect( -> helpers.exec()).toThrow()
@@ -35,6 +36,7 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec(__dirname + '/fixtures/stderr.sh', []).catch (message) ->
           expect(message).toBe("STDERR\n")
+
   describe '::parse', ->
     it 'cries when no argument is passed', ->
       expect ->
@@ -55,6 +57,7 @@ describe 'linter helpers', ->
       )]
       results = helpers.parse(input, regex)
       expect(results).toEqual(output)
+
   describe '::findFile', ->
     it 'cries wen no argument is passed', ->
       expect ->
