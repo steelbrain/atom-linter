@@ -31,8 +31,10 @@ module.exports = Helpers =
         else
           resolve(data.stderr.join(''))
       if isNodeExecutable
-        options.env = JSON.parse(JSON.stringify(process.env))
-        delete options.env.OS
+        options.env ?= {}
+        for prop in process.env
+          if process.env.hasOwnProperty(prop) and prop isnt 'OS'
+            options.env[prop] = process.env[prop]
         spawnedProcess = new BufferedNodeProcess({command, args, options, stdout, stderr, exit})
       else
         spawnedProcess = new BufferedProcess({command, args, stdout, stderr, exit})
