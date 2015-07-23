@@ -37,6 +37,19 @@ describe 'linter helpers', ->
         helpers.exec(__dirname + '/fixtures/stderr.sh', []).catch (message) ->
           expect(message).toBe("STDERR\n")
 
+    describe 'throwOnStdErr option', ->
+      it 'throws unexpected error when set to true', ->
+        waitsForPromise ->
+          helpers.exec(__dirname + '/fixtures/stderr.sh', [], throwOnStdErr: true).catch (message) ->
+            expect(message).toBe("STDERR\n")
+      it 'suppresses unexpected errors when set to false', ->
+        gotError = false
+        waitsForPromise ->
+          helpers.exec(__dirname + '/fixtures/stderr.sh', [], throwOnStdErr: false).catch(->
+            gotError = true
+          ).then ->
+            expect(gotError).toBe(false)
+
   describe '::parse', ->
     it 'cries when no argument is passed', ->
       expect ->
