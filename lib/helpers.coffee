@@ -18,13 +18,14 @@ module.exports = Helpers =
 
   _exec: (command, args = [], options = {}, isNodeExecutable = false) ->
     options.stream ?= 'stdout'
+    options.throwOnStdErr ?= false
     return new Promise (resolve, reject) ->
       data = stdout: [], stderr: []
       stdout = (output) -> data.stdout.push(output.toString())
       stderr = (output) -> data.stderr.push(output.toString())
       exit = ->
         if options.stream is 'stdout'
-          if data.stderr.length
+          if data.stderr.length and options.throwOnStdErr
             reject(data.stderr.join(''))
           else
             resolve(data.stdout.join(''))
