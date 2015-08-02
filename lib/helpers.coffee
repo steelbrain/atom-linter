@@ -26,7 +26,7 @@ module.exports = Helpers =
       exit = ->
         if options.stream is 'stdout'
           if data.stderr.length and options.throwOnStdErr
-            reject(data.stderr.join(''))
+            reject(new Error(data.stderr.join('')))
           else
             resolve(data.stdout.join(''))
         else
