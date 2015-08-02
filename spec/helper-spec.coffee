@@ -31,19 +31,19 @@ describe 'linter helpers', ->
           expect(text).toBe(testContents)
     it "throws if stderr is written to but wasn't expected", ->
       waitsForPromise ->
-        helpers.execNode("#{__dirname}/fixtures/stderr.js", []).catch (message) ->
-          expect(message).toBe('STDERR')
+        helpers.execNode("#{__dirname}/fixtures/stderr.js", []).catch (error) ->
+          expect(error.message).toBe('STDERR')
       waitsForPromise ->
-        helpers.exec("#{__dirname}/fixtures/stderr.sh", []).catch (message) ->
-          expect(message).toBe("STDERR\n")
+        helpers.exec("#{__dirname}/fixtures/stderr.sh", []).catch (error) ->
+          expect(error.message).toBe("STDERR\n")
 
     describe 'throwOnStdErr option', ->
       it 'throws unexpected error when set to true', ->
         gotError = false
         waitsForPromise ->
-          helpers.exec("#{__dirname}/fixtures/stderr.sh", [], throwOnStdErr: true).catch( (message) ->
+          helpers.exec("#{__dirname}/fixtures/stderr.sh", [], throwOnStdErr: true).catch( (error) ->
             gotError = true
-            expect(message).toBe("STDERR\n")
+            expect(error.message).toBe("STDERR\n")
           ).then ->
             expect(gotError).toBe(true)
       it 'suppresses unexpected errors when set to false', ->
