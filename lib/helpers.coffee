@@ -43,6 +43,12 @@ module.exports = Helpers =
         spawnedProcess.process.stdin.write(options.stdin.toString())
         spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
 
+  rangeFromLineNumber: (textEditor, lineNumber) ->
+    return [
+      [lineNumber, (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())],
+      [lineNumber, TextBuffer.lineLengthForRow(lineNumber)]
+    ]
+
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
   #
@@ -108,4 +114,3 @@ module.exports = Helpers =
           return filePath
       startDir.pop()
     return null
-
