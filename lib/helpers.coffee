@@ -1,4 +1,4 @@
-{BufferedProcess, BufferedNodeProcess} = require('atom')
+{BufferedProcess, BufferedNodeProcess, TextEditor} = require('atom')
 path = require 'path'
 fs = require 'fs'
 path = require 'path'
@@ -42,6 +42,14 @@ module.exports = Helpers =
       if options.stdin
         spawnedProcess.process.stdin.write(options.stdin.toString())
         spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
+
+  rangeFromLineNumber: (textEditor, lineNumber) ->
+    throw new Error('Provided text editor is invalid') unless textEditor instanceof TextEditor
+    throw new Error('Invalid lineNumber provided') if typeof lineNumber is 'undefined'
+    return [
+      [lineNumber, (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())],
+      [lineNumber, textEditor.getBuffer().lineLengthForRow(lineNumber)]
+    ]
 
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
@@ -108,4 +116,3 @@ module.exports = Helpers =
           return filePath
       startDir.pop()
     return null
-

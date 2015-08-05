@@ -54,6 +54,31 @@ describe 'linter helpers', ->
           ).then ->
             expect(gotError).toBe(false)
 
+  describe '::rangeFromLineNumber', ->
+    it 'cries when invalid textEditor is passed', ->
+      expect ->
+        helpers.rangeFromLineNumber()
+      .toThrow()
+    it 'cries when invalid lineNumber is provided', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          expect ->
+            helpers.rangeFromLineNumber(textEditor)
+          .toThrow()
+    it 'returns a range (array) with some valid points', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          range = helpers.rangeFromLineNumber(textEditor, 1) # 0 indexed
+          expect(range instanceof Array).toBe(true)
+          expect(range[0] instanceof Array).toBe(true)
+          expect(range[1] instanceof Array).toBe(true)
+          expect(range[0][0]).toEqual(1)
+          expect(range[0][1]).toEqual(0)
+          expect(range[1][0]).toEqual(1)
+          expect(range[1][1]).toEqual(41)
+
   describe '::parse', ->
     it 'cries when no argument is passed', ->
       expect ->
