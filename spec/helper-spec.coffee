@@ -107,3 +107,10 @@ describe 'linter helpers', ->
       .toThrow()
     it 'works', ->
       expect(helpers.findFile(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
+
+  describe '::exec options', ->
+    it 'honors cwd option', ->
+      waitsForPromise ->
+        testDir = "#{__dirname}/fixtures"
+        helpers.exec( 'pwd', [], {cwd: testDir} ).then (result) ->
+          expect(result.trim()).toEqual(testDir)
