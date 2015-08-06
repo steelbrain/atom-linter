@@ -37,7 +37,7 @@ module.exports = Helpers =
           options.env[prop] = value unless prop is 'OS'
         spawnedProcess = new BufferedNodeProcess({command, args, options, stdout, stderr, exit})
       else
-        spawnedProcess = new BufferedProcess({command, args, stdout, stderr, exit})
+        spawnedProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
       spawnedProcess.onWillThrowError(reject)
       if options.stdin
         spawnedProcess.process.stdin.write(options.stdin.toString())
