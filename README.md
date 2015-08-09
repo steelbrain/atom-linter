@@ -11,6 +11,8 @@ class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static parse(data: String, regex: String, options: Object = {baseReduction: 1})
+  static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number):Range
+  static findFile(directory:String, names: String | Array<string>)
 }
 ```
 
