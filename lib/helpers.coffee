@@ -127,7 +127,7 @@ module.exports = Helpers =
     throw new Error('Invalid Callback provided') unless typeof callback is 'function'
 
     return new Promise (resolve, reject) ->
-      tmp.dir {prefix: 'atom-linter_'}, (err, dirPath) ->
+      tmp.dir {prefix: 'atom-linter_'}, (err, dirPath, cleanupCallback) ->
         return reject(err) if err
         filePath = path.join(dirPath, fileName)
         fs.writeFile filePath, fileContents, (err) ->
