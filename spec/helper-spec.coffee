@@ -118,3 +118,22 @@ describe 'linter helpers', ->
         testDir = "#{__dirname}/fixtures"
         helpers.exec( 'pwd', [], {cwd: testDir} ).then (result) ->
           expect(result.trim()).toEqual(testDir)
+
+  describe '::tempFile', ->
+    it 'cries when arguments are invalid', ->
+      expect ->
+        helpers.tempFile()
+      .toThrow()
+      expect ->
+        helpers.tempFile(null, null, null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', null, null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', '', null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', '', '')
+      .toThrow()
+#    it 'works and accepts a callback and returns a promise and its promise value is that returned by the callback', ->
