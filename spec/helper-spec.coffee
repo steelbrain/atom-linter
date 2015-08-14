@@ -22,6 +22,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec('cat', [testFile], stream: 'stderr').then (text) ->
           expect(text).toBe('')
+      waitsForPromise ->
+        helpers.execNode("#{__dirname}/fixtures/both.js", [], {stream: 'both'}).then (data) ->
+          expect(data.stdout).toBe('STDOUT')
+          expect(data.stderr).toBe('STDERR')
     it 'accepts stdin', ->
       waitsForPromise ->
         helpers.execNode("#{__dirname}/fixtures/something.js", ['input'], {stream: 'stdout', stdin: 'Wow'}).then (data) ->
