@@ -1,4 +1,7 @@
 ### 3.1.3
+* Fixed an undefined variable reference
+
+### 3.1.3
 * Added `tempFile` method
 
 ### 3.1.2
