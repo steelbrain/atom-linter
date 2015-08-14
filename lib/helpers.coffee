@@ -138,10 +138,8 @@ module.exports = Helpers =
             new Promise (resolve) ->
               resolve(callback(filePath))
           ).then((result) ->
-            deferred = Promise.defer()
             fs.unlink(filePath, ->
               cleanupCallback()
-              deferred.resolve(result)
             )
-            return deferred.promise
+            return result
           ).then(resolve, reject)
