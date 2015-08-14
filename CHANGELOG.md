@@ -1,6 +1,10 @@
+### 3.1.2
+* Added support for `both` streams
+* Added a changelog
+
 ### Upto 3.1.1
 
-* Support for {stdout, stderr, both} streams
+* Support for {stdout, stderr} streams
 * `exec` method
 * `execNode` method
 * `rangeFromLineNumber` method
