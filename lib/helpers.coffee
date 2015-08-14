@@ -29,6 +29,8 @@ module.exports = Helpers =
             reject(new Error(data.stderr.join('')))
           else
             resolve(data.stdout.join(''))
+        else if options.stream is 'both'
+          resolve(stdout: data.stdout.join(''), stderr: data.stderr.join(''))
         else
           resolve(data.stderr.join(''))
       if isNodeExecutable
