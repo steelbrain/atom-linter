@@ -13,6 +13,7 @@ class Helpers{
   static parse(data: String, regex: String, options: Object = {baseReduction: 1})
   static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number):Range
   static findFile(directory:String, names: String | Array<string>)
+  static tempFile<T>(filePath:String, fileContents:String, Callback:Function<T>):Promise<T>
 }
 ```
 
