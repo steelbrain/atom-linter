@@ -1,4 +1,5 @@
 fs = require 'fs'
+path = require 'path'
 helpers = require '../lib/helpers'
 testFile = __dirname + '/fixtures/test.txt'
 testContents = fs.readFileSync(testFile).toString()
@@ -118,3 +119,33 @@ describe 'linter helpers', ->
         testDir = "#{__dirname}/fixtures"
         helpers.exec( 'pwd', [], {cwd: testDir} ).then (result) ->
           expect(result.trim()).toEqual(testDir)
+
+  describe '::tempFile', ->
+    it 'cries when arguments are invalid', ->
+      expect ->
+        helpers.tempFile()
+      .toThrow()
+      expect ->
+        helpers.tempFile(null, null, null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', null, null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', '', null)
+      .toThrow()
+      expect ->
+        helpers.tempFile('', '', '')
+      .toThrow()
+    it 'works and accepts a callback and returns a promise and its promise value is that returned by the callback', ->
+      filePath = null
+      waitsForPromise ->
+        helpers.tempFile('somefile.js', 'Hey There', (filepath) ->
+          filePath = filepath
+          expect(filePath.indexOf('atom-linter_')).not.toBe(-1)
+          expect(path.basename(filePath)).toBe('somefile.js')
+          expect(fs.existsSync(filePath)).toBe(true)
+          expect(fs.readFileSync(filePath).toString()).toBe('Hey There')
+          return 1
+        ).then (result) ->
+          expect(result).toBe(1)

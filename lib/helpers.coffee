@@ -2,8 +2,11 @@
 path = require 'path'
 fs = require 'fs'
 path = require 'path'
+tmp = require('tmp')
+
 xcache = new Map
 XRegExp = null
+
 module.exports = Helpers =
   # Based on an API demoed out in:
   #   https://gist.github.com/steelbrain/43d9c38208bf9f2964ab
@@ -118,3 +121,25 @@ module.exports = Helpers =
           return filePath
       startDir.pop()
     return null
+  tempFile: (fileName, fileContents, callback) ->
+    throw new Error('Invalid fileName provided') unless typeof fileName is 'string'
+    throw new Error('Invalid fileContent provided') unless typeof fileContents is 'string'
+    throw new Error('Invalid Callback provided') unless typeof callback is 'function'
+
+    return new Promise (resolve, reject) ->
+      tmp.dir {prefix: 'atom-linter_'}, (err, dirPath) ->
+        return reject(err) if err
+        filePath = path.join(dirPath, fileName)
+        fs.writeFile filePath, fileContents, (err) ->
+          if err
+            cleanupCallback()
+            return reject(err)
+          (
+            new Promise (resolve) ->
+              resolve(callback(filePath))
+          ).then((result) ->
+            fs.unlink(filePath, ->
+              fs.rmdir(dirPath)
+            )
+            return result
+          ).then(resolve, reject)
