@@ -1,4 +1,4 @@
-### 3.2
+### 3.2.0
 * Add support for third-argument to `rangeFromLineNumber`
 
 ### 3.1.3
