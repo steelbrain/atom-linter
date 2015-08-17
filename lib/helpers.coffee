@@ -48,11 +48,13 @@ module.exports = Helpers =
         spawnedProcess.process.stdin.write(options.stdin.toString())
         spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
 
-  rangeFromLineNumber: (textEditor, lineNumber) ->
+  rangeFromLineNumber: (textEditor, lineNumber, colStart) ->
     throw new Error('Provided text editor is invalid') unless textEditor instanceof TextEditor
     throw new Error('Invalid lineNumber provided') if typeof lineNumber is 'undefined'
+    unless typeof colStart is 'number'
+      colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
     return [
-      [lineNumber, (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())],
+      [lineNumber, colStart],
       [lineNumber, textEditor.getBuffer().lineLengthForRow(lineNumber)]
     ]
 

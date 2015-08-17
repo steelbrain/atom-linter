@@ -1,3 +1,6 @@
+### 3.2
+* Add support for third-argument to `rangeFromLineNumber`
+
 ### 3.1.3
 * Fixed an undefined variable reference
 
