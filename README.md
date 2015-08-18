@@ -7,6 +7,7 @@ and make things easier for yourself.
 #### API
 
 ```js
+enum stream = {stdout, stderr, both}
 class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
