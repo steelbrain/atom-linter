@@ -124,6 +124,8 @@ describe 'linter helpers', ->
       .toThrow()
     it 'works', ->
       expect(helpers.findFile(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
+    it 'does not find files of the linter module', ->
+      expect(helpers.findFile('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
 
   describe '::exec options', ->
     it 'honors cwd option', ->
