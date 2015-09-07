@@ -4,7 +4,7 @@
   "description": "base atom linter classes",
   "main": "lib/helpers",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "apm test"
   },
   "repository": {
     "type": "git",
