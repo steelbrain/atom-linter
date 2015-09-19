@@ -1,6 +1,11 @@
-### 3.2.1
+### 3.2.2
 
 * Show a nicer message for `EACCES` errors
+
+### 3.2.1
+
+* Couple of fixes for findFile
+* Correct npm `test` script
 
 ### 3.2.0
 * Add support for third-argument to `rangeFromLineNumber`
