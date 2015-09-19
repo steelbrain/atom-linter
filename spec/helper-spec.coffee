@@ -118,7 +118,7 @@ describe 'linter helpers', ->
       expect(results).toEqual(output)
 
   describe '::findFile', ->
-    it 'cries wen no argument is passed', ->
+    it 'cries when no argument is passed', ->
       expect ->
         helpers.findFile()
       .toThrow()
