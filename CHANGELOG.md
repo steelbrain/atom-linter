@@ -1,3 +1,7 @@
+### 3.2.1
+
+* Show a nicer message for `EACCES` errors
+
 ### 3.2.0
 * Add support for third-argument to `rangeFromLineNumber`
 
