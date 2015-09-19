@@ -41,6 +41,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.exec("#{__dirname}/fixtures/stderr.sh", []).catch (error) ->
           expect(error.message).toBe("STDERR\n")
+    it 'shows a nicer error for EACCESS', ->
+      waitsForPromise ->
+        helpers.exec(__dirname).catch (error) ->
+          expect(error.message).toContain('not a directory')
 
     describe 'throwOnStdErr option', ->
       it 'throws unexpected error when set to true', ->
@@ -118,7 +122,7 @@ describe 'linter helpers', ->
       expect(results).toEqual(output)
 
   describe '::findFile', ->
-    it 'cries wen no argument is passed', ->
+    it 'cries when no argument is passed', ->
       expect ->
         helpers.findFile()
       .toThrow()

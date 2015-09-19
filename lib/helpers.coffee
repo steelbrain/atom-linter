@@ -43,7 +43,14 @@ module.exports = Helpers =
         spawnedProcess = new BufferedNodeProcess({command, args, options, stdout, stderr, exit})
       else
         spawnedProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
-      spawnedProcess.onWillThrowError(reject)
+      spawnedProcess.onWillThrowError(({error, handle}) =>
+        return reject(error) if error and error.code is 'ENOENT'
+        handle()
+        if error.code is 'EACCES'
+          error = new Error("Failed to spawn command `#{command}`. Make sure it's a file, not a directory and it's executable.")
+          error.name = 'BufferedProcessError'
+        reject(error)
+      )
       if options.stdin
         spawnedProcess.process.stdin.write(options.stdin.toString())
         spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
