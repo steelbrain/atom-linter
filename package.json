@@ -1,7 +1,7 @@
 {
   "name": "atom-linter",
   "version": "3.2.2",
-  "description": "base atom linter classes",
+  "description": "Helper module for atom linter providers",
   "main": "lib/helpers",
   "scripts": {
     "test": "apm test"
@@ -14,7 +14,7 @@
     "atom",
     "linter"
   ],
-  "author": "Dmitry Tsoy",
+  "author": "steelbrain",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/AtomLinter/atom-linter/issues"
