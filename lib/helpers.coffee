@@ -82,9 +82,10 @@ module.exports = Helpers =
   # colEnd: column to end highlight (optional)
   # We place priority on `lineStart` and `lineEnd` over `line.`
   # We place priority on `colStart` and `colEnd` over `col.`
-  parse: (data, rawRegex, options = {baseReduction: 1}) ->
+  parse: (data, rawRegex, options = {}) ->
     throw new Error "Nothing to parse" unless arguments.length
     XRegExp ?= require('xregexp').XRegExp
+    options.baseReduction ?= 1
     options.flags ?= ""
     toReturn = []
     if xcache.has(rawRegex)
