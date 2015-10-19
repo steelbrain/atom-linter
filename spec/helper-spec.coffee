@@ -111,14 +111,14 @@ describe 'linter helpers', ->
       .toThrow("Input must be a string")
     it "works", ->
       regex = 'type:(?<type>.+) message:(?<message>.+)'
-      input = 'type:type message:message'
+      input = 'TYPE:type message:message'
       output = [(
         type: 'type'
         text: 'message'
         filePath: undefined
         range: [[0, 0], [0, 0]]
       )]
-      results = helpers.parse(input, regex)
+      results = helpers.parse(input, regex, {flags: "i"})
       expect(results).toEqual(output)
 
   describe '::findFile', ->

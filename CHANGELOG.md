@@ -1,3 +1,7 @@
+### 3.3.0
+
+* Add `flags` option to `parse` method
+
 ### 3.2.2
 
 * Show a nicer message for `EACCES` errors
