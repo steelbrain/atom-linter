@@ -85,11 +85,12 @@ module.exports = Helpers =
   parse: (data, rawRegex, options = {baseReduction: 1}) ->
     throw new Error "Nothing to parse" unless arguments.length
     XRegExp ?= require('xregexp').XRegExp
+    options.flags ?= ""
     toReturn = []
     if xcache.has(rawRegex)
       regex = xcache.get(rawRegex)
     else
-      xcache.set(rawRegex, regex = XRegExp(rawRegex))
+      xcache.set(rawRegex, regex = XRegExp(rawRegex, options.flags))
     throw new Error("Input must be a string") unless typeof data is 'string'
     for line in data.split(/\r?\n/)
       match = XRegExp.exec(line, regex)
