@@ -1,3 +1,7 @@
+### 3.3.1
+
+* Future proof a check
+
 ### 3.3.0
 
 * Add `flags` option to `parse` method
