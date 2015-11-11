@@ -1,3 +1,7 @@
+### 3.3.2
+
+* Fix a bug in Helpers.rangeFromLineNumber
+
 ### 3.3.1
 
 * Future proof a check
