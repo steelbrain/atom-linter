@@ -60,9 +60,14 @@ module.exports = Helpers =
     throw new Error('Invalid lineNumber provided') if typeof lineNumber is 'undefined'
     unless typeof colStart is 'number'
       colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
+      if colStart isnt 0
+        colStart -= 1
+    colEnd = textEditor.getBuffer().lineLengthForRow(lineNumber)
+    if colEnd isnt 0
+      colEnd -= 1
     return [
-      [lineNumber, colStart - 1],
-      [lineNumber, textEditor.getBuffer().lineLengthForRow(lineNumber) - 1]
+      [lineNumber, colStart],
+      [lineNumber, colEnd]
     ]
 
   # Due to what we are attempting to do, the only viable solution right now is
