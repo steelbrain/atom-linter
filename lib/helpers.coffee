@@ -61,8 +61,8 @@ module.exports = Helpers =
     unless typeof colStart is 'number'
       colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
     return [
-      [lineNumber, colStart],
-      [lineNumber, textEditor.getBuffer().lineLengthForRow(lineNumber)]
+      [lineNumber, colStart - 1],
+      [lineNumber, textEditor.getBuffer().lineLengthForRow(lineNumber) - 1]
     ]
 
   # Due to what we are attempting to do, the only viable solution right now is
