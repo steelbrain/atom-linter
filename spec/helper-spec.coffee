@@ -86,7 +86,7 @@ describe 'linter helpers', ->
           expect(range[0][0]).toEqual(1)
           expect(range[0][1]).toEqual(0)
           expect(range[1][0]).toEqual(1)
-          expect(range[1][1]).toEqual(41)
+          expect(range[1][1]).toEqual(40)
     it 'returns a range (array) with some valid points and provided colStart', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
@@ -98,7 +98,7 @@ describe 'linter helpers', ->
           expect(range[0][0]).toEqual(1)
           expect(range[0][1]).toEqual(4)
           expect(range[1][0]).toEqual(1)
-          expect(range[1][1]).toEqual(41)
+          expect(range[1][1]).toEqual(40)
 
   describe '::parse', ->
     it 'cries when no argument is passed', ->
