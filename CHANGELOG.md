@@ -1,3 +1,7 @@
+### 3.3.5
+
+* Add Helpers.createElement
+
 ### 3.3.4
 
 * Handle invalid `lineNumber` and return a valid range
