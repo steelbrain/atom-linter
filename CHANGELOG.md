@@ -1,3 +1,7 @@
+### Upcoming
+
+* Check if column start is greater than line length in `rangeFromLineNumber`
+
 ### 3.3.2
 
 * Fix a bug in Helpers.rangeFromLineNumber
