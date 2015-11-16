@@ -6,6 +6,7 @@ tmp = require('tmp')
 
 xcache = new Map
 XRegExp = null
+EventsCache = new WeakMap
 
 module.exports = Helpers =
   # Based on an API demoed out in:
@@ -70,6 +71,33 @@ module.exports = Helpers =
       [lineNumber, colStart],
       [lineNumber, colEnd]
     ]
+
+  createElement: (name) ->
+    el = document.createElement(name)
+    EventsCache.set(el, [])
+    el._addEventListener = el.addEventListener
+    el._removeEventListener = el.removeEventListener
+    el._cloneNode = el.cloneNode
+    el.addEventListener = (name, callback) ->
+      EventsCache.get(el).push({name, callback})
+      el._addEventListener(name, callback)
+    el.removeEventListener = (name, callback) ->
+      events = EventsCache.get(el)
+      i = events.length - 1
+      while i isnt -1
+        current = events[i]
+        if current.name is name and current.callback is callback
+          events.splice(i, 1)
+        --i
+      el._removeEventListener(name, callback)
+    el.cloneNode = (deep) ->
+      newEl = el._cloneNode(deep)
+      EventsCache.get(el).forEach((event) ->
+        newEl.addEventListener(event.name, event.callback)
+      )
+      return newEl
+
+    return el
 
   # Due to what we are attempting to do, the only viable solution right now is
   #   XRegExp.
