@@ -1,3 +1,7 @@
+### 3.3.4
+
+* Handle invalid `lineNumber` and return a valid range
+
 ### 3.3.3
 
 * Fix an API deprecation with TextEditor
