@@ -15,8 +15,16 @@ class Helpers{
   static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number):Range
   static findFile(directory:String, names: String | Array<string>)
   static tempFile<T>(filePath:String, fileContents:String, Callback:Function<T>):Promise<T>
+  static createElement(tagName: string): HTMLElement
 }
 ```
+
+#### Explanation for createElement
+
+Linter accepts `HTMLElement`s in the `html` message property. To show the same message on more
+than one DOM Elements, it clones the element. It's a limitation of HTMLElements that they
+lose all the events on clone. If you create your element using `Helpers.createElement` however
+It'll make sure the children inherit the events from the parent.
 
 #### License
 
