@@ -1,4 +1,4 @@
-{BufferedProcess, BufferedNodeProcess, TextEditor} = require('atom')
+{BufferedProcess, BufferedNodeProcess} = require('atom')
 path = require 'path'
 fs = require 'fs'
 path = require 'path'
