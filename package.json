@@ -1,6 +1,6 @@
 {
   "name": "atom-linter",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "Helper module for atom linter providers",
   "main": "lib/helpers",
   "scripts": {
