@@ -99,6 +99,13 @@ describe 'linter helpers', ->
           expect(range[0][1]).toEqual(4)
           expect(range[1][0]).toEqual(1)
           expect(range[1][1]).toEqual(40)
+    it 'cries when colStart is greater than line length', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          expect ->
+            helpers.rangeFromLineNumber(textEditor, 1, 50)
+          .toThrow()
 
   describe '::parse', ->
     it 'cries when no argument is passed', ->
