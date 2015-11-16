@@ -68,13 +68,11 @@ describe 'linter helpers', ->
       expect ->
         helpers.rangeFromLineNumber()
       .toThrow()
-    it 'cries when invalid lineNumber is provided', ->
+    it 'cries returns a range pointing at file start if no or invalid line is provided', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
           textEditor = atom.workspace.getActiveTextEditor()
-          expect ->
-            helpers.rangeFromLineNumber(textEditor)
-          .toThrow()
+          expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 1]])
     it 'returns a range (array) with some valid points', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
