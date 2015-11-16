@@ -1,3 +1,7 @@
+### 3.3.3
+
+* Fix an API deprecation with TextEditor
+
 ### 3.3.2
 
 * Fix a bug in Helpers.rangeFromLineNumber
