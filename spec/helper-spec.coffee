@@ -165,3 +165,31 @@ describe 'linter helpers', ->
           return 1
         ).then (result) ->
           expect(result).toBe(1)
+
+  describe '::createElement', ->
+    it 'works', ->
+      clicked = false
+      clickListener = () -> clicked = true
+
+      el = helpers.createElement('div')
+      el.innerHTML = 'Some HTML'
+      expect(el.innerHTML).toBe('Some HTML')
+      el.appendChild(document.createElement('div'))
+      expect(el.children.length).toBe(1)
+
+      el.addEventListener('click', clickListener)
+
+      expect(clicked).toBe(false)
+      el.dispatchEvent(new MouseEvent('click'))
+      expect(clicked).toBe(true)
+
+      clicked = false
+      clonedEl = el.cloneNode(true)
+      clonedEl.dispatchEvent(new MouseEvent('click'))
+      expect(clicked).toBe(true)
+
+      el.removeEventListener('click', clickListener)
+      clicked = false
+      clonedEl = el.cloneNode(true)
+      clonedEl.dispatchEvent(new MouseEvent('click'))
+      expect(clicked).toBe(false)
