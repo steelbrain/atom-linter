@@ -1,3 +1,7 @@
+### Upcoming
+
+* Handle column start in `rangeFromLineNumber`, when it is greater than line length 
+
 ### 3.3.5
 
 * Add Helpers.createElement
