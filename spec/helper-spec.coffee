@@ -176,7 +176,7 @@ describe 'linter helpers', ->
   describe '::createElement', ->
     it 'works', ->
       clicked = false
-      clickListener = () -> clicked = true
+      clickListener = -> clicked = true
 
       el = helpers.createElement('div')
       el.innerHTML = 'Some HTML'

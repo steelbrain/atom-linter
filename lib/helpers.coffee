@@ -159,7 +159,7 @@ module.exports = Helpers =
     unless names instanceof Array
       names = [names]
     startDir = startDir.split(path.sep)
-    while startDir.length && startDir.join(path.sep)
+    while startDir.length and startDir.join(path.sep)
       currentDir = startDir.join(path.sep)
       for name in names
         filePath = path.join(currentDir, name)
