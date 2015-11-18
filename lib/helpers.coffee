@@ -62,7 +62,7 @@ module.exports = Helpers =
       return [[0, 0], [0, 1]]
     lineLength = textEditor.getBuffer().lineLengthForRow(lineNumber)
     throw new Error('Column start greater than line length') if colStart > lineLength
-    unless typeof colStart is 'number' and not (colStart < 0)
+    if typeof colStart isnt 'number' or colStart < 0
       colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
       if colStart isnt 0
         colStart -= 1
@@ -159,7 +159,7 @@ module.exports = Helpers =
     unless names instanceof Array
       names = [names]
     startDir = startDir.split(path.sep)
-    while startDir.length and startDir.join(path.sep)
+    while startDir.length
       currentDir = startDir.join(path.sep)
       for name in names
         filePath = path.join(currentDir, name)
