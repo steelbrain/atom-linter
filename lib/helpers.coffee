@@ -58,12 +58,11 @@ module.exports = Helpers =
 
   rangeFromLineNumber: (textEditor, lineNumber, colStart) ->
     throw new Error('Provided text editor is invalid') unless textEditor?.getText?
-    if typeof lineNumber isnt 'number' or lineNumber isnt lineNumber or lineNumber < 0 or
-    typeof colStart isnt 'number' or colStart isnt colStart or colStart < 0
+    if typeof lineNumber isnt 'number' or lineNumber isnt lineNumber or lineNumber < 0
       return [[0, 0], [0, 1]]
     lineLength = textEditor.getBuffer().lineLengthForRow(lineNumber)
     throw new Error('Column start greater than line length') if colStart > lineLength
-    unless typeof colStart is 'number'
+    unless typeof colStart is 'number' and not (colStart < 0)
       colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
       if colStart isnt 0
         colStart -= 1
