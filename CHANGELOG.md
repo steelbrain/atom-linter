@@ -1,10 +1,11 @@
 ### Upcoming
 
-* Handle column start in `rangeFromLineNumber`, when it is greater than line length 
+* Handle column start in `rangeFromLineNumber`, when it is greater than line length
+* Handle negative column start values and invalid line numbers
 
 ### 3.3.5
 
-* Add Helpers.createElement
+* Add `Helpers.createElement`
 
 ### 3.3.4
 
@@ -16,7 +17,7 @@
 
 ### 3.3.2
 
-* Fix a bug in Helpers.rangeFromLineNumber
+* Fix a bug in `Helpers.rangeFromLineNumber`
 
 ### 3.3.1
 
@@ -32,7 +33,7 @@
 
 ### 3.2.1
 
-* Couple of fixes for findFile
+* Couple of fixes for `findFile`
 * Correct npm `test` script
 
 ### 3.2.0
