@@ -44,7 +44,7 @@ module.exports = Helpers =
         spawnedProcess = new BufferedNodeProcess({command, args, options, stdout, stderr, exit})
       else
         spawnedProcess = new BufferedProcess({command, args, options, stdout, stderr, exit})
-      spawnedProcess.onWillThrowError(({error, handle}) =>
+      spawnedProcess.onWillThrowError(({error, handle}) ->
         return reject(error) if error and error.code is 'ENOENT'
         handle()
         if error.code is 'EACCES'
@@ -58,7 +58,8 @@ module.exports = Helpers =
 
   rangeFromLineNumber: (textEditor, lineNumber, colStart) ->
     throw new Error('Provided text editor is invalid') unless textEditor?.getText?
-    if typeof lineNumber is 'undefined' or lineNumber isnt lineNumber
+    if typeof lineNumber isnt 'number' or lineNumber isnt lineNumber or lineNumber < 0 or
+    typeof colStart isnt 'number' or colStart isnt colStart or colStart < 0
       return [[0, 0], [0, 1]]
     lineLength = textEditor.getBuffer().lineLengthForRow(lineNumber)
     throw new Error('Column start greater than line length') if colStart > lineLength
