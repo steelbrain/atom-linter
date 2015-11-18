@@ -73,6 +73,14 @@ describe 'linter helpers', ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
           textEditor = atom.workspace.getActiveTextEditor()
           expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 1]])
+          expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 1]])
+          expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 1]])
+    it 'ignores an invalid starting column', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          expect(helpers.rangeFromLineNumber(textEditor, 1, -1)).toEqual([[1, 0], [1, 40]])
+          expect(helpers.rangeFromLineNumber(textEditor, 1, 'a')).toEqual([[1, 0], [1, 40]])
     it 'returns a range (array) with some valid points', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
