@@ -1,4 +1,4 @@
-### Upcoming
+### 3.3.6
 
 * Handle column start in `rangeFromLineNumber`, when it is greater than line length
 * Handle negative column start values and invalid line numbers
