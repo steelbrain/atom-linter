@@ -68,7 +68,7 @@ describe 'linter helpers', ->
       expect ->
         helpers.rangeFromLineNumber()
       .toThrow()
-    it 'cries returns a range pointing at file start if no or invalid line is provided', ->
+    it 'returns a range pointing at file start if no or invalid line is provided', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
           textEditor = atom.workspace.getActiveTextEditor()
@@ -111,6 +111,13 @@ describe 'linter helpers', ->
           textEditor = atom.workspace.getActiveTextEditor()
           expect ->
             helpers.rangeFromLineNumber(textEditor, 1, 50)
+          .toThrow()
+    it 'cries when lineNumber is greater than the maximum line', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          expect ->
+            helpers.rangeFromLineNumber(textEditor, 8)
           .toThrow()
 
   describe '::parse', ->

@@ -57,15 +57,20 @@ module.exports = Helpers =
         spawnedProcess.process.stdin.end() # We have to end it or the programs will keep waiting forever
 
   rangeFromLineNumber: (textEditor, lineNumber, colStart) ->
-    throw new Error('Provided text editor is invalid') unless textEditor?.getText?
+    throw new Error('Provided text editor is invalid') unless textEditor?.getBuffer?
     if typeof lineNumber isnt 'number' or lineNumber isnt lineNumber or lineNumber < 0
       return [[0, 0], [0, 1]]
-    lineLength = textEditor.getBuffer().lineLengthForRow(lineNumber)
-    throw new Error('Column start greater than line length') if colStart > lineLength
+    buffer = textEditor.getBuffer()
+    maxLine = buffer.getLineCount() - 1
+    if lineNumber > maxLine
+      throw new Error("Line number (#{lineNumber}) greater than maximum line (#{maxLine})")
     if typeof colStart isnt 'number' or colStart < 0
       colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
       if colStart isnt 0
         colStart -= 1
+    lineLength = buffer.lineLengthForRow(lineNumber)
+    if colStart > lineLength
+      throw new Error("Column start (#{colStart}) greater than line length (#{lineLength})")
     colEnd = lineLength
     if colEnd isnt 0
       colEnd -= 1
@@ -98,7 +103,6 @@ module.exports = Helpers =
         newEl.addEventListener(event.name, event.callback)
       )
       return newEl
-
     return el
 
   # Due to what we are attempting to do, the only viable solution right now is
@@ -154,6 +158,7 @@ module.exports = Helpers =
           range: [[lineStart, colStart], [lineEnd, colEnd]]
         )
     return toReturn
+
   findFile: (startDir, names) ->
     throw new Error "Specify a filename to find" unless arguments.length
     unless names instanceof Array
@@ -168,6 +173,7 @@ module.exports = Helpers =
           return filePath
       startDir.pop()
     return null
+
   tempFile: (fileName, fileContents, callback) ->
     throw new Error('Invalid fileName provided') unless typeof fileName is 'string'
     throw new Error('Invalid fileContent provided') unless typeof fileContents is 'string'

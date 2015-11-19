@@ -1,3 +1,7 @@
+### Upcoming
+
+* Force lineNumber in `rangeFromLineNumber` to be within buffer range
+
 ### 3.3.6
 
 * Handle column start in `rangeFromLineNumber`, when it is greater than line length
