@@ -1,4 +1,4 @@
-### Upcoming
+### 3.3.7
 
 * Force lineNumber in `rangeFromLineNumber` to be within buffer range
 
