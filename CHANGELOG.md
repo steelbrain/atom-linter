@@ -1,3 +1,7 @@
+### Upcoming
+
+* Fix `rangeFromLineNumber` on files with mixed indentation
+
 ### 3.3.7
 
 * Force lineNumber in `rangeFromLineNumber` to be within buffer range
