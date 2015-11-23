@@ -82,8 +82,8 @@ describe 'linter helpers', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
           textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor, 1, -1)).toEqual([[1, 0], [1, 40]])
-          expect(helpers.rangeFromLineNumber(textEditor, 1, 'a')).toEqual([[1, 0], [1, 40]])
+          expect(helpers.rangeFromLineNumber(textEditor, 1, -1)).toEqual([[1, 0], [1, 41]])
+          expect(helpers.rangeFromLineNumber(textEditor, 1, 'a')).toEqual([[1, 0], [1, 41]])
     it 'returns a range (array) with some valid points', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
@@ -95,7 +95,7 @@ describe 'linter helpers', ->
           expect(range[0][0]).toEqual(1)
           expect(range[0][1]).toEqual(0)
           expect(range[1][0]).toEqual(1)
-          expect(range[1][1]).toEqual(40)
+          expect(range[1][1]).toEqual(41)
     it 'returns a range (array) with some valid points and provided colStart', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
@@ -107,7 +107,7 @@ describe 'linter helpers', ->
           expect(range[0][0]).toEqual(1)
           expect(range[0][1]).toEqual(4)
           expect(range[1][0]).toEqual(1)
-          expect(range[1][1]).toEqual(40)
+          expect(range[1][1]).toEqual(41)
     it 'cries when colStart is greater than line length', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/something.js").then ->
@@ -126,10 +126,10 @@ describe 'linter helpers', ->
       waitsForPromise ->
         atom.workspace.open("#{__dirname}/fixtures/mixedIndent.js").then ->
           textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 2]])  # None
-          expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 4]])  # Spaces
-          expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 3]])  # Tabs
-          expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 4]])  # Mixed
+          expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])  # None
+          expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])  # Spaces
+          expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])  # Tabs
+          expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])  # Mixed
 
   describe '::parse', ->
     it 'cries when no argument is passed', ->

@@ -73,12 +73,9 @@ module.exports = Helpers =
     lineLength = buffer.lineLengthForRow(lineNumber)
     if colStart > lineLength
       throw new Error("Column start (#{colStart}) greater than line length (#{lineLength})")
-    colEnd = lineLength
-    if colEnd isnt 0
-      colEnd -= 1
     return [
       [lineNumber, colStart],
-      [lineNumber, colEnd]
+      [lineNumber, lineLength]
     ]
 
   createElement: (name) ->

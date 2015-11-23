@@ -1,3 +1,7 @@
+### Upcoming
+
+* Revert the changes in 3.3.2, `Range()`'s end point is exclusive, not inclusive.
+
 ### 3.3.8
 
 * Fix `rangeFromLineNumber` on files with mixed indentation
