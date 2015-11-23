@@ -65,9 +65,11 @@ module.exports = Helpers =
     if lineNumber > maxLine
       throw new Error("Line number (#{lineNumber}) greater than maximum line (#{maxLine})")
     if typeof colStart isnt 'number' or colStart < 0
-      colStart = (textEditor.indentationForBufferRow(lineNumber) * textEditor.getTabLength())
-      if colStart isnt 0
-        colStart -= 1
+      indentation = buffer.lineForRow(lineNumber).match(/^\s+/)
+      if indentation and indentation.length = 1
+        colStart = indentation[0].length
+      else
+        colStart = 0
     lineLength = buffer.lineLengthForRow(lineNumber)
     if colStart > lineLength
       throw new Error("Column start (#{colStart}) greater than line length (#{lineLength})")

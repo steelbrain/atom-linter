@@ -4,7 +4,6 @@ helpers = require '../lib/helpers'
 testFile = __dirname + '/fixtures/test.txt'
 testContents = fs.readFileSync(testFile).toString()
 describe 'linter helpers', ->
-
   describe '::exec*', ->
     it 'cries when no argument is passed', ->
       expect( -> helpers.exec()).toThrow()
@@ -29,7 +28,11 @@ describe 'linter helpers', ->
           expect(data.stderr).toBe('STDERR')
     it 'accepts stdin', ->
       waitsForPromise ->
-        helpers.execNode("#{__dirname}/fixtures/something.js", ['input'], {stream: 'stdout', stdin: 'Wow'}).then (data) ->
+        helpers.execNode(
+          "#{__dirname}/fixtures/something.js",
+          ['input'],
+          {stream: 'stdout', stdin: 'Wow'}
+        ).then (data) ->
           expect(data).toBe('STDOUTWow')
       waitsForPromise ->
         helpers.exec('cat', [], stream: 'stdout', stdin: testContents).then (text) ->
@@ -119,6 +122,14 @@ describe 'linter helpers', ->
           expect ->
             helpers.rangeFromLineNumber(textEditor, 8)
           .toThrow()
+    it 'handles files with mixed intentation', ->
+      waitsForPromise ->
+        atom.workspace.open("#{__dirname}/fixtures/mixedIndent.js").then ->
+          textEditor = atom.workspace.getActiveTextEditor()
+          expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 2]])  # None
+          expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 4]])  # Spaces
+          expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 3]])  # Tabs
+          expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 4]])  # Mixed
 
   describe '::parse', ->
     it 'cries when no argument is passed', ->
