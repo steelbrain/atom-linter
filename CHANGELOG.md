@@ -1,4 +1,4 @@
-### Upcoming
+### 3.3.9
 
 * Revert the changes in 3.3.2, `Range()`'s end point is exclusive, not inclusive.
 
