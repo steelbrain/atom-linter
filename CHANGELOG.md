@@ -1,4 +1,4 @@
-### Upcoming
+### 3.3.8
 
 * Fix `rangeFromLineNumber` on files with mixed indentation
 
