@@ -24,5 +24,8 @@
   "dependencies": {
     "xregexp": "^2.0.0",
     "tmp": "latest"
+  },
+  "devDependencies": {
+    "babel-preset-steelbrain": "^1.0.0"
   }
 }
