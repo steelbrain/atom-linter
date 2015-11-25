@@ -13,7 +13,8 @@ class Helpers{
   static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static parse(data: String, regex: String, options: Object = {baseReduction: 1, flags: ""})
   static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number):Range
-  static findFile(directory:String, names: String | Array<string>)
+  static findFile(directory:String, names: String | Array<string>): ?String
+  static findFileAsync(directory: Strng, names: String | Array<string>): Promise<?String>
   static tempFile<T>(filePath:String, fileContents:String, Callback:Function<T>):Promise<T>
   static createElement(tagName: string): HTMLElement
 }
