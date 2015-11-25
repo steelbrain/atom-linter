@@ -158,6 +158,25 @@ module.exports = Helpers =
         )
     return toReturn
 
+  findFileAsync: (directory, names) ->
+    throw new Error "Specify a filename to find" unless arguments.length
+    unless names instanceof Array
+      names = [names]
+    return directory.split(path.sep).reduce (promise, chunks) ->
+      return promise.then (filePath) ->
+        return filePath unless filePath is null
+        currentDir = chunks.join(path.sep)
+        chunks.pop()
+        return names.reduce (promise, name) ->
+          currentFile = path.join(currentDir, name)
+          return new Promise (resolve) ->
+            fs.access(currentFile, FS.R_OK, (err) ->
+              resolve(currentFile) unless err
+              resolve(null)
+            )
+        , Promise.resolve(null)
+    , Promise.resolve(null)
+
   findFile: (startDir, names) ->
     throw new Error "Specify a filename to find" unless arguments.length
     unless names instanceof Array
