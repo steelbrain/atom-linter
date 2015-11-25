@@ -234,9 +234,3 @@ describe 'linter helpers', ->
       clonedEl = el.cloneNode(true)
       clonedEl.dispatchEvent(new MouseEvent('click'))
       expect(clicked).toBe(true)
-
-      el.removeEventListener('click', clickListener)
-      clicked = false
-      clonedEl = el.cloneNode(true)
-      clonedEl.dispatchEvent(new MouseEvent('click'))
-      expect(clicked).toBe(false)
