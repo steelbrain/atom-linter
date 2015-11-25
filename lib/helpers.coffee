@@ -175,7 +175,6 @@ module.exports = Helpers =
           return filePath unless filePath is null
           return names.reduce (promise, name) ->
             currentFile = path.join(currentDir, name)
-            console.log(currentDir, currentFile)
             return new Promise (resolve) ->
               fs.access(currentFile, fs.R_OK, (err) ->
                 resolve(currentFile) unless err
