@@ -1,6 +1,7 @@
 ### Upcoming
 
 * Add `Helpers.findFileAsync`
+* Add dist files for inclusion in non-babel envs
 
 ### 3.3.9
 
