@@ -166,7 +166,7 @@ export function createElement(name) {
   return element
 }
 
-export function findFileAsync(directory, name) {
+export function findAsync(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const chunks = directory.split(Path.sep)
@@ -203,7 +203,7 @@ export function findFileAsync(directory, name) {
   return promise
 }
 
-export function findFile(directory, name) {
+export function find(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const chunks = directory.split(Path.sep)
@@ -317,3 +317,5 @@ export function parse(data, regex, opts = {}) {
 
   return messages
 }
+
+export {find as findFile, findAsync as findFileAsync}

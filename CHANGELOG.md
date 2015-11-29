@@ -1,3 +1,7 @@
+### Upcoming
+
+* Rename `Helpers.findFile$` to `Helpers.find$` (also exported with previous names for backward compatibility)
+
 ### 3.4.0
 
 * Add `Helpers.findFileAsync`
