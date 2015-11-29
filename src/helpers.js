@@ -173,9 +173,9 @@ export function findFileAsync(directory, name) {
   let promise = Promise.resolve(null)
 
   while (chunks.length) {
-    const currentDir = chunks.join(Path.sep)
+    let currentDir = chunks.join(Path.sep)
     if (currentDir === '') {
-      break
+      currentDir = Path.resolve(directory, '/')
     }
     promise = promise.then(function(filePath) {
       if (filePath !== null) {
@@ -209,9 +209,9 @@ export function findFile(directory, name) {
   const chunks = directory.split(Path.sep)
 
   while (chunks.length) {
-    const currentDir = chunks.join(Path.sep)
+    let currentDir = chunks.join(Path.sep)
     if (currentDir === '') {
-      break
+      currentDir = Path.resolve(directory, '/')
     }
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName)
