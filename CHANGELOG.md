@@ -1,3 +1,9 @@
+### 4.0.0
+
+* Use ES6 exports instead of commonjs
+* Remove `Helpers.findFile$` in favor of `Helpers.find$`
+* Use XRegExp.forEach instead of splitting given input by lines and applying regex over each line (mostly backward compatible, but no guarantee)
+
 ### 3.4.1
 
 * Revert ES6 exports to use commonjs again (broke compatibility with babel packages)
