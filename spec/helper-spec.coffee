@@ -152,28 +152,28 @@ describe 'linter helpers', ->
       results = helpers.parse(input, regex, {flags: "i"})
       expect(results).toEqual(output)
 
-  describe '::findFile', ->
+  describe '::find', ->
     it 'cries when no argument is passed', ->
       expect ->
-        helpers.findFile()
+        helpers.find()
       .toThrow()
     it 'works', ->
-      expect(helpers.findFile(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
+      expect(helpers.find(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
     it 'returns null if no file is found', ->
-      expect(helpers.findFile('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
+      expect(helpers.find('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
 
-  describe '::findFileAsync', ->
+  describe '::findAsync', ->
     it 'cries when no argument is passed', ->
       expect ->
-        helpers.findFileAsync()
+        helpers.findAsync()
       .toThrow()
     it 'works', ->
       waitsForPromise ->
-        helpers.findFileAsync(__dirname, 'package.json').then (path) ->
+        helpers.findAsync(__dirname, 'package.json').then (path) ->
           expect(path).toBe(fs.realpathSync("#{__dirname}/../package.json"))
     it 'returns null if no file is found', ->
       waitsForPromise ->
-        helpers.findFileAsync(__dirname, '.ucompilerrc').then (path) ->
+        helpers.findAsync(__dirname, '.ucompilerrc').then (path) ->
           expect(path).toBe(null)
 
   describe '::exec options', ->
