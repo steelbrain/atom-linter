@@ -1,4 +1,4 @@
-### Upcoming
+### 4.0.0
 
 * Use ES6 exports instead of commonjs
 * Remove `Helpers.findFile$` in favor of `Helpers.find$`
