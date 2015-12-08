@@ -322,5 +322,5 @@ module.exports = {
   exec, execNode, rangeFromLineNumber,
   find, findAsync, createElement,
   parse, tempFile,
-  findFile: find, fineFileAsync: findAsync
+  findFile: find, findFileAsync: findAsync
 }
