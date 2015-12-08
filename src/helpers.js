@@ -285,16 +285,9 @@ export function parse(data, regex, opts = {}) {
   const options = assign({
     flags: 'g'
   }, opts)
-  const lines = data.split('\n')
   const xregex = XRegExp(regex, options.flags)
 
-  lines.forEach(function(line) {
-    const match = XRegExp.exec(line, xregex)
-
-    if (match === null) {
-      return
-    }
-
+  XRegExp.forEach(data, xregex, function(match) {
     const type = match.type
     const text = match.message
     const file = match.file || options.filePath || null
