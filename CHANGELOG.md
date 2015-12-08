@@ -1,3 +1,7 @@
+### 4.0.1
+
+* Upgrade dependencies
+
 ### 4.0.0
 
 * Use ES6 exports instead of commonjs
