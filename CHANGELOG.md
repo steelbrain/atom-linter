@@ -1,3 +1,8 @@
+### Upcoming
+
+* Use ES6 exports instead of commonjs
+* Remove `Helpers.findFile$` in favor of `Helpers.find$`
+
 ### 3.4.1
 
 * Revert ES6 exports to use commonjs again (broke compatibility with babel packages)
