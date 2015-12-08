@@ -1,5 +1,6 @@
 ### Upcoming
 
+* Revert ES6 exports to use commonjs again (broke compatibility with babel packages)
 * Rename `Helpers.findFile$` to `Helpers.find$` (also exported with previous names for backward compatibility)
 * Fix a non-critical bug in `Helpers.find$` where it won't search in drive root
 
