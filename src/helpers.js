@@ -96,17 +96,17 @@ function validate_find(directory, name) {
   }
 }
 
-export function exec(command, args = [], options = {}) {
+function exec(command, args = [], options = {}) {
   validate_exec(command, args, options)
   return _exec(command, args, options, false)
 }
 
-export function execNode(command, args = [], options = {}) {
+function execNode(command, args = [], options = {}) {
   validate_exec(command, args, options)
   return _exec(command, args, options, true)
 }
 
-export function rangeFromLineNumber(textEditor, lineNumber, colStart) {
+function rangeFromLineNumber(textEditor, lineNumber, colStart) {
   if (typeof textEditor.getText !== 'function') {
     throw new Error('Invalid textEditor provided')
   }
@@ -143,7 +143,7 @@ export function rangeFromLineNumber(textEditor, lineNumber, colStart) {
   ]
 }
 
-export function createElement(name) {
+function createElement(name) {
   if (typeof name !== 'string') {
     throw new Error('Invalid or no `Element name` provided')
   }
@@ -166,7 +166,7 @@ export function createElement(name) {
   return element
 }
 
-export function findAsync(directory, name) {
+function findAsync(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const chunks = directory.split(Path.sep)
@@ -203,7 +203,7 @@ export function findAsync(directory, name) {
   return promise
 }
 
-export function find(directory, name) {
+function find(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const chunks = directory.split(Path.sep)
@@ -227,7 +227,7 @@ export function find(directory, name) {
   return null
 }
 
-export function tempFile(fileName, fileContents, callback) {
+function tempFile(fileName, fileContents, callback) {
   if (typeof fileName !== 'string') {
     throw new Error('Invalid or no `fileName` provided')
   } else if (typeof fileContents !== 'string') {
@@ -268,7 +268,7 @@ export function tempFile(fileName, fileContents, callback) {
   })
 }
 
-export function parse(data, regex, opts = {}) {
+function parse(data, regex, opts = {}) {
   if (typeof data !== 'string') {
     throw new Error('Invalid or no `data` provided')
   } else if (typeof regex !== 'string') {
@@ -318,4 +318,9 @@ export function parse(data, regex, opts = {}) {
   return messages
 }
 
-export {find as findFile, findAsync as findFileAsync}
+module.exports = {
+  exec, execNode, rangeFromLineNumber,
+  find, findAsync, createElement,
+  parse, tempFile,
+  findFile: find, findFileAsync: findAsync
+}
