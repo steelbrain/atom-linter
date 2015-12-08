@@ -2,6 +2,7 @@
 
 * Use ES6 exports instead of commonjs
 * Remove `Helpers.findFile$` in favor of `Helpers.find$`
+* Use XRegExp.forEach instead of splitting given input by lines and applying regex over each line
 
 ### 3.4.1
 
