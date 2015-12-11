@@ -7,6 +7,7 @@ import TMP from 'tmp'
 
 let XRegExp = null
 const EventsCache = new WeakMap()
+const FindCache = new Map()
 
 // TODO: Remove this when electron upgrades node
 const assign = Object.assign || function(target, source) {
@@ -225,6 +226,26 @@ export function find(directory, name) {
   }
 
   return null
+}
+
+export function findCached(directory, name) {
+  const names = name instanceof Array ? name : [name]
+  const cacheKey = directory + ':' + names.join(',')
+
+  if (FindCache.has(cacheKey)) {
+    const cachedFilePath = FindCache.get(cacheKey)
+    try {
+      FS.accessSync(cachedFilePath, FS.R_OK)
+      return cachedFilePath
+    } catch (_) {
+      FindCache.delete(cacheKey)
+    }
+  }
+  const filePath = find(directory, names)
+  if (filePath) {
+    FindCache.set(cacheKey, filePath)
+  }
+  return filePath
 }
 
 export function tempFile(fileName, fileContents, callback) {
