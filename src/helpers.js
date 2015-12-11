@@ -204,6 +204,28 @@ export function findAsync(directory, name) {
   return promise
 }
 
+export function findCachedAsync(directory, name) {
+  const names = name instanceof Array ? name : [name]
+  const cacheKey = directory + ':' + names.join(',')
+
+  if (FindCache.has(cacheKey)) {
+    const cachedFilePath = FindCache.get(cacheKey)
+    return new Promise(function(resolve, reject) {
+      FS.access(cachedFilePath, FS.R_OK, function(error) {
+        if (error) {
+          FindCache.delete(cacheKey)
+          resolve(findCachedAsync(directory, names))
+        } else resolve(cachedFilePath)
+      })
+    })
+  } else {
+    return findAsync(directory, name).then(function(filePath) {
+      FindCache.set(cacheKey, filePath)
+      return filePath
+    })
+  }
+}
+
 export function find(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
