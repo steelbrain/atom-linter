@@ -159,8 +159,10 @@ describe 'linter helpers', ->
       .toThrow()
     it 'works', ->
       expect(helpers.find(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
+      expect(helpers.findCached(__dirname, 'package.json')).toBe(fs.realpathSync("#{__dirname}/../package.json"))
     it 'returns null if no file is found', ->
       expect(helpers.find('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
+      expect(helpers.findCached('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
 
   describe '::findAsync', ->
     it 'cries when no argument is passed', ->
@@ -171,7 +173,13 @@ describe 'linter helpers', ->
       waitsForPromise ->
         helpers.findAsync(__dirname, 'package.json').then (path) ->
           expect(path).toBe(fs.realpathSync("#{__dirname}/../package.json"))
+      waitsForPromise ->
+        helpers.findCachedAsync(__dirname, 'package.json').then (path) ->
+          expect(path).toBe(fs.realpathSync("#{__dirname}/../package.json"))
     it 'returns null if no file is found', ->
+      waitsForPromise ->
+        helpers.findCachedAsync(__dirname, '.ucompilerrc').then (path) ->
+          expect(path).toBe(null)
       waitsForPromise ->
         helpers.findAsync(__dirname, '.ucompilerrc').then (path) ->
           expect(path).toBe(null)
