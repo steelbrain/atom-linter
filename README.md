@@ -8,6 +8,7 @@ and make things easier for yourself.
 
 ```js
 enum stream = {stdout, stderr, both}
+export const FindCache: Map
 class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
