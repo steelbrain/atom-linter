@@ -1,3 +1,8 @@
+### Upcoming
+
+* Add `findCachedAsync` hepler
+* Add `findCached` helper
+
 ### 4.0.1
 
 * Upgrade dependencies
