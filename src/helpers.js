@@ -7,7 +7,7 @@ import TMP from 'tmp'
 
 let XRegExp = null
 const EventsCache = new WeakMap()
-const FindCache = new Map()
+export const FindCache = new Map()
 
 // TODO: Remove this when electron upgrades node
 const assign = Object.assign || function(target, source) {

@@ -1,3 +1,7 @@
+### 4.1.1
+
+* Export `FindCache`, now you can do `Helper.FindCache.clear()` to clear find cache
+
 ### 4.1.0
 
 * Add `findCachedAsync` hepler
