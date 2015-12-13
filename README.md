@@ -13,7 +13,7 @@ class Helpers{
   static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
   static parse(data: String, regex: String, options: Object = {baseReduction: 1, flags: ""})
-  static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number):Range
+  static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number, colStart: Number = <firstColumn>):Array
   static find(directory:String, names: String | Array<string>): ?String
   static findCached(directory:String, names: String | Array<string>): ?String
   static findAsync(directory: Strng, names: String | Array<string>): Promise<?String>
