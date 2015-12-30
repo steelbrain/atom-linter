@@ -1,4 +1,4 @@
-### Upcoming
+### 4.2.0
 
 * Use `consistent-path` package to determine `$PATH` correctly on OSX
 
