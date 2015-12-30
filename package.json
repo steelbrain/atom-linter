@@ -23,7 +23,8 @@
   "homepage": "https://github.com/AtomLinter/atom-linter#readme",
   "dependencies": {
     "xregexp": "^3.0.0",
-    "tmp": "latest"
+    "tmp": "latest",
+    "consistent-path": "^1.0.0"
   },
   "devDependencies": {
     "babel-preset-steelbrain": "^1.0.0"
