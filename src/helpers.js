@@ -1,9 +1,10 @@
 'use babel'
 
 import {BufferedProcess, BufferedNodeProcess} from 'atom'
-import Path from 'path'
-import FS from 'fs'
-import TMP from 'tmp'
+import * as Path from 'path'
+import * as FS from 'fs'
+import * as TMP from 'tmp'
+import {getPath} from 'consistent-path'
 
 let XRegExp = null
 const EventsCache = new WeakMap()
@@ -19,15 +20,15 @@ const assign = Object.assign || function(target, source) {
 
 function _exec(command, args, opts, isNode) {
   const options = assign({
+    env: process.env,
     stream: 'stdout',
     throwOnStdErr: true
   }, opts)
 
   if (isNode) {
-    const env = assign({}, process.env)
-    delete env.OS
-    assign(options, {env})
+    delete options.env.OS
   }
+  assign(options.env, {PATH: getPath()})
 
   return new Promise(function(resolve, reject) {
     const data = {stdout: [], stderr: []}

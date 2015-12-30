@@ -1,3 +1,7 @@
+### Upcoming
+
+* Use `consistent-path` package to determine `$PATH` correctly on OSX
+
 ### 4.1.1
 
 * Export `FindCache`, now you can do `Helper.FindCache.clear()` to clear find cache
