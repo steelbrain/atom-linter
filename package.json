@@ -24,7 +24,7 @@
   "dependencies": {
     "xregexp": "^3.0.0",
     "tmp": "latest",
-    "consistent-path": "^1.0.0"
+    "consistent-path": "^1.0.1"
   },
   "devDependencies": {
     "babel-preset-steelbrain": "^1.0.0"
