@@ -19,6 +19,7 @@ class Helpers{
   static findAsync(directory: Strng, names: String | Array<string>): Promise<?String>
   static findCachedAsync(directory: Strng, names: String | Array<string>): Promise<?String>
   static tempFile<T>(fileName:String, fileContents:String, Callback:Function<T>):Promise<T>
+  static tempFiles<T>(filesNames:Array<{name: String, contents: String}>, callback:Function<T>):Promise<T>
   static createElement(tagName: string): HTMLElement
 }
 ```
