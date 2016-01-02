@@ -221,6 +221,57 @@ describe 'linter helpers', ->
         ).then (result) ->
           expect(result).toBe(1)
 
+  describe '::tempFiles', ->
+    it 'cries when arguments are invalid', ->
+      expect ->
+        helpers.tempFiles()
+      .toThrow()
+      expect ->
+        helpers.tempFiles(null, null)
+      .toThrow()
+      expect ->
+        helpers.tempFiles('', null)
+      .toThrow()
+      expect ->
+        helpers.tempFiles('', '')
+      .toThrow()
+      expect ->
+        helpers.tempFiles(null, '')
+      .toThrow()
+      expect ->
+        helpers.tempFiles([], '')
+      .toThrow()
+      expect ->
+        helpers.tempFiles([], null)
+      .toThrow()
+    it 'works and accepts a callback and returns a promise and its promise value is that returned by the callback', ->
+      filePaths = null
+      waitsForPromise ->
+        helpers.tempFiles(
+          [
+            {
+              'name': 'foo.js',
+              'contents': 'Foo!'
+            },
+            {
+              'name': 'bar.js',
+              'contents': 'Bar!'
+            }
+          ], (filepaths) ->
+            filePaths = filepaths
+            expect(filePaths[0].indexOf('atom-linter_')).not.toBe(-1)
+            expect(path.basename(filePaths[0])).toBe('foo.js')
+            expect(fs.existsSync(filePaths[0])).toBe(true)
+            expect(fs.readFileSync(filePaths[0]).toString()).toBe('Foo!')
+
+            expect(filePaths[1].indexOf('atom-linter_')).not.toBe(-1)
+            expect(path.basename(filePaths[1])).toBe('bar.js')
+            expect(fs.existsSync(filePaths[1])).toBe(true)
+            expect(fs.readFileSync(filePaths[1]).toString()).toBe('Bar!')
+            return filePaths
+          ).then (result) ->
+            expect(result.length).toBe(2)
+
   describe '::createElement', ->
     it 'works', ->
       clicked = false

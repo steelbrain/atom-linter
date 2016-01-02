@@ -314,6 +314,58 @@ export function tempFile(fileName, fileContents, callback) {
   })
 }
 
+export function tempFiles(files, callback) {
+  if (!Array.isArray(files)) {
+    throw new Error('Invalid or no `files` provided')
+  } else if (typeof callback !== 'function') {
+    throw new Error('Invalid or no `callback` provided')
+  }
+
+  return new Promise(function(resolve, reject) {
+    TMP.dir({
+      prefix: 'atom-linter_'
+    }, function(error, directory, directoryCleanup) {
+      if (error) {
+        directoryCleanup()
+        return reject(error)
+      }
+      let foundError = false
+      let filePaths = null
+      Promise.all(files.map(function(file) {
+        const fileName = file.name
+        const fileContents = file.contents
+        const filePath = Path.join(directory, fileName)
+        return new Promise(function(resolve, reject) {
+          FS.writeFile(filePath, fileContents, function(error) {
+            if (error) {
+              // Note: Intentionally not doing directoryCleanup 'cause it won't work
+              // Because we would've already wrote a few files and when even file
+              // exists in a directory, it can't be removed
+              reject(error)
+            } else resolve(filePath)
+          })
+        })
+      })).then(function(_filePaths) {
+        return callback(filePaths = _filePaths)
+      }).catch(function(result) {
+        foundError = true
+        return result
+      }).then(function(result) {
+        if (filePaths !== null) {
+          Promise.all(filePaths.map(function(filePath) {
+            return new Promise(function(resolve) {
+              FS.unlink(filePath, resolve)
+            })
+          })).then(directoryCleanup)
+        }
+        if (foundError) {
+          throw result
+        } else return result
+      }).then(resolve, reject)
+    })
+  })
+}
+
 export function parse(data, regex, opts = {}) {
   if (typeof data !== 'string') {
     throw new Error('Invalid or no `data` provided')
