@@ -361,7 +361,7 @@ export function tempFiles(files, callback) {
         if (foundError) {
           throw result
         } else return result
-      })
+      }).then(resolve, reject)
     })
   })
 }
