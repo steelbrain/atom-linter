@@ -7,7 +7,6 @@ import * as TMP from 'tmp'
 import {getPath} from 'consistent-path'
 
 let XRegExp = null
-const EventsCache = new WeakMap()
 export const FindCache = new Map()
 
 // TODO: Remove this when electron upgrades node
@@ -145,29 +144,6 @@ export function rangeFromLineNumber(textEditor, lineNumber, colStart) {
   ]
 }
 
-export function createElement(name) {
-  if (typeof name !== 'string') {
-    throw new Error('Invalid or no `Element name` provided')
-  }
-
-  const element = document.createElement(name)
-
-  element.addEventListener = function(name, callback) {
-    EventsCache.get(element).push({name, callback})
-    Element.prototype.addEventListener.call(this, name, callback)
-  }
-  element.cloneNode = function(deep) {
-    const newElement = Element.prototype.cloneNode.call(this, deep)
-    EventsCache.get(element).forEach(function({name, callback}) {
-      newElement.addEventListener(name, callback)
-    })
-    return newElement
-  }
-
-  EventsCache.set(element, [])
-  return element
-}
-
 export function findAsync(directory, name) {
   validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
@@ -206,12 +182,13 @@ export function findAsync(directory, name) {
 }
 
 export function findCachedAsync(directory, name) {
+  validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const cacheKey = directory + ':' + names.join(',')
 
   if (FindCache.has(cacheKey)) {
     const cachedFilePath = FindCache.get(cacheKey)
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       FS.access(cachedFilePath, FS.R_OK, function(error) {
         if (error) {
           FindCache.delete(cacheKey)
@@ -252,6 +229,7 @@ export function find(directory, name) {
 }
 
 export function findCached(directory, name) {
+  validate_find(directory, name)
   const names = name instanceof Array ? name : [name]
   const cacheKey = directory + ':' + names.join(',')
 
