@@ -1,3 +1,7 @@
+### Upcoming
+
+* Remove `createElement` helper, reason is nobody was using it (according to GitHub code search)
+
 ### 4.3.0
 
 * Add `tempFiles` helper
