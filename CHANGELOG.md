@@ -1,6 +1,7 @@
 ### Upcoming
 
 * Remove `createElement` helper, reason is nobody was using it (according to GitHub code search)
+* Upgrade `consistent-path` version to include fix for critical typo
 
 ### 4.3.0
 
