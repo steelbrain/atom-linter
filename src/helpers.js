@@ -19,7 +19,7 @@ const assign = Object.assign || function(target, source) {
 
 function _exec(command, args, opts, isNode) {
   const options = assign({
-    env: process.env,
+    env: assign({}, process.env),
     stream: 'stdout',
     throwOnStdErr: true
   }, opts)
