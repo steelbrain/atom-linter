@@ -1,3 +1,7 @@
+### 4.3.3
+
+* Switch to `named-js-regexp` instead of `xregexp` for `parse` method
+
 ### 4.3.2
 
 * Fix a bug where linter execution modifies `process.env`
