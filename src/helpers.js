@@ -6,7 +6,7 @@ import * as FS from 'fs'
 import * as TMP from 'tmp'
 import {getPath} from 'consistent-path'
 
-let XRegExp = null
+let NamedRegexp = null
 export const FindCache = new Map()
 
 // TODO: Remove this when electron upgrades node
@@ -327,17 +327,19 @@ export function parse(data, regex, opts = {}) {
     throw new Error('Invalid or no `options` provided')
   }
 
-  if (XRegExp === null) {
-    XRegExp = require('xregexp').XRegExp
+  if (NamedRegexp === null) {
+    NamedRegexp = require('named-js-regexp')
   }
 
-  const messages = []
-  const options = assign({
-    flags: 'g'
-  }, opts)
-  const xregex = XRegExp(regex, options.flags)
+  const options = assign({flags: ''}, opts)
+  options.flags += 'g'
 
-  XRegExp.forEach(data, xregex, function(match) {
+  const messages = []
+  const compiledRegexp = NamedRegexp(regex, options.flags)
+  let rawMatch = null
+
+  while ((rawMatch = compiledRegexp.exec(data)) !== null) {
+    const match = rawMatch.groups()
     const type = match.type
     const text = match.message
     const file = match.file || options.filePath || null
@@ -356,7 +358,7 @@ export function parse(data, regex, opts = {}) {
         [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
       ]
     })
-  })
+  }
 
   return messages
 }
