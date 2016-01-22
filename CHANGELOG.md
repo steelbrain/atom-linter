@@ -1,3 +1,7 @@
+### 4.3.4
+
+* Do not add `g` flag to regex if it already exists
+
 ### 4.3.3
 
 * Switch to `named-js-regexp` instead of `xregexp` for `parse` method
