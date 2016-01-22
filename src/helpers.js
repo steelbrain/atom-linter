@@ -332,7 +332,9 @@ export function parse(data, regex, opts = {}) {
   }
 
   const options = assign({flags: ''}, opts)
-  options.flags += 'g'
+  if (options.flags.indexOf('g') === -1) {
+    options.flags += 'g'
+  }
 
   const messages = []
   const compiledRegexp = NamedRegexp(regex, options.flags)
