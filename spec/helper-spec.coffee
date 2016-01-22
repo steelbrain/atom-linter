@@ -152,6 +152,17 @@ describe 'linter helpers', ->
       results = helpers.parse(input, regex, {flags: "i"})
       expect(results).toEqual(output)
 
+      regex = 'type:(?<type>.+) message:(?<message>.+)'
+      input = 'TYPE:type message:message'
+      output = [(
+        type: 'type'
+        text: 'message'
+        filePath: null
+        range: [[0, 0], [0, 0]]
+      )]
+      results = helpers.parse(input, regex, {flags: "gi"})
+      expect(results).toEqual(output)
+
   describe '::find', ->
     it 'cries when no argument is passed', ->
       expect ->
