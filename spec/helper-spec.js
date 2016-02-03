@@ -147,9 +147,9 @@ describe('linter helpers', () => {
       waitsForPromise(() =>
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 1]])
-          expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 1]])
-          return expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 1]])
+          expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
+          expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
+          return expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
         })
       )
     )

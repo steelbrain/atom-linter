@@ -116,13 +116,14 @@ export function execNode(command, args = [], options = {}) {
   return _exec(command, args, options, true)
 }
 
-export function rangeFromLineNumber(textEditor, lineNumber, column) {
+export function rangeFromLineNumber(textEditor, line, column) {
   if (typeof textEditor.getText !== 'function') {
     throw new Error('Invalid textEditor provided')
   }
+  let lineNumber = line
 
   if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
-    return [[0, 0], [0, 1]]
+    lineNumber = 0
   }
 
   const buffer = textEditor.getBuffer()
