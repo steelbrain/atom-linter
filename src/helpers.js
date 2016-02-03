@@ -35,7 +35,7 @@ function _exec(command, args, opts, isNode) {
   return new Promise((resolve, reject) => {
     const data = { stdout: [], stderr: [] }
     const handleError = error => {
-      if (error.code === 'EACCES' || error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1) {
+      if (error.code === 'EACCES' || (error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)) {
         const newError = new Error(`Failed to spawn command '${command}'.` +
           ` Make sure it's a file, not a directory, and it's executable.`)
         newError.name = 'BufferedProcessError'
@@ -71,7 +71,7 @@ function _exec(command, args, opts, isNode) {
       new BufferedNodeProcess(parameters) :
       new BufferedProcess(parameters)
 
-    spawnedProcess.onWillThrowError(error => {
+    spawnedProcess.onWillThrowError(({error}) => {
       handleError(error)
     })
 
