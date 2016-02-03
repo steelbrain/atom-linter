@@ -1,3 +1,7 @@
+### 4.4.0
+
+* Highlight the whole first line when no line is given
+
 ### 4.3.4
 
 * Do not add `g` flag to regex if it already exists
