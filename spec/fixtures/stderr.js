@@ -1,1 +1,1 @@
-process.stderr.write("STDERR")
+process.stderr.write('STDERR')
