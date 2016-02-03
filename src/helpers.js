@@ -106,6 +106,19 @@ function _validateFind(directory, name) {
   }
 }
 
+function _validateEditor(editor) {
+  let isEditor
+  if (typeof atom.workspace.isTextEditor === 'function') {
+    // Added in Atom v1.4.0
+    isEditor = atom.workspace.isTextEditor(editor)
+  } else {
+    isEditor = typeof editor.getText !== 'function'
+  }
+  if (!isEditor) {
+    throw new Error('Invalid TextEditor provided')
+  }
+}
+
 export function exec(command, args = [], options = {}) {
   _validateExec(command, args, options)
   return _exec(command, args, options, false)
@@ -117,9 +130,7 @@ export function execNode(command, args = [], options = {}) {
 }
 
 export function rangeFromLineNumber(textEditor, line, column) {
-  if (typeof textEditor.getText !== 'function') {
-    throw new Error('Invalid textEditor provided')
-  }
+  _validateEditor(textEditor)
   let lineNumber = line
 
   if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
