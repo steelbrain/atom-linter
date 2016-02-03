@@ -5,17 +5,23 @@ import * as path from 'path'
 const helpers = require('../lib/helpers')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
-const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedindent.js')
+const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedindent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const stderrFile = path.join(__dirname, 'fixtures', 'stderr.js')
-const stderrScriptFile = path.join(__dirname, 'fixtures', 'stderr.sh')
+const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
+  (process.platform !== 'win32' ? '.sh' : '.bat')
 const testFile = path.join(__dirname, 'fixtures', 'test.txt')
+const winCatBin = path.join(__dirname, 'fixtures', 'cat.exe')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 const testContents = fs.readFileSync(testFile).toString()
 
 describe('linter helpers', () => {
   describe('::exec*', () => {
+    // `cd` with no params prints the current dir on Windows
+    const pwdCommand = process.platform !== 'win32' ? 'pwd' : 'cd'
+    const catCommand = process.platform !== 'win32' ? 'cat' : winCatBin
+
     it('cries when no argument is passed', () => {
       expect(() =>
         helpers.exec()
@@ -32,7 +38,7 @@ describe('linter helpers', () => {
         )
       )
       return waitsForPromise(() =>
-        helpers.exec('cat', [testFile]).then((text) =>
+        helpers.exec(catCommand, [testFile]).then((text) =>
           expect(text).toBe(testContents)
         )
       )
@@ -45,7 +51,7 @@ describe('linter helpers', () => {
         )
       )
       waitsForPromise(() =>
-        helpers.exec('cat', [testFile], { stream: 'stderr' }).then(text =>
+        helpers.exec(catCommand, [testFile], { stream: 'stderr' }).then(text =>
           expect(text).toBe('')
         )
       )
@@ -67,7 +73,7 @@ describe('linter helpers', () => {
         )
       )
       return waitsForPromise(() =>
-        helpers.exec('cat', [], {
+        helpers.exec(catCommand, [], {
           stream: 'stdout',
           stdin: testContents
         }).then(text =>
@@ -84,8 +90,8 @@ describe('linter helpers', () => {
       )
 
       return waitsForPromise(() =>
-        helpers.exec(stderrScriptFile, []).catch(error =>
-          expect(error.message).toBe('STDERR\n')
+        helpers.exec(stderrScript, []).catch(error =>
+          expect(error.message.trim()).toBe('STDERR')
         )
       )
     })
@@ -98,15 +104,15 @@ describe('linter helpers', () => {
       )
     )
 
-    return describe('throwOnStdErr option', () => {
+    describe('the throwOnStdErr option:', () => {
       it('throws unexpected error when set to true', () => {
         let gotError = false
         return waitsForPromise(() =>
-          helpers.exec(stderrScriptFile, [], {
+          helpers.exec(stderrScript, [], {
             throwOnStdErr: true
           }).catch(error => {
             gotError = true
-            return expect(error.message).toBe('STDERR\n')
+            return expect(error.message.trim()).toBe('STDERR')
           }).then(() =>
             expect(gotError).toBe(true)
           )
@@ -116,7 +122,7 @@ describe('linter helpers', () => {
       return it('suppresses unexpected errors when set to false', () => {
         let gotError = false
         return waitsForPromise(() =>
-          helpers.exec(stderrScriptFile, [], {
+          helpers.exec(stderrScript, [], {
             throwOnStdErr: false
           }).catch(() =>
             gotError = true
@@ -126,6 +132,17 @@ describe('linter helpers', () => {
         )
       })
     })
+
+    return describe('the cwd option', () =>
+      it('works', () =>
+        waitsForPromise(() => {
+          const testDir = path.join(__dirname, 'fixtures')
+          return helpers.exec(pwdCommand, [], { cwd: testDir }).then(result =>
+            expect(result.trim()).toEqual(testDir)
+          )
+        })
+      )
+    )
   })
 
   describe('::rangeFromLineNumber', () => {
@@ -150,8 +167,8 @@ describe('linter helpers', () => {
       waitsForPromise(() =>
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor, 1, -1)).toEqual([[1, 0], [1, 41]])
-          return expect(helpers.rangeFromLineNumber(textEditor, 1, 'a')).toEqual([[1, 0], [1, 41]])
+          expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
+          return expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
         })
       )
     )
@@ -160,14 +177,14 @@ describe('linter helpers', () => {
       waitsForPromise(() =>
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
-          const range = helpers.rangeFromLineNumber(textEditor, 1)
+          const range = helpers.rangeFromLineNumber(textEditor, 7)
           expect(range instanceof Array).toBe(true)
           expect(range[0] instanceof Array).toBe(true)
           expect(range[1] instanceof Array).toBe(true)
-          expect(range[0][0]).toEqual(1)
+          expect(range[0][0]).toEqual(7)
           expect(range[0][1]).toEqual(0)
-          expect(range[1][0]).toEqual(1)
-          return expect(range[1][1]).toEqual(41)
+          expect(range[1][0]).toEqual(7)
+          return expect(range[1][1]).toEqual(43)
         })
       )
     )
@@ -176,14 +193,14 @@ describe('linter helpers', () => {
       waitsForPromise(() =>
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
-          const range = helpers.rangeFromLineNumber(textEditor, 1, 4)
+          const range = helpers.rangeFromLineNumber(textEditor, 7, 4)
           expect(range instanceof Array).toBe(true)
           expect(range[0] instanceof Array).toBe(true)
           expect(range[1] instanceof Array).toBe(true)
-          expect(range[0][0]).toEqual(1)
+          expect(range[0][0]).toEqual(7)
           expect(range[0][1]).toEqual(4)
-          expect(range[1][0]).toEqual(1)
-          return expect(range[1][1]).toEqual(41)
+          expect(range[1][0]).toEqual(7)
+          return expect(range[1][1]).toEqual(43)
         })
       )
     )
@@ -193,7 +210,7 @@ describe('linter helpers', () => {
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
           return expect(() =>
-            helpers.rangeFromLineNumber(textEditor, 1, 50)
+            helpers.rangeFromLineNumber(textEditor, 7, 50)
           ).toThrow()
         })
       )
@@ -204,7 +221,7 @@ describe('linter helpers', () => {
         atom.workspace.open(somethingFile).then(() => {
           const textEditor = atom.workspace.getActiveTextEditor()
           return expect(() =>
-            helpers.rangeFromLineNumber(textEditor, 8)
+            helpers.rangeFromLineNumber(textEditor, 11)
           ).toThrow()
         })
       )
@@ -310,17 +327,6 @@ describe('linter helpers', () => {
       )
     })
   })
-
-  describe('::exec options', () =>
-    it('honors cwd option', () =>
-      waitsForPromise(() => {
-        const testDir = path.join(__dirname, 'fixtures')
-        return helpers.exec('pwd', [], { cwd: testDir }).then(result =>
-          expect(result.trim()).toEqual(testDir)
-        )
-      })
-    )
-  )
 
   describe('::tempFile', () => {
     it('cries when arguments are invalid', () => {

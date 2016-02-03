@@ -1,2 +1,2 @@
-process.stdout.write("STDOUT")
-process.stderr.write("STDERR")
+process.stdout.write('STDOUT')
+process.stderr.write('STDERR')

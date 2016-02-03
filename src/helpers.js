@@ -18,6 +18,7 @@ const assign = Object.assign || function (target, source) {
   }
   return target
 }
+const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 
 function _exec(command, args, opts, isNode) {
   const options = assign({
@@ -33,6 +34,15 @@ function _exec(command, args, opts, isNode) {
 
   return new Promise((resolve, reject) => {
     const data = { stdout: [], stderr: [] }
+    const handleError = error => {
+      if (error.code === 'EACCES' || error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1) {
+        const newError = new Error(`Failed to spawn command '${command}'.` +
+          ` Make sure it's a file, not a directory, and it's executable.`)
+        newError.name = 'BufferedProcessError'
+        reject(newError)
+      }
+      reject(error)
+    }
     const parameters = {
       command,
       args,
@@ -46,7 +56,7 @@ function _exec(command, args, opts, isNode) {
       exit: () => {
         if (options.stream === 'stdout') {
           if (data.stderr.length && options.throwOnStdErr) {
-            reject(new Error(data.stderr.join('')))
+            handleError(new Error(data.stderr.join('')))
           } else {
             resolve(data.stdout.join(''))
           }
@@ -61,17 +71,8 @@ function _exec(command, args, opts, isNode) {
       new BufferedNodeProcess(parameters) :
       new BufferedProcess(parameters)
 
-    spawnedProcess.onWillThrowError(({ error, handle }) => {
-      if (error.code !== 'ENOENT') {
-        handle()
-      }
-      if (error.code === 'EACCES') {
-        const newError = new Error(`Failed to spawn command '${command}'.` +
-          ` Make sure it's a file, not a directory and it's executable.`)
-        newError.name = 'BufferedProcessError'
-        reject(newError)
-      }
-      reject(error)
+    spawnedProcess.onWillThrowError(error => {
+      handleError(error)
     })
 
     if (options.stdin) {
