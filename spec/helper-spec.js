@@ -11,7 +11,6 @@ const stderrFile = path.join(__dirname, 'fixtures', 'stderr.js')
 const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
   (process.platform !== 'win32' ? '.sh' : '.bat')
 const testFile = path.join(__dirname, 'fixtures', 'test.txt')
-const winCatBin = path.join(__dirname, 'fixtures', 'cat.exe')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 const testContents = fs.readFileSync(testFile).toString()
@@ -20,7 +19,7 @@ describe('linter helpers', () => {
   describe('::exec*', () => {
     // `cd` with no params prints the current dir on Windows
     const pwdCommand = process.platform !== 'win32' ? 'pwd' : 'cd'
-    const catCommand = process.platform !== 'win32' ? 'cat' : winCatBin
+    const catCommand = process.platform !== 'win32' ? 'cat' : 'type'
 
     it('cries when no argument is passed', () => {
       expect(() =>
@@ -70,14 +69,6 @@ describe('linter helpers', () => {
           stdin: 'Wow'
         }).then(data =>
           expect(data).toBe('STDOUTWow')
-        )
-      )
-      return waitsForPromise(() =>
-        helpers.exec(catCommand, [], {
-          stream: 'stdout',
-          stdin: testContents
-        }).then(text =>
-          expect(text).toBe(testContents)
         )
       )
     })
