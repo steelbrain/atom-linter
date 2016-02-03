@@ -5,7 +5,7 @@ import * as path from 'path'
 const helpers = require('../lib/helpers')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
-const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedindent.txt')
+const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const stderrFile = path.join(__dirname, 'fixtures', 'stderr.js')
 const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
