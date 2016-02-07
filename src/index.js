@@ -8,6 +8,7 @@ import * as Path from 'path'
 import * as FS from 'fs'
 import { getPath } from 'consistent-path'
 import { getTempDirectory, writeFile, unlinkFile } from './helpers'
+import type {TempFiles} from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
@@ -280,35 +281,33 @@ export function findCached(directory, name) {
   return filePath
 }
 
-export async function tempFiles(files, callback) {
+export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePaths: Array<string>) => T)): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error('Invalid or no `files` provided')
   } else if (typeof callback !== 'function') {
     throw new Error('Invalid or no `callback` provided')
   }
-  let promises
 
   const tempDirectory = await getTempDirectory('atom-linter_')
   const filePaths = []
   let result
   let error
 
-  promises = files.map(function(file) {
+  await Promise.all(files.map(function(file) {
     const fileName = file.name
     const fileContents = file.contents
     const filePath = Path.join(tempDirectory.path, fileName)
     filePaths.push(filePath)
     return writeFile(filePath, fileContents)
-  })
-  await Promise.all(promises)
+  }))
   try {
     result = await callback(filePaths)
   } catch (_) {
     error = _
   }
-  await filePaths.map(function(filePath) {
+  await Promise.all(filePaths.map(function(filePath) {
     return unlinkFile(filePath)
-  })
+  }))
   tempDirectory.cleanup()
   if (error) {
     throw error
