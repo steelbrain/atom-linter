@@ -2,6 +2,7 @@
 
 /* @flow */
 
+import FS from 'fs'
 import Temp from 'tmp'
 import type {TempDirectory} from './types'
 
@@ -27,4 +28,13 @@ export async function asyncSome<TItem, TReturn>(
     }
   }
   return toReturn
+}
+
+export function fileExists(filePath: string): Promise<boolean> {
+  return new Promise(function(resolve) {
+    // 4 = FS.R_OK ; Flow doesn't recognize it yet (facebook/flow#1342) so hard-coding
+    FS.access(filePath, 4, function(error) {
+      resolve(error === null)
+    })
+  })
 }
