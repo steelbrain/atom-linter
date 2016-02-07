@@ -281,7 +281,7 @@ export function findCached(directory, name) {
   return filePath
 }
 
-export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePaths: Array<string>) => T)): Promise<T> {
+export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePaths: Array<string>) => Promise<T>)): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error('Invalid or no `files` provided')
   } else if (typeof callback !== 'function') {
@@ -315,7 +315,7 @@ export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePath
   return result
 }
 
-export function tempFile(fileName, fileContents, callback) {
+export function tempFile<T>(fileName: string, fileContents: string, callback: ((filePath: string) => Promise<T>)): Promise<T> {
   if (typeof fileName !== 'string') {
     throw new Error('Invalid or no `fileName` provided')
   } else if (typeof fileContents !== 'string') {
