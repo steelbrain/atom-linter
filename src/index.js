@@ -7,7 +7,7 @@ import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
 import { getPath } from 'consistent-path'
-import { getTempDirectory, writeFile, unlinkFile } from './helpers'
+import { getTempDirectory, writeFile, unlinkFile, fileExists } from './helpers'
 import type {TempFiles} from './types'
 
 let NamedRegexp = null
@@ -170,68 +170,46 @@ export function rangeFromLineNumber(textEditor, line, column) {
   ]
 }
 
-export function findAsync(directory, name) {
+export async function findAsync(directory: string, name: string | Array<string>): Promise<?string> {
   _validateFind(directory, name)
-  const names = name instanceof Array ? name : [name]
+  const names = [].concat(name)
   const chunks = directory.split(Path.sep)
-  let promise = Promise.resolve(null)
 
   while (chunks.length) {
     let currentDir = chunks.join(Path.sep)
     if (currentDir === '') {
       currentDir = Path.resolve(directory, '/')
     }
-    promise = promise.then(filePath => {
-      if (filePath !== null) {
+    for (const fileName of names) {
+      const filePath = Path.join(currentDir, fileName)
+      if (await fileExists(filePath)) {
         return filePath
       }
-      return names.reduce((promise2, name2) => {
-        const currentFile = Path.join(currentDir, name2)
-        return promise2.then(filePath2 => {
-          if (filePath2 !== null) {
-            return filePath2
-          }
-          return new Promise(resolve => {
-            FS.access(currentFile, FS.R_OK, error => {
-              if (error) {
-                resolve(null)
-              } else resolve(currentFile)
-            })
-          })
-        })
-      }, Promise.resolve(null))
-    })
+    }
     chunks.pop()
   }
 
-  return promise
+  return null
 }
 
-export function findCachedAsync(directory, name) {
+export async function findCachedAsync(directory: string, name: string | Array<string>): Promise<?string> {
   _validateFind(directory, name)
-  const names = name instanceof Array ? name : [name]
+  const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
+  const cachedFilePath = FindCache.get(cacheKey)
 
-  let finalValue = null
-
-  if (FindCache.has(cacheKey)) {
-    const cachedFilePath = FindCache.get(cacheKey)
-    finalValue = new Promise(resolve => {
-      FS.access(cachedFilePath, FS.R_OK, error => {
-        if (error) {
-          FindCache.delete(cacheKey)
-          resolve(findCachedAsync(directory, names))
-        } else resolve(cachedFilePath)
-      })
-    })
-  } else {
-    finalValue = findAsync(directory, name).then(filePath => {
-      FindCache.set(cacheKey, filePath)
-      return filePath
-    })
+  if (cachedFilePath) {
+    if (await fileExists(cachedFilePath)) {
+      return cachedFilePath
+    } else {
+      FindCache.delete(cacheKey)
+    }
   }
-
-  return finalValue
+  const filePath = await findAsync(directory, names)
+  if (filePath) {
+    FindCache.set(cacheKey, filePath)
+  }
+  return filePath
 }
 
 export function find(directory: string, name: string | Array<string>): ?string {

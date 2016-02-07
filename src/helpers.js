@@ -17,20 +17,6 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
   })
 }
 
-export async function asyncSome<TItem, TReturn>(
-  items: Array<TItem>,
-  callback: ((item: TItem) => ?TReturn)
-): Promise<?TReturn> {
-  let toReturn
-  for (const item of items) {
-    toReturn = await callback(item)
-    if (toReturn) {
-      break
-    }
-  }
-  return toReturn
-}
-
 export function fileExists(filePath: string): Promise<boolean> {
   return new Promise(function(resolve) {
     // 4 = FS.R_OK ; Flow doesn't recognize it yet (facebook/flow#1342) so hard-coding
