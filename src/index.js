@@ -35,9 +35,9 @@ function _exec(command, args, opts, isNode) {
   }
   assign(options.env, { PATH: getPath() })
 
-  return new Promise((resolve, reject) => {
+  return new Promise(function (resolve, reject) {
     const data = { stdout: [], stderr: [] }
-    const handleError = error => {
+    const handleError = function (error) {
       if (error.code === 'EACCES' ||
         (error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)
       ) {
@@ -52,13 +52,13 @@ function _exec(command, args, opts, isNode) {
       command,
       args,
       options,
-      stdout: chunk => {
+      stdout(chunk) {
         data.stdout.push(chunk)
       },
-      stderr: chunk => {
+      stderr(chunk) {
         data.stderr.push(chunk)
       },
-      exit: () => {
+      exit() {
         if (options.stream === 'stdout') {
           if (data.stderr.length && options.throwOnStdErr) {
             handleError(new Error(data.stderr.join('')))
@@ -76,7 +76,7 @@ function _exec(command, args, opts, isNode) {
       new BufferedNodeProcess(parameters) :
       new BufferedProcess(parameters)
 
-    spawnedProcess.onWillThrowError(({ error }) => {
+    spawnedProcess.onWillThrowError(function ({ error }) {
       handleError(error)
     })
 
@@ -312,9 +312,9 @@ export function tempFile<T>(
   return tempFiles([{
     name: fileName,
     contents: fileContents
-  }], results =>
-    callback(results[0])
-  )
+  }], function (results) {
+    return callback(results[0])
+  })
 }
 
 export function parse(data, regex, opts = {}) {
