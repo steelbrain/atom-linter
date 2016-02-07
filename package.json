@@ -25,7 +25,6 @@
   "dependencies": {
     "consistent-path": "^1.0.3",
     "named-js-regexp": "^1.3.1",
-    "sb-promisify": "^1.0.0",
     "tmp": "~0.0.28"
   },
   "devDependencies": {
