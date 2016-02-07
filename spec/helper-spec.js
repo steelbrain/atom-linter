@@ -289,10 +289,10 @@ describe('linter helpers', () => {
 
   describe('::findAsync', () => {
     it('cries when no argument is passed', () =>
-      waitsForPromise(function() {
-        return helpers.findAsync().then(function() {
+      waitsForPromise(function () {
+        return helpers.findAsync().then(function () {
           expect(false).toBe(true)
-        }, function(error) {
+        }, function (error) {
           expect(error).toBeDefined()
         })
       })
@@ -350,61 +350,61 @@ describe('linter helpers', () => {
 
   return describe('::tempFiles', () => {
     it('cries when arguments are invalid', () => {
-      waitsForPromise(function() {
-        return helpers.tempFiles().then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles().then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles(null, null).then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles(null, null).then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles('', null).then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles('', null).then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles('', '').then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles('', '').then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles(null, '').then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles(null, '').then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles([], '').then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles([], '').then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
-      waitsForPromise(function() {
-        return helpers.tempFiles([], null).then(function() {
+      waitsForPromise(function () {
+        return helpers.tempFiles([], null).then(function () {
           expect(false).toBe(true)
-        }, function(e) {
+        }, function (e) {
           expect(e).toBeDefined()
         })
       })
       // testimony that it works
-      waitsForPromise(function() {
-        return helpers.tempFiles([], function(files) {
+      waitsForPromise(function () {
+        return helpers.tempFiles([], function (files) {
           expect(files).toEqual([])
           return 50
-        }).then(function(result) {
+        }).then(function (result) {
           expect(result).toEqual(50)
         })
       })

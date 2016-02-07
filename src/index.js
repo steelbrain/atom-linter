@@ -2,13 +2,12 @@
 
 /* @flow */
 
-import invariant from 'assert'
 import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
 import { getPath } from 'consistent-path'
 import { getTempDirectory, writeFile, unlinkFile, fileExists } from './helpers'
-import type {TempFiles} from './types'
+import type { TempFiles } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
@@ -192,7 +191,9 @@ export async function findAsync(directory: string, name: string | Array<string>)
   return null
 }
 
-export async function findCachedAsync(directory: string, name: string | Array<string>): Promise<?string> {
+export async function findCachedAsync(
+  directory: string, name: string | Array<string>
+): Promise<?string> {
   _validateFind(directory, name)
   const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
@@ -201,9 +202,8 @@ export async function findCachedAsync(directory: string, name: string | Array<st
   if (cachedFilePath) {
     if (await fileExists(cachedFilePath)) {
       return cachedFilePath
-    } else {
-      FindCache.delete(cacheKey)
     }
+    FindCache.delete(cacheKey)
   }
   const filePath = await findAsync(directory, names)
   if (filePath) {
@@ -259,7 +259,10 @@ export function findCached(directory: string, name: string | Array<string>): ?st
   return filePath
 }
 
-export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePaths: Array<string>) => Promise<T>)): Promise<T> {
+export async function tempFiles<T>(
+  files: Array<TempFiles>,
+  callback: ((filePaths: Array<string>) => Promise<T>)
+): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error('Invalid or no `files` provided')
   } else if (typeof callback !== 'function') {
@@ -271,7 +274,7 @@ export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePath
   let result
   let error
 
-  await Promise.all(files.map(function(file) {
+  await Promise.all(files.map(function (file) {
     const fileName = file.name
     const fileContents = file.contents
     const filePath = Path.join(tempDirectory.path, fileName)
@@ -283,7 +286,7 @@ export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePath
   } catch (_) {
     error = _
   }
-  await Promise.all(filePaths.map(function(filePath) {
+  await Promise.all(filePaths.map(function (filePath) {
     return unlinkFile(filePath)
   }))
   tempDirectory.cleanup()
@@ -293,7 +296,11 @@ export async function tempFiles<T>(files: Array<TempFiles>, callback: ((filePath
   return result
 }
 
-export function tempFile<T>(fileName: string, fileContents: string, callback: ((filePath: string) => Promise<T>)): Promise<T> {
+export function tempFile<T>(
+  fileName: string,
+  fileContents: string,
+  callback: ((filePath: string) => Promise<T>)
+): Promise<T> {
   if (typeof fileName !== 'string') {
     throw new Error('Invalid or no `fileName` provided')
   } else if (typeof fileContents !== 'string') {
