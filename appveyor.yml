@@ -18,4 +18,5 @@ build_script:
   - apm -v
   - apm clean
   - apm install
+  - node_modules\.bin\ucompiler go
   - apm test

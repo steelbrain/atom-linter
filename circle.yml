@@ -9,6 +9,7 @@ dependencies:
     - sudo dpkg --install atom-amd64.deb || true
     - sudo apt-get -f install
     - apm install
+    - ./node_modules/.bin/ucompiler go
 
 test:
   override:
