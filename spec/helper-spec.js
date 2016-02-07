@@ -2,7 +2,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-const helpers = require('../src/helpers')
+const helpers = require('../lib/index')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
@@ -344,13 +344,64 @@ describe('linter helpers', () => {
 
   return describe('::tempFiles', () => {
     it('cries when arguments are invalid', () => {
-      expect(() => helpers.tempFiles()).toThrow()
-      expect(() => helpers.tempFiles(null, null)).toThrow()
-      expect(() => helpers.tempFiles('', null)).toThrow()
-      expect(() => helpers.tempFiles('', '')).toThrow()
-      expect(() => helpers.tempFiles(null, '')).toThrow()
-      expect(() => helpers.tempFiles([], '')).toThrow()
-      return expect(() => helpers.tempFiles([], null)).toThrow()
+      waitsForPromise(function() {
+        return helpers.tempFiles().then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles(null, null).then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles('', null).then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles('', '').then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles(null, '').then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles([], '').then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      waitsForPromise(function() {
+        return helpers.tempFiles([], null).then(function() {
+          expect(false).toBe(true)
+        }, function(e) {
+          expect(e).toBeDefined()
+        })
+      })
+      // testimony that it works
+      waitsForPromise(function() {
+        return helpers.tempFiles([], function(files) {
+          expect(files).toEqual([])
+          return 50
+        }).then(function(result) {
+          expect(result).toEqual(50)
+        })
+      })
     })
 
     return it('works and accepts a callback and returns a promise and its promise ' +

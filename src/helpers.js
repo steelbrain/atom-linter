@@ -4,6 +4,7 @@
 
 import FS from 'fs'
 import Temp from 'tmp'
+import promisify from 'sb-promisify'
 import type {TempDirectory} from './types'
 
 export function getTempDirectory(prefix: string): Promise<TempDirectory> {
@@ -38,3 +39,6 @@ export function fileExists(filePath: string): Promise<boolean> {
     })
   })
 }
+
+export const writeFile = promisify(FS.writeFile)
+export const unlinkFile = promisify(FS.unlink)

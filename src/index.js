@@ -6,8 +6,8 @@ import invariant from 'assert'
 import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
-import * as TMP from 'tmp'
 import { getPath } from 'consistent-path'
+import { getTempDirectory, writeFile, unlinkFile } from './helpers'
 
 let NamedRegexp = null
 export const FindCache = new Map()
@@ -280,56 +280,40 @@ export function findCached(directory, name) {
   return filePath
 }
 
-export function tempFiles(files, callback) {
+export async function tempFiles(files, callback) {
   if (!Array.isArray(files)) {
     throw new Error('Invalid or no `files` provided')
   } else if (typeof callback !== 'function') {
     throw new Error('Invalid or no `callback` provided')
   }
+  let promises
 
-  return new Promise((resolve, reject) => {
-    TMP.dir({
-      prefix: 'atom-linter_'
-    }, (error, directory, directoryCleanup) => {
-      if (error) {
-        directoryCleanup()
-        return reject(error)
-      }
-      let foundError = false
-      let filePaths = null
-      Promise.all(files.map(file => {
-        const fileName = file.name
-        const fileContents = file.contents
-        const filePath = Path.join(directory, fileName)
-        return new Promise((resolve2, reject2) => {
-          FS.writeFile(filePath, fileContents, error2 => {
-            if (error2) {
-              // Note: Intentionally not doing directoryCleanup 'cause it won't work
-              // Because we would've already wrote a few files and when even file
-              // exists in a directory, it can't be removed
-              reject2(error2)
-            } else resolve2(filePath)
-          })
-        })
-      })).then(_filePaths =>
-        callback(filePaths = _filePaths)
-      ).catch(result => {
-        foundError = true
-        return result
-      }).then(result => {
-        if (filePaths !== null) {
-          Promise.all(filePaths.map(filePath =>
-            new Promise(resolve3 => {
-              FS.unlink(filePath, resolve3)
-            })
-          )).then(directoryCleanup)
-        }
-        if (foundError) {
-          throw result
-        } else return result
-      }).then(resolve, reject)
-    })
+  const tempDirectory = await getTempDirectory('atom-linter_')
+  const filePaths = []
+  let result
+  let error
+
+  promises = files.map(function(file) {
+    const fileName = file.name
+    const fileContents = file.contents
+    const filePath = Path.join(tempDirectory.path, fileName)
+    filePaths.push(filePath)
+    return writeFile(filePath, fileContents)
   })
+  await Promise.all(promises)
+  try {
+    result = await callback(filePaths)
+  } catch (_) {
+    error = _
+  }
+  await filePaths.map(function(filePath) {
+    return unlinkFile(filePath)
+  })
+  tempDirectory.cleanup()
+  if (error) {
+    throw error
+  }
+  return result
 }
 
 export function tempFile(fileName, fileContents, callback) {
