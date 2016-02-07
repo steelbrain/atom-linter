@@ -1,3 +1,8 @@
+### Upcoming
+
+* Internal cleanup
+* Fix a bug with findCachedAsync where it would throw error if requested file wasn't found (#105)
+
 ### 4.4.0
 
 * Highlight the whole first line when no line is given
