@@ -2,7 +2,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
-const helpers = require('../lib/helpers')
+const helpers = require('../src/helpers')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
