@@ -14,3 +14,17 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
     })
   })
 }
+
+export async function asyncSome<TItem, TReturn>(
+  items: Array<TItem>,
+  callback: ((item: TItem) => ?TReturn)
+): Promise<?TReturn> {
+  let toReturn = null
+  for (const item of items) {
+    toReturn = await callback(item)
+    if (toReturn) {
+      break
+    }
+  }
+  return toReturn
+}
