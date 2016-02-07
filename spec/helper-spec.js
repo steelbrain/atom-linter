@@ -289,7 +289,13 @@ describe('linter helpers', () => {
 
   describe('::findAsync', () => {
     it('cries when no argument is passed', () =>
-      expect(() => helpers.findAsync()).toThrow()
+      waitsForPromise(function() {
+        return helpers.findAsync().then(function() {
+          expect(false).toBe(true)
+        }, function(error) {
+          expect(error).toBeDefined()
+        })
+      })
     )
 
     it('works', () => {
