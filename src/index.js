@@ -234,9 +234,9 @@ export function findCachedAsync(directory, name) {
   return finalValue
 }
 
-export function find(directory, name) {
+export function find(directory: string, name: string | Array<string>): ?string {
   _validateFind(directory, name)
-  const names = name instanceof Array ? name : [name]
+  const names = [].concat(name)
   const chunks = directory.split(Path.sep)
 
   while (chunks.length) {
@@ -248,7 +248,7 @@ export function find(directory, name) {
       const filePath = Path.join(currentDir, fileName)
 
       try {
-        FS.accessSync(filePath, FS.R_OK)
+        FS.accessSync(filePath, 4)
         return filePath
       } catch (_) {
         // Do nothing
@@ -260,15 +260,15 @@ export function find(directory, name) {
   return null
 }
 
-export function findCached(directory, name) {
+export function findCached(directory: string, name: string | Array<string>): ?string {
   _validateFind(directory, name)
-  const names = name instanceof Array ? name : [name]
+  const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
+  const cachedFilePath = FindCache.get(cacheKey)
 
-  if (FindCache.has(cacheKey)) {
-    const cachedFilePath = FindCache.get(cacheKey)
+  if (cachedFilePath) {
     try {
-      FS.accessSync(cachedFilePath, FS.R_OK)
+      FS.accessSync(cachedFilePath, 4)
       return cachedFilePath
     } catch (_) {
       FindCache.delete(cacheKey)
