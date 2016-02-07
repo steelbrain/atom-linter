@@ -1,5 +1,8 @@
 'use babel'
 
+/* @flow */
+
+import invariant from 'assert'
 import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
@@ -9,6 +12,7 @@ import { getPath } from 'consistent-path'
 let NamedRegexp = null
 export const FindCache = new Map()
 
+const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 // TODO: Remove this when electron upgrades node
 const assign = Object.assign || function (target, source) {
   for (const key in source) {
@@ -18,7 +22,6 @@ const assign = Object.assign || function (target, source) {
   }
   return target
 }
-const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 
 function _exec(command, args, opts, isNode) {
   const options = assign({
