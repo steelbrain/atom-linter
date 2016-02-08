@@ -4,32 +4,12 @@
 
 import * as Path from 'path'
 import * as FS from 'fs'
-import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec, exec as execTarget } from './helpers'
+import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec, exec as execTarget, validateEditor, validateFind } from './helpers'
+import type { TextEditor, Range } from 'atom'
 import type { TempFiles, ExecOptions, ExecResult } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
-
-function _validateFind(directory, name) {
-  if (typeof directory !== 'string') {
-    throw new Error('Invalid or no `directory` provided')
-  } else if (typeof name !== 'string' && !(name instanceof Array)) {
-    throw new Error('Invalid or no `name` provided')
-  }
-}
-
-function _validateEditor(editor) {
-  let isEditor
-  if (typeof atom.workspace.isTextEditor === 'function') {
-    // Added in Atom v1.4.0
-    isEditor = atom.workspace.isTextEditor(editor)
-  } else {
-    isEditor = typeof editor.getText !== 'function'
-  }
-  if (!isEditor) {
-    throw new Error('Invalid TextEditor provided')
-  }
-}
 
 export function exec(command: string, args: Array<string> = [], options: ExecOptions = {}): Promise<ExecResult> {
   validateExec(command, args, options)
@@ -41,8 +21,8 @@ export function execNode(command: string, args: Array<string> = [], options: Exe
   return execTarget(command, args, options, true)
 }
 
-export function rangeFromLineNumber(textEditor, line, column) {
-  _validateEditor(textEditor)
+export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: number): Range {
+  validateEditor(textEditor)
   let lineNumber = line
 
   if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
@@ -79,7 +59,7 @@ export function rangeFromLineNumber(textEditor, line, column) {
 }
 
 export async function findAsync(directory: string, name: string | Array<string>): Promise<?string> {
-  _validateFind(directory, name)
+  validateFind(directory, name)
   const names = [].concat(name)
   const chunks = directory.split(Path.sep)
 
@@ -103,7 +83,7 @@ export async function findAsync(directory: string, name: string | Array<string>)
 export async function findCachedAsync(
   directory: string, name: string | Array<string>
 ): Promise<?string> {
-  _validateFind(directory, name)
+  validateFind(directory, name)
   const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
   const cachedFilePath = FindCache.get(cacheKey)
@@ -122,7 +102,7 @@ export async function findCachedAsync(
 }
 
 export function find(directory: string, name: string | Array<string>): ?string {
-  _validateFind(directory, name)
+  validateFind(directory, name)
   const names = [].concat(name)
   const chunks = directory.split(Path.sep)
 
@@ -148,7 +128,7 @@ export function find(directory: string, name: string | Array<string>): ?string {
 }
 
 export function findCached(directory: string, name: string | Array<string>): ?string {
-  _validateFind(directory, name)
+  validateFind(directory, name)
   const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
   const cachedFilePath = FindCache.get(cacheKey)
