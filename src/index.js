@@ -6,22 +6,13 @@ import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
 import { getPath } from 'consistent-path'
-import { getTempDirectory, writeFile, unlinkFile, fileExists } from './helpers'
+import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec } from './helpers'
 import type { TempFiles } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
 
 const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
-// TODO: Remove this when electron upgrades node
-const assign = Object.assign || function (target, source) {
-  for (const key in source) {
-    if (source.hasOwnProperty(key)) {
-      target[key] = source[key]
-    }
-  }
-  return target
-}
 
 function _exec(command, args, opts, isNode) {
   const options = assign({
@@ -91,16 +82,6 @@ function _exec(command, args, opts, isNode) {
   })
 }
 
-function _validateExec(command, args, options) {
-  if (typeof command !== 'string') {
-    throw new Error('Invalid or no `command` provided')
-  } else if (!(args instanceof Array)) {
-    throw new Error('Invalid or no `args` provided')
-  } else if (typeof options !== 'object') {
-    throw new Error('Invalid or no `options` provided')
-  }
-}
-
 function _validateFind(directory, name) {
   if (typeof directory !== 'string') {
     throw new Error('Invalid or no `directory` provided')
@@ -122,13 +103,13 @@ function _validateEditor(editor) {
   }
 }
 
-export function exec(command, args = [], options = {}) {
-  _validateExec(command, args, options)
+export function exec(command: string, args: Array<string> = [], options: Object = {}) {
+  validateExec(command, args, options)
   return _exec(command, args, options, false)
 }
 
-export function execNode(command, args = [], options = {}) {
-  _validateExec(command, args, options)
+export function execNode(command: string, args: Array<string> = [], options: Object = {}) {
+  validateExec(command, args, options)
   return _exec(command, args, options, true)
 }
 

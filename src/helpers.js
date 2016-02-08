@@ -26,5 +26,23 @@ export function fileExists(filePath: string): Promise<boolean> {
   })
 }
 
+export function validateExec(command: string, args: Array<string>, options: Object) {
+  if (typeof command !== 'string') {
+    throw new Error('Invalid or no `command` provided')
+  } else if (!(args instanceof Array)) {
+    throw new Error('Invalid or no `args` provided')
+  } else if (typeof options !== 'object') {
+    throw new Error('Invalid or no `options` provided')
+  }
+}
+
 export const writeFile = promisify(FS.writeFile)
 export const unlinkFile = promisify(FS.unlink)
+export const assign = Object.assign || function (target, source) {
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      target[key] = source[key]
+    }
+  }
+  return target
+}
