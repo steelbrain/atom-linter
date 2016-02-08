@@ -2,85 +2,13 @@
 
 /* @flow */
 
-import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import * as Path from 'path'
 import * as FS from 'fs'
-import { getPath } from 'consistent-path'
-import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec } from './helpers'
-import type { TempFiles } from './types'
+import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec, exec as execTarget } from './helpers'
+import type { TempFiles, ExecOptions, ExecResult } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
-
-const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
-
-function _exec(command, args, opts, isNode) {
-  const options = assign({
-    env: assign({}, process.env),
-    stream: 'stdout',
-    throwOnStdErr: true
-  }, opts)
-
-  if (isNode) {
-    delete options.env.OS
-  }
-  assign(options.env, { PATH: getPath() })
-
-  return new Promise(function (resolve, reject) {
-    const data = { stdout: [], stderr: [] }
-    const handleError = function (error) {
-      if (error.code === 'EACCES' ||
-        (error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)
-      ) {
-        const newError = new Error(`Failed to spawn command '${command}'.` +
-          ` Make sure it's a file, not a directory, and it's executable.`)
-        newError.name = 'BufferedProcessError'
-        reject(newError)
-      }
-      reject(error)
-    }
-    const parameters = {
-      command,
-      args,
-      options,
-      stdout(chunk) {
-        data.stdout.push(chunk)
-      },
-      stderr(chunk) {
-        data.stderr.push(chunk)
-      },
-      exit() {
-        if (options.stream === 'stdout') {
-          if (data.stderr.length && options.throwOnStdErr) {
-            handleError(new Error(data.stderr.join('')))
-          } else {
-            resolve(data.stdout.join(''))
-          }
-        } else if (options.stream === 'stderr') {
-          resolve(data.stderr.join(''))
-        } else {
-          resolve({ stdout: data.stdout.join(''), stderr: data.stderr.join('') })
-        }
-      }
-    }
-    const spawnedProcess = isNode ?
-      new BufferedNodeProcess(parameters) :
-      new BufferedProcess(parameters)
-
-    spawnedProcess.onWillThrowError(function ({ error }) {
-      handleError(error)
-    })
-
-    if (options.stdin) {
-      try {
-        spawnedProcess.process.stdin.write(options.stdin.toString())
-        spawnedProcess.process.stdin.end()
-      } catch (_) {
-        // Do nothing
-      }
-    }
-  })
-}
 
 function _validateFind(directory, name) {
   if (typeof directory !== 'string') {
@@ -103,14 +31,14 @@ function _validateEditor(editor) {
   }
 }
 
-export function exec(command: string, args: Array<string> = [], options: Object = {}) {
+export function exec(command: string, args: Array<string> = [], options: ExecOptions = {}): Promise<ExecResult> {
   validateExec(command, args, options)
-  return _exec(command, args, options, false)
+  return execTarget(command, args, options, false)
 }
 
-export function execNode(command: string, args: Array<string> = [], options: Object = {}) {
+export function execNode(command: string, args: Array<string> = [], options: ExecOptions = {}): Promise<ExecResult> {
   validateExec(command, args, options)
-  return _exec(command, args, options, true)
+  return execTarget(command, args, options, true)
 }
 
 export function rangeFromLineNumber(textEditor, line, column) {

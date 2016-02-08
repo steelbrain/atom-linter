@@ -5,7 +5,11 @@
 import FS from 'fs'
 import Temp from 'tmp'
 import promisify from 'sb-promisify'
-import type { TempDirectory } from './types'
+import { getPath } from 'consistent-path'
+import { BufferedProcess, BufferedNodeProcess } from 'atom'
+import type { TempDirectory, ExecResult, ExecOptions } from './types'
+
+const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 
 export function getTempDirectory(prefix: string): Promise<TempDirectory> {
   return new Promise(function (resolve, reject) {
@@ -45,4 +49,72 @@ export const assign = Object.assign || function (target, source) {
     }
   }
   return target
+}
+
+export function exec(command: string, args: Array<string>, opts: ExecOptions, isNode: boolean): Promise<ExecResult> {
+  const options: ExecOptions = assign({
+    env: assign({}, process.env),
+    stream: 'stdout',
+    throwOnStdErr: true
+  }, opts)
+
+  if (isNode && options.env) {
+    delete options.env.OS
+  }
+  assign(options.env, { PATH: getPath() })
+
+  return new Promise(function (resolve, reject) {
+    const data = { stdout: [], stderr: [] }
+    const handleError = function (error) {
+      if (error && error.code === 'EACCES' ||
+        (error && error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)
+      ) {
+        const newError = new Error(`Failed to spawn command '${command}'.` +
+          ` Make sure it's a file, not a directory, and it's executable.`)
+        newError.name = 'BufferedProcessError'
+        reject(newError)
+      }
+      reject(error)
+    }
+    const parameters = {
+      command,
+      args,
+      options,
+      stdout(chunk) {
+        data.stdout.push(chunk)
+      },
+      stderr(chunk) {
+        data.stderr.push(chunk)
+      },
+      exit() {
+        if (options.stream === 'stdout') {
+          if (data.stderr.length && options.throwOnStdErr) {
+            handleError(new Error(data.stderr.join('')))
+          } else {
+            resolve(data.stdout.join(''))
+          }
+        } else if (options.stream === 'stderr') {
+          resolve(data.stderr.join(''))
+        } else {
+          resolve({ stdout: data.stdout.join(''), stderr: data.stderr.join('') })
+        }
+      }
+    }
+    const spawnedProcess = isNode ?
+      new BufferedNodeProcess(parameters) :
+      new BufferedProcess(parameters)
+
+    spawnedProcess.onWillThrowError(function ({ error }) {
+      handleError(error)
+    })
+
+    if (options.stdin) {
+      try {
+        spawnedProcess.process.stdin.write(options.stdin.toString())
+        spawnedProcess.process.stdin.end()
+      } catch (_) {
+        // Do nothing
+      }
+    }
+  })
 }
