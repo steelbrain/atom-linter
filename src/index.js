@@ -115,7 +115,7 @@ export function find(directory: string, name: string | Array<string>): ?string {
       const filePath = Path.join(currentDir, fileName)
 
       try {
-        FS.accessSync(filePath, 4)
+        FS.accessSync(filePath, FS.R_OK)
         return filePath
       } catch (_) {
         // Do nothing
@@ -135,7 +135,7 @@ export function findCached(directory: string, name: string | Array<string>): ?st
 
   if (cachedFilePath) {
     try {
-      FS.accessSync(cachedFilePath, 4)
+      FS.accessSync(cachedFilePath, FS.R_OK)
       return cachedFilePath
     } catch (_) {
       FindCache.delete(cacheKey)

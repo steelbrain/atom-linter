@@ -34,8 +34,7 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
 
 export function fileExists(filePath: string): Promise<boolean> {
   return new Promise(function (resolve) {
-    // 4 = FS.R_OK ; Flow doesn't recognize it yet (facebook/flow#1342) so hard-coding
-    FS.access(filePath, 4, function (error) {
+    FS.access(filePath, FS.R_OK, function (error) {
       resolve(error === null)
     })
   })
