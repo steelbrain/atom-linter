@@ -71,7 +71,12 @@ export function validateFind(directory: string, name: string | Array<string>) {
   }
 }
 
-export function exec(command: string, args: Array<string>, opts: ExecOptions, isNode: boolean): Promise<ExecResult> {
+export function exec(
+  command: string,
+  args: Array<string>,
+  opts: ExecOptions,
+  isNode: boolean
+): Promise<ExecResult> {
   const options: ExecOptions = assign({
     env: assign({}, process.env),
     stream: 'stdout',

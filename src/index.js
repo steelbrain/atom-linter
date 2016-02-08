@@ -4,19 +4,37 @@
 
 import * as Path from 'path'
 import * as FS from 'fs'
-import { getTempDirectory, writeFile, unlinkFile, fileExists, assign, validateExec, exec as execTarget, validateEditor, validateFind } from './helpers'
+import {
+  getTempDirectory,
+  writeFile,
+  unlinkFile,
+  fileExists,
+  assign,
+  validateExec,
+  exec as execTarget,
+  validateEditor,
+  validateFind
+} from './helpers'
 import type { TextEditor, Range } from 'atom'
 import type { TempFiles, ExecOptions, ExecResult } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function exec(command: string, args: Array<string> = [], options: ExecOptions = {}): Promise<ExecResult> {
+export function exec(
+  command: string,
+  args: Array<string> = [],
+  options: ExecOptions = {}
+): Promise<ExecResult> {
   validateExec(command, args, options)
   return execTarget(command, args, options, false)
 }
 
-export function execNode(command: string, args: Array<string> = [], options: ExecOptions = {}): Promise<ExecResult> {
+export function execNode(
+  command: string,
+  args: Array<string> = [],
+  options: ExecOptions = {}
+): Promise<ExecResult> {
   validateExec(command, args, options)
   return execTarget(command, args, options, true)
 }
