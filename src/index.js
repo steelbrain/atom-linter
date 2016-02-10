@@ -4,17 +4,7 @@
 
 import * as Path from 'path'
 import * as FS from 'fs'
-import {
-  getTempDirectory,
-  writeFile,
-  unlinkFile,
-  fileExists,
-  assign,
-  validateExec,
-  exec as execTarget,
-  validateEditor,
-  validateFind
-} from './helpers'
+import * as Helpers from './helpers'
 import type { TextEditor, Range } from 'atom'
 import type { TempFiles, ExecOptions, ExecResult } from './types'
 
@@ -26,8 +16,8 @@ export function exec(
   args: Array<string> = [],
   options: ExecOptions = {}
 ): Promise<ExecResult> {
-  validateExec(command, args, options)
-  return execTarget(command, args, options, false)
+  Helpers.validateExec(command, args, options)
+  return Helpers.exec(command, args, options, false)
 }
 
 export function execNode(
@@ -35,12 +25,12 @@ export function execNode(
   args: Array<string> = [],
   options: ExecOptions = {}
 ): Promise<ExecResult> {
-  validateExec(command, args, options)
-  return execTarget(command, args, options, true)
+  Helpers.validateExec(command, args, options)
+  return Helpers.exec(command, args, options, true)
 }
 
 export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: number): Range {
-  validateEditor(textEditor)
+  Helpers.validateEditor(textEditor)
   let lineNumber = line
 
   if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
@@ -77,7 +67,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: number, column
 }
 
 export async function findAsync(directory: string, name: string | Array<string>): Promise<?string> {
-  validateFind(directory, name)
+  Helpers.validateFind(directory, name)
   const names = [].concat(name)
   const chunks = directory.split(Path.sep)
 
@@ -88,7 +78,7 @@ export async function findAsync(directory: string, name: string | Array<string>)
     }
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName)
-      if (await fileExists(filePath)) {
+      if (await Helpers.fileExists(filePath)) {
         return filePath
       }
     }
@@ -101,13 +91,13 @@ export async function findAsync(directory: string, name: string | Array<string>)
 export async function findCachedAsync(
   directory: string, name: string | Array<string>
 ): Promise<?string> {
-  validateFind(directory, name)
+  Helpers.validateFind(directory, name)
   const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
   const cachedFilePath = FindCache.get(cacheKey)
 
   if (cachedFilePath) {
-    if (await fileExists(cachedFilePath)) {
+    if (await Helpers.fileExists(cachedFilePath)) {
       return cachedFilePath
     }
     FindCache.delete(cacheKey)
@@ -120,7 +110,7 @@ export async function findCachedAsync(
 }
 
 export function find(directory: string, name: string | Array<string>): ?string {
-  validateFind(directory, name)
+  Helpers.validateFind(directory, name)
   const names = [].concat(name)
   const chunks = directory.split(Path.sep)
 
@@ -146,7 +136,7 @@ export function find(directory: string, name: string | Array<string>): ?string {
 }
 
 export function findCached(directory: string, name: string | Array<string>): ?string {
-  validateFind(directory, name)
+  Helpers.validateFind(directory, name)
   const names = [].concat(name)
   const cacheKey = `${directory}:${names.join(',')}`
   const cachedFilePath = FindCache.get(cacheKey)
@@ -176,7 +166,7 @@ export async function tempFiles<T>(
     throw new Error('Invalid or no `callback` provided')
   }
 
-  const tempDirectory = await getTempDirectory('atom-linter_')
+  const tempDirectory = await Helpers.getTempDirectory('atom-linter_')
   const filePaths = []
   let result
   let error
@@ -186,7 +176,7 @@ export async function tempFiles<T>(
     const fileContents = file.contents
     const filePath = Path.join(tempDirectory.path, fileName)
     filePaths.push(filePath)
-    return writeFile(filePath, fileContents)
+    return Helpers.writeFile(filePath, fileContents)
   }))
   try {
     result = await callback(filePaths)
@@ -194,7 +184,7 @@ export async function tempFiles<T>(
     error = _
   }
   await Promise.all(filePaths.map(function (filePath) {
-    return unlinkFile(filePath)
+    return Helpers.unlinkFile(filePath)
   }))
   tempDirectory.cleanup()
   if (error) {
@@ -237,7 +227,7 @@ export function parse(data, regex, opts = {}) {
     NamedRegexp = require('named-js-regexp')
   }
 
-  const options = assign({ flags: '' }, opts)
+  const options = Helpers.assign({ flags: '' }, opts)
   if (options.flags.indexOf('g') === -1) {
     options.flags += 'g'
   }
