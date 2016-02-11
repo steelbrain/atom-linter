@@ -56,7 +56,7 @@ export function validateEditor(editor: TextEditor) {
     // Added in Atom v1.4.0
     isEditor = atom.workspace.isTextEditor(editor)
   } else {
-    isEditor = typeof editor.getText !== 'function'
+    isEditor = typeof editor.getText === 'function'
   }
   if (!isEditor) {
     throw new Error('Invalid TextEditor provided')
