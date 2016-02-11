@@ -2,7 +2,7 @@
   "name": "atom-linter",
   "version": "4.4.0",
   "description": "Helper module for atom linter providers",
-  "main": "lib/index",
+  "main": "lib/index.js",
   "scripts": {
     "test": "apm test",
     "watch": "ucompiler watch",
