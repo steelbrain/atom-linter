@@ -15,7 +15,7 @@ const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
 const testFile = path.join(__dirname, 'fixtures', 'test.txt')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
-const testContents = fs.readFileSync(testFile).toString()
+const testContents = fs.readFileSync(testFile).toString().trim()
 
 describe('linter helpers', function () {
   describe('::exec*', function () {
@@ -68,8 +68,8 @@ describe('linter helpers', function () {
       }, 'STDERR')
 
       waitsForAsyncRejection(async function () {
-        return await helpers.exec(stderrScript, [])
-      }, 'STDERR\n')
+        return (await helpers.exec(stderrScript, [])).trim()
+      }, 'STDERR')
     })
 
     it('shows a nicer error for EACCESS', function () {
@@ -91,7 +91,7 @@ describe('linter helpers', function () {
             })
             expect(false).toBe(true)
           } catch (_) {
-            expect(_.message).toBe('STDERR\n')
+            expect(_.message.trim()).toBe('STDERR')
           }
         })
       })

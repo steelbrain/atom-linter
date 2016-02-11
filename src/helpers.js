@@ -114,14 +114,14 @@ export function exec(
       exit() {
         if (options.stream === 'stdout') {
           if (data.stderr.length && options.throwOnStdErr) {
-            handleError(new Error(data.stderr.join('')))
+            handleError(new Error(data.stderr.join('').trim()))
           } else {
-            resolve(data.stdout.join(''))
+            resolve(data.stdout.join('').trim())
           }
         } else if (options.stream === 'stderr') {
-          resolve(data.stderr.join(''))
+          resolve(data.stderr.join('').trim())
         } else {
-          resolve({ stdout: data.stdout.join(''), stderr: data.stderr.join('') })
+          resolve({ stdout: data.stdout.join('').trim(), stderr: data.stderr.join('').trim() })
         }
       }
     }
