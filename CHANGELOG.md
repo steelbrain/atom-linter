@@ -1,3 +1,10 @@
+### Upcoming
+
+* Internal cleanup
+* Fix a bug with findCachedAsync where it would throw error if requested file wasn't found (#105)
+* Fix a bug where text editors won't be validated properly for Atom versions < 1.4.0
+* Trim outputs of exec commands
+
 ### 4.4.0
 
 * Highlight the whole first line when no line is given
