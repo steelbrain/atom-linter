@@ -1,4 +1,4 @@
-### Upcoming
+### 4.5.0
 
 * Internal cleanup
 * Fix a bug with findCachedAsync where it would throw error if requested file wasn't found (#105)
