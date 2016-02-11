@@ -3,6 +3,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
+const helpersOfHelpers = require('../src/helpers')
 const helpers = require('../src/index')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
@@ -361,5 +362,42 @@ describe('linter helpers', function () {
         }).then(result => expect(result.length).toBe(2))
       )
     )
+  })
+  describe('validateEditor', function () {
+    it('works if there\'s atom.workspace.isTextEditor', function () {
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(function () {
+          helpersOfHelpers.validateEditor(textEditor)
+        }).not.toThrow()
+        expect(function () {
+          helpersOfHelpers.validateEditor(null)
+        }).toThrow()
+        expect(function () {
+          helpersOfHelpers.validateEditor(false)
+        }).toThrow()
+      })
+    })
+    it('works if there isnt atom.workspace.isTextEditor', function () {
+      waitsForAsync(async function () {
+        const _ = atom.workspace.isTextEditor
+        atom.workspace.isTextEditor = null
+
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(function () {
+          helpersOfHelpers.validateEditor(textEditor)
+        }).not.toThrow()
+        expect(function () {
+          helpersOfHelpers.validateEditor(null)
+        }).toThrow()
+        expect(function () {
+          helpersOfHelpers.validateEditor(false)
+        }).toThrow()
+
+        atom.workspace.isTextEditor = _
+      })
+    })
   })
 })
