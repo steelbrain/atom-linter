@@ -2,6 +2,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
+import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
 const helpers = require('../src/index')
 
 const bothFile = path.join(__dirname, 'fixtures', 'both.js')
@@ -15,128 +16,109 @@ const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 const testContents = fs.readFileSync(testFile).toString()
 
-describe('linter helpers', () => {
-  describe('::exec*', () => {
+describe('linter helpers', function () {
+  describe('::exec*', function () {
     // `cd` with no params prints the current dir on Windows
     const pwdCommand = process.platform !== 'win32' ? 'pwd' : 'cd'
     const catCommand = process.platform !== 'win32' ? 'cat' : 'type'
 
-    it('cries when no argument is passed', () => {
-      expect(() =>
+    it('cries when no argument is passed', function () {
+      expect(function () {
         helpers.exec()
-      ).toThrow()
-      return expect(() =>
+      }).toThrow()
+      expect(function () {
         helpers.execNode()
-      ).toThrow()
+      }).toThrow()
     })
 
-    it('works', () => {
-      waitsForPromise(() =>
-        helpers.execNode(somethingFile).then(data =>
-          expect(data).toBe('STDOUT')
-        )
-      )
-      return waitsForPromise(() =>
-        helpers.exec(catCommand, [testFile]).then((text) =>
-          expect(text).toBe(testContents)
-        )
-      )
+    it('works', function () {
+      waitsForAsync(async function() {
+        return await helpers.execNode(somethingFile)
+      }, 'STDOUT')
+      waitsForAsync(async function() {
+        return await helpers.exec(catCommand, [testFile])
+      }, testContents)
     })
 
-    it('lets you choose streams', () => {
-      waitsForPromise(() =>
-        helpers.execNode(stderrFile, [], { stream: 'stderr' }).then(data =>
-          expect(data).toBe('STDERR')
-        )
-      )
-      waitsForPromise(() =>
-        helpers.exec(catCommand, [testFile], { stream: 'stderr' }).then(text =>
-          expect(text).toBe('')
-        )
-      )
-      return waitsForPromise(() =>
-        helpers.execNode(bothFile, [], { stream: 'both' }).then(data => {
-          expect(data.stdout).toBe('STDOUT')
-          return expect(data.stderr).toBe('STDERR')
-        })
-      )
+    it('lets you choose streams', function () {
+      waitsForAsync(async function () {
+        return await helpers.execNode(stderrFile, [], { stream: 'stderr' })
+      }, 'STDERR')
+      waitsForAsync(async function () {
+        return await helpers.exec(catCommand, [testFile], { stream: 'stderr' })
+      }, '')
+      waitsForAsync(async function () {
+        return await helpers.execNode(bothFile, [], { stream: 'both' })
+      }, { stdout: 'STDOUT', stderr: 'STDERR' })
     })
 
-    it('accepts stdin', () => {
-      waitsForPromise(() =>
-        helpers.execNode(somethingFile, ['input'], {
+    it('accepts stdin', function () {
+      waitsForAsync(async function () {
+        return await helpers.execNode(somethingFile, ['input'], {
           stream: 'stdout',
           stdin: 'Wow'
-        }).then(data =>
-          expect(data).toBe('STDOUTWow')
-        )
-      )
-    })
-
-    it("throws if stderr is written to but wasn't expected", () => {
-      waitsForPromise(() =>
-        helpers.execNode(stderrFile, []).catch(error =>
-          expect(error.message).toBe('STDERR')
-        )
-      )
-
-      return waitsForPromise(() =>
-        helpers.exec(stderrScript, []).catch(error =>
-          expect(error.message.trim()).toBe('STDERR')
-        )
-      )
-    })
-
-    it('shows a nicer error for EACCESS', () =>
-      waitsForPromise(() =>
-        helpers.exec(__dirname).catch(error =>
-          expect(error.message).toContain('not a directory')
-        )
-      )
-    )
-
-    describe('the throwOnStdErr option:', () => {
-      it('throws unexpected error when set to true', () => {
-        let gotError = false
-        return waitsForPromise(() =>
-          helpers.exec(stderrScript, [], {
-            throwOnStdErr: true
-          }).catch(error => {
-            gotError = true
-            return expect(error.message.trim()).toBe('STDERR')
-          }).then(() =>
-            expect(gotError).toBe(true)
-          )
-        )
-      })
-
-      return it('suppresses unexpected errors when set to false', () => {
-        let gotError = false
-        return waitsForPromise(() =>
-          helpers.exec(stderrScript, [], {
-            throwOnStdErr: false
-          }).catch(() =>
-            gotError = true
-          ).then(() =>
-            expect(gotError).toBe(false)
-          )
-        )
-      })
-    })
-
-    return describe('the cwd option', () =>
-      it('works', () =>
-        waitsForPromise(() => {
-          const testDir = path.join(__dirname, 'fixtures')
-          return helpers.exec(pwdCommand, [], { cwd: testDir }).then(result =>
-            expect(result.trim()).toEqual(testDir)
-          )
         })
-      )
-    )
+      }, 'STDOUTWow')
+    })
+
+    it("throws if stderr is written to but wasn't expected", function () {
+      waitsForAsyncRejection(async function () {
+        return await helpers.execNode(stderrFile, [])
+      }, 'STDERR')
+
+      waitsForAsyncRejection(async function () {
+        return await helpers.exec(stderrScript, [])
+      }, 'STDERR\n')
+    })
+
+    it('shows a nicer error for EACCESS', function () {
+      waitsForAsync(async function() {
+        try {
+          await helpers.exec(__dirname)
+        } catch (_) {
+          expect(_.message).toContain('not a directory')
+        }
+      })
+    })
+
+    describe('the throwOnStdErr option:', function () {
+      it('throws unexpected error when set to true', function () {
+        waitsForAsync(async function () {
+          try {
+            await helpers.exec(stderrScript, [], {
+              throwOnStdErr: true
+            })
+            expect(false).toBe(true)
+          } catch (_) {
+            expect(_.message).toBe('STDERR\n')
+          }
+        })
+      })
+
+      it('suppresses unexpected errors when set to false', function () {
+        waitsForAsync(async function () {
+          try {
+            await helpers.exec(stderrScript, [], {
+              throwOnStdErr: false
+            })
+          } catch (_) {
+            expect(false).toBe(true)
+          }
+        })
+      })
+    })
+
+    describe('the cwd option', function () {
+      it('works', function () {
+        const testDir = path.join(__dirname, 'fixtures')
+        waitsForAsync(async function () {
+          return (await helpers.exec(pwdCommand, [], { cwd: testDir })).trim()
+        }, testDir)
+      })
+    })
   })
 
-  describe('::rangeFromLineNumber', () => {
+  describe('::rangeFromLineNumber', function () {
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
         helpers.rangeFromLineNumber()
@@ -144,94 +126,87 @@ describe('linter helpers', () => {
     )
 
     it('returns a range pointing at file start if no or invalid line is provided', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
-          expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
-          return expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
+      })
     )
 
     it('ignores an invalid starting column', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
-          return expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
+      })
     )
 
     it('returns a range (array) with some valid points', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          const range = helpers.rangeFromLineNumber(textEditor, 7)
-          expect(range instanceof Array).toBe(true)
-          expect(range[0] instanceof Array).toBe(true)
-          expect(range[1] instanceof Array).toBe(true)
-          expect(range[0][0]).toEqual(7)
-          expect(range[0][1]).toEqual(0)
-          expect(range[1][0]).toEqual(7)
-          return expect(range[1][1]).toEqual(43)
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        const range = helpers.rangeFromLineNumber(textEditor, 7)
+        expect(range instanceof Array).toBe(true)
+        expect(range[0] instanceof Array).toBe(true)
+        expect(range[1] instanceof Array).toBe(true)
+        expect(range[0][0]).toEqual(7)
+        expect(range[0][1]).toEqual(0)
+        expect(range[1][0]).toEqual(7)
+        expect(range[1][1]).toEqual(43)
+      })
     )
 
     it('returns a range (array) with some valid points and provided colStart', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          const range = helpers.rangeFromLineNumber(textEditor, 7, 4)
-          expect(range instanceof Array).toBe(true)
-          expect(range[0] instanceof Array).toBe(true)
-          expect(range[1] instanceof Array).toBe(true)
-          expect(range[0][0]).toEqual(7)
-          expect(range[0][1]).toEqual(4)
-          expect(range[1][0]).toEqual(7)
-          return expect(range[1][1]).toEqual(43)
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        const range = helpers.rangeFromLineNumber(textEditor, 7, 4)
+        expect(range instanceof Array).toBe(true)
+        expect(range[0] instanceof Array).toBe(true)
+        expect(range[1] instanceof Array).toBe(true)
+        expect(range[0][0]).toEqual(7)
+        expect(range[0][1]).toEqual(4)
+        expect(range[1][0]).toEqual(7)
+        expect(range[1][1]).toEqual(43)
+      })
     )
 
     it('cries when colStart is greater than line length', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          return expect(() =>
-            helpers.rangeFromLineNumber(textEditor, 7, 50)
-          ).toThrow()
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        return expect(() =>
+          helpers.rangeFromLineNumber(textEditor, 7, 50)
+        ).toThrow()
+      })
     )
 
     it('cries when lineNumber is greater than the maximum line', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(somethingFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          return expect(() =>
-            helpers.rangeFromLineNumber(textEditor, 11)
-          ).toThrow()
-        })
-      )
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        return expect(() =>
+          helpers.rangeFromLineNumber(textEditor, 11)
+        ).toThrow()
+      })
     )
 
-    return it('handles files with mixed intentation', () =>
-      waitsForPromise(() =>
-        atom.workspace.open(mixedIndentFile).then(() => {
-          const textEditor = atom.workspace.getActiveTextEditor()
-          expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])
-          expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])
-          expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])
-          return expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
-        })
-      )
+    it('handles files with mixed intentation', () =>
+      waitsForAsync(async function () {
+        await atom.workspace.open(mixedIndentFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])
+        expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])
+        return expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
+      })
     )
   })
 
-  describe('::parse', () => {
+  describe('::parse', function () {
     it('cries when no argument is passed', () =>
       expect(() => helpers.parse()).toThrow()
     )
@@ -240,7 +215,7 @@ describe('linter helpers', () => {
       expect(() => helpers.parse([], '')).toThrow()
     )
 
-    return it('works', () => {
+    it('works', function () {
       let regex = 'type:(?<type>.+) message:(?<message>.+)'
       let input = 'TYPE:type message:message'
       let output = [
@@ -265,155 +240,112 @@ describe('linter helpers', () => {
         }
       ]
       results = helpers.parse(input, regex, { flags: 'gi' })
-      return expect(results).toEqual(output)
+      expect(results).toEqual(output)
     })
   })
 
-  describe('::find', () => {
+  describe('::find', function () {
     it('cries when no argument is passed', () =>
       expect(() => helpers.find()).toThrow()
     )
 
-    it('works', () => {
+    it('works', function () {
       expect(helpers.find(__dirname, 'package.json')).
         toBe(packageJsonPath)
-      return expect(helpers.findCached(__dirname, 'package.json')).
+      expect(helpers.findCached(__dirname, 'package.json')).
         toBe(packageJsonPath)
     })
 
-    return it('returns null if no file is found', () => {
+    it('returns null if no file is found', function () {
       expect(helpers.find('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
-      return expect(helpers.findCached('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
+      expect(helpers.findCached('/a/path/that/does/not/exist', '.gitignore')).toBe(null)
     })
   })
 
-  describe('::findAsync', () => {
+  describe('::findAsync', function () {
     it('cries when no argument is passed', () =>
-      waitsForPromise(function () {
-        return helpers.findAsync().then(function () {
-          expect(false).toBe(true)
-        }, function (error) {
-          expect(error).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        return await helpers.findAsync()
       })
     )
 
-    it('works', () => {
-      waitsForPromise(() =>
-        helpers.findAsync(__dirname, 'package.json').then(foundPath =>
-          expect(foundPath).toBe(packageJsonPath)
-        )
-      )
-      return waitsForPromise(() =>
-        helpers.findCachedAsync(__dirname, 'package.json').then(foundPath =>
-          expect(foundPath).toBe(packageJsonPath)
-        )
-      )
+    it('works', function () {
+      waitsForAsync(async function () {
+        return await helpers.findAsync(__dirname, 'package.json')
+      }, packageJsonPath)
+      waitsForAsync(async function () {
+        return await helpers.findCachedAsync(__dirname, 'package.json')
+      }, packageJsonPath)
     })
 
-    return it('returns null if no file is found', () => {
-      waitsForPromise(() =>
-        helpers.findCachedAsync(__dirname, '.ucompilerrc').then(foundPath =>
-          expect(foundPath).toBe(null)
-        )
-      )
-      return waitsForPromise(() =>
-        helpers.findAsync(__dirname, '.ucompilerrc').then(foundPath =>
-          expect(foundPath).toBe(null)
-        )
-      )
+    it('returns null if no file is found', function () {
+      waitsForAsync(async function () {
+        return await helpers.findAsync(__dirname, '.ucompilerrc')
+      }, null)
+      waitsForAsync(async function () {
+        return await helpers.findCachedAsync(__dirname, '.ucompilerrc')
+      }, null)
     })
   })
 
-  describe('::tempFile', () => {
-    it('cries when arguments are invalid', () => {
+  describe('::tempFile', function () {
+    it('cries when arguments are invalid', function () {
       expect(() => helpers.tempFile()).toThrow()
       expect(() => helpers.tempFile(null, null, null)).toThrow()
       expect(() => helpers.tempFile('', null, null)).toThrow()
       expect(() => helpers.tempFile('', '', null)).toThrow()
-      return expect(() => helpers.tempFile('', '', '')).toThrow()
+      expect(() => helpers.tempFile('', '', '')).toThrow()
     })
 
-    return it('works and accepts a callback and returns a promise and its promise' +
+    it('works and accepts a callback and returns a promise and its promise' +
       ' value is that returned by the callback', () =>
-      waitsForPromise(() =>
-        helpers.tempFile('somefile.js', 'Hey There', filepath => {
+      waitsForAsync(async () =>
+        await helpers.tempFile('somefile.js', 'Hey There', filepath => {
           expect(filepath.indexOf('atom-linter_')).not.toBe(-1)
           expect(path.basename(filepath)).toBe('somefile.js')
           expect(fs.existsSync(filepath)).toBe(true)
           expect(fs.readFileSync(filepath).toString()).toBe('Hey There')
           return 1
-        }).then(result => expect(result).toBe(1))
-      )
+        })
+      , 1)
     )
   })
 
-  return describe('::tempFiles', () => {
-    it('cries when arguments are invalid', () => {
-      waitsForPromise(function () {
-        return helpers.tempFiles().then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+  describe('::tempFiles', function () {
+    it('cries when arguments are invalid', function () {
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles()
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles(null, null).then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles(null, null)
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles('', null).then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles('', null)
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles('', '').then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles('', '')
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles(null, '').then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles(null, '')
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles([], '').then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles([], '')
       })
-      waitsForPromise(function () {
-        return helpers.tempFiles([], null).then(function () {
-          expect(false).toBe(true)
-        }, function (e) {
-          expect(e).toBeDefined()
-        })
+      waitsForAsyncRejection(async function () {
+        await helpers.tempFiles([], null)
       })
-      // testimony that it works
-      waitsForPromise(function () {
-        return helpers.tempFiles([], function (files) {
+      waitsForAsync(async function () {
+        return await helpers.tempFiles([], function (files) {
           expect(files).toEqual([])
           return 50
-        }).then(function (result) {
-          expect(result).toEqual(50)
         })
-      })
+      }, 50)
     })
 
-    return it('works and accepts a callback and returns a promise and its promise ' +
+    it('works and accepts a callback and returns a promise and its promise ' +
       'value is that returned by the callback', () =>
-      waitsForPromise(() =>
-        helpers.tempFiles([
+      waitsForAsync(async () =>
+        await helpers.tempFiles([
           { name: 'foo.js', contents: 'Foo!' },
           { name: 'bar.js', contents: 'Bar!' }
         ], filepaths => {
