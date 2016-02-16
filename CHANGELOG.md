@@ -1,137 +1,206 @@
-### 4.5.0
+# Changelog
 
-* Internal cleanup
-* Fix a bug with findCachedAsync where it would throw error if requested file wasn't found (#105)
-* Fix a bug where text editors won't be validated properly for Atom versions < 1.4.0
-* Trim outputs of exec commands
+## 4.5.0
 
-### 4.4.0
+*   Internal cleanup
 
-* Highlight the whole first line when no line is given
+*   Fix a bug with findCachedAsync where it would throw error if requested file
+    wasn't found (#105)
 
-### 4.3.4
+*   Fix a bug where text editors won't be validated properly for Atom
+    versions < 1.4.0
 
-* Do not add `g` flag to regex if it already exists
+*   Trim outputs of exec commands
 
-### 4.3.3
+## 4.4.0
 
-* Switch to `named-js-regexp` instead of `xregexp` for `parse` method
+*   Highlight the whole first line when no line is given
 
-### 4.3.2
+## 4.3.4
 
-* Fix a bug where linter execution modifies `process.env`
+*   Do not add `g` flag to regex if it already exists
 
-### 4.3.1
+## 4.3.3
 
-* Remove `createElement` helper, reason is nobody was using it (according to GitHub code search)
-* Upgrade `consistent-path` version to include fix for critical typo
+*   Switch to `named-js-regexp` instead of `xregexp` for `parse` method
 
-### 4.3.0
+## 4.3.2
 
-* Add `tempFiles` helper
+*   Fix a bug where linter execution modifies `process.env`
 
-### 4.2.0
+## 4.3.1
 
-* Use `consistent-path` package to determine `$PATH` correctly on OSX
+*   Remove `createElement` helper, reason is nobody was using it (according to
+    GitHub code search)
 
-### 4.1.1
+*   Upgrade `consistent-path` version to include fix for critical typo
 
-* Export `FindCache`, now you can do `Helper.FindCache.clear()` to clear find cache
+## 4.3.0
 
-### 4.1.0
+*   Add `tempFiles` helper
 
-* Add `findCachedAsync` hepler
-* Add `findCached` helper
+## 4.2.0
 
-### 4.0.1
+*   Use `consistent-path` package to determine `$PATH` correctly on OSX
 
-* Upgrade dependencies
+## 4.1.1
 
-### 4.0.0
+*   Export `FindCache`, now you can do `Helper.FindCache.clear()` to clear find
+    cache
 
-* Use ES6 exports instead of commonjs
-* Remove `Helpers.findFile$` in favor of `Helpers.find$`
-* Use XRegExp.forEach instead of splitting given input by lines and applying regex over each line (mostly backward compatible, but no guarantee)
+## 4.1.0
 
-### 3.4.1
+*   Add `findCachedAsync` hepler
+*   Add `findCached` helper
 
-* Revert ES6 exports to use commonjs again (broke compatibility with babel packages)
-* Rename `Helpers.findFile$` to `Helpers.find$` (also exported with previous names for backward compatibility)
-* Fix a non-critical bug in `Helpers.find$` where it won't search in drive root
+## 4.0.1
 
-### 3.4.0
+*   Upgrade dependencies
 
-* Add `Helpers.findFileAsync`
-* Add dist files for inclusion in non-babel envs
+## 4.0.0
 
-### 3.3.9
+*   Use ES6 exports instead of commonjs
 
-* Revert the changes in 3.3.2, `Range()`'s end point is exclusive, not inclusive.
+*   Remove `Helpers.findFile$` in favor of `Helpers.find$`
 
-### 3.3.8
+*   Use XRegExp.forEach instead of splitting given input by lines and applying
+    regex over each line (mostly backward compatible, but no guarantee)
 
-* Fix `rangeFromLineNumber` on files with mixed indentation
+## 3.4.1
 
-### 3.3.7
+*   Revert ES6 exports to use commonjs again (broke compatibility with babel
+    packages)
 
-* Force lineNumber in `rangeFromLineNumber` to be within buffer range
+*   Rename `Helpers.findFile$` to `Helpers.find$` (also exported with previous
+    names for backward compatibility)
 
-### 3.3.6
+*   Fix a non-critical bug in `Helpers.find$` where it won't search in drive
+    root
 
-* Handle column start in `rangeFromLineNumber`, when it is greater than line length
-* Handle negative column start values and invalid line numbers
+## 3.4.0
 
-### 3.3.5
+*   Add `Helpers.findFileAsync`
+*   Add dist files for inclusion in non-babel envs
 
-* Add `Helpers.createElement`
+## 3.3.9
 
-### 3.3.4
+*   Revert the changes in 3.3.2, `Range()`'s end point is exclusive, not
+    inclusive.
 
-* Handle invalid `lineNumber` and return a valid range
+## 3.3.8
 
-### 3.3.3
+*   Fix `rangeFromLineNumber` on files with mixed indentation
 
-* Fix an API deprecation with TextEditor
+## 3.3.7
 
-### 3.3.2
+*   Force lineNumber in `rangeFromLineNumber` to be within buffer range
 
-* Fix a bug in `Helpers.rangeFromLineNumber`
+## 3.3.6
 
-### 3.3.1
+*   Handle column start in `rangeFromLineNumber`, when it is greater than line
+    length
 
-* Future proof a check
+*   Handle negative column start values and invalid line numbers
 
-### 3.3.0
+## 3.3.5
 
-* Add `flags` option to `parse` method
+*   Add `Helpers.createElement`
 
-### 3.2.2
+## 3.3.4
 
-* Show a nicer message for `EACCES` errors
+*   Handle invalid `lineNumber` and return a valid range
 
-### 3.2.1
+## 3.3.3
 
-* Couple of fixes for `findFile`
-* Correct npm `test` script
+*   Fix an API deprecation with TextEditor
 
-### 3.2.0
-* Add support for third-argument to `rangeFromLineNumber`
+## 3.3.2
 
-### 3.1.3
-* Fixed an undefined variable reference
+*   Fix a bug in `Helpers.rangeFromLineNumber`
 
-### 3.1.3
-* Added `tempFile` method
+## 3.3.1
 
-### 3.1.2
-* Added support for `both` streams
-* Added a changelog
+*   Future proof a check
 
-### Upto 3.1.1
+## 3.3.0
 
-* Support for {stdout, stderr} streams
-* `exec` method
-* `execNode` method
-* `rangeFromLineNumber` method
-* `parse` method
-* `findFile` method
+*   Add `flags` option to `parse` method
+
+## 3.2.2
+
+*   Show a nicer message for `EACCES` errors
+
+## 3.2.1
+
+*   Couple of fixes for `findFile`
+*   Correct npm `test` script
+
+## 3.2.0
+
+*   Add support for third-argument to `rangeFromLineNumber`
+
+## 3.1.4
+
+*   Fixed an undefined variable reference
+
+## 3.1.3
+
+*   Added `tempFile` method
+
+## 3.1.2
+
+*   Added support for `both` streams
+
+## 3.1.1
+
+*   Pass the options on to `BufferedProcess`
+
+## 3.1.0
+
+*   Add `rangeFromLineNumber(textEditor, lineNumber)`
+
+## 3.0.1
+
+*   Reject with an Error, instead of a string if `stderr` encountered
+    unexpectedly
+
+## 3.0.0
+
+*   Throw an error if something is seen on `stderr` when `throwOnStdErr` is true
+
+## 2.0.5
+
+*   Add `options.throwOnStdErr` to the `exec()` options, defaulting to false
+
+## 2.0.4
+
+*   Remove `OS` key properly on all platforms
+
+## 2.0.3
+
+*   Remove `OS` key from the environment
+
+## 2.0.2
+
+*   Use Atom's `BufferedProcess` instead of `child_process`
+*   Throw an error if output is seen on `stderr`, unless stream is `stderr`
+
+## 2.0.1
+
+*   Copy Atom's environment to the spawned process
+
+## 2.0.0
+
+*   `execFilePath()` replaced by `execNode()`
+
+## 1.0.3
+
+*   Verify the data passed to `parse()` is a string
+
+## 1.0.2
+
+*   Add `findFile(startDir, names)`
+
+## 1.0.1
+
+*   Initial release
