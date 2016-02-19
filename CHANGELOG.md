@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.1
+
+*   Fix for runtimes which don't have the `atom` module
+
 ## 4.5.0
 
 *   Internal cleanup
