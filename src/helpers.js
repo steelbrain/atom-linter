@@ -6,9 +6,20 @@ import FS from 'fs'
 import Temp from 'tmp'
 import promisify from 'sb-promisify'
 import { getPath } from 'consistent-path'
-import { BufferedProcess, BufferedNodeProcess } from 'atom'
 import type { TextEditor } from 'atom'
 import type { TempDirectory, ExecResult, ExecOptions } from './types'
+
+let BufferedProcess
+let BufferedNodeProcess
+try {
+  const Atom = require('atom')
+  BufferedProcess = Atom.BufferedProcess
+  BufferedNodeProcess = Atom.BufferedNodeProcess
+} catch (_) {
+  BufferedNodeProcess = BufferedProcess = function () {
+    throw new Error('Process execution is not available')
+  }
+}
 
 const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 export const writeFile = promisify(FS.writeFile)
