@@ -54,7 +54,7 @@
 
 ## 4.1.0
 
-*   Add `findCachedAsync` hepler
+*   Add `findCachedAsync` helper
 *   Add `findCached` helper
 
 ## 4.0.1
