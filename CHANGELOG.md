@@ -1,5 +1,9 @@
 # Changelog
 
+## Upcoming
+
+*   Use `consistent-env` instead of `consistent-path`
+
 ## 4.5.1
 
 *   Fix for runtimes which don't have the `atom` module
