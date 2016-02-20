@@ -5,7 +5,7 @@
 import FS from 'fs'
 import Temp from 'tmp'
 import promisify from 'sb-promisify'
-import { getPath } from 'consistent-path'
+import consistentEnv from 'consistent-env'
 import type { TextEditor } from 'atom'
 import type { TempDirectory, ExecResult, ExecOptions } from './types'
 
@@ -89,15 +89,15 @@ export function exec(
   isNode: boolean
 ): Promise<ExecResult> {
   const options: ExecOptions = assign({
-    env: assign({}, process.env),
+    env: {},
     stream: 'stdout',
     throwOnStdErr: true
   }, opts)
 
+  options.env = Object.assign(consistentEnv(), options.env)
   if (isNode && options.env) {
     delete options.env.OS
   }
-  assign(options.env, { PATH: getPath() })
 
   return new Promise(function (resolve, reject) {
     const data = { stdout: [], stderr: [] }
