@@ -95,7 +95,7 @@ export function exec(
   }, opts)
 
   options.env = assign(consistentEnv(), options.env)
-  if (isNode && options.env) {
+  if (isNode && options.env.OS) {
     delete options.env.OS
   }
 
