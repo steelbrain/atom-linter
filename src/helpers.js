@@ -82,7 +82,7 @@ export function validateFind(directory: string, name: string | Array<string>) {
   }
 }
 
-export function exec(
+export async function exec(
   command: string,
   args: Array<string>,
   opts: ExecOptions,
@@ -94,12 +94,12 @@ export function exec(
     throwOnStdErr: true
   }, opts)
 
-  options.env = assign(consistentEnv(), options.env)
+  options.env = assign(await consistentEnv.async(), options.env)
   if (isNode && options.env.OS) {
     delete options.env.OS
   }
 
-  return new Promise(function (resolve, reject) {
+  return await new Promise(function (resolve, reject) {
     const data = { stdout: [], stderr: [] }
     const handleError = function (error) {
       if (error && error.code === 'EACCES' ||
