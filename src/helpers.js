@@ -89,12 +89,11 @@ export async function exec(
   isNode: boolean
 ): Promise<ExecResult> {
   const options: ExecOptions = assign({
-    env: {},
+    env: await consistentEnv.async(),
     stream: 'stdout',
     throwOnStdErr: true
   }, opts)
 
-  options.env = assign(await consistentEnv.async(), options.env)
   if (isNode && options.env.OS) {
     delete options.env.OS
   }
