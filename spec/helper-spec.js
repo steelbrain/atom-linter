@@ -94,6 +94,15 @@ describe('linter helpers', function () {
           }
         })
       })
+      it('has no timeout if Infinity is specified', function () {
+        waitsForAsync(async function () {
+          try {
+            await helpers.execNode(timeoutScript, [], { timeout: Infinity })
+          } catch (_) {
+            expect(false).toBe(true)
+          }
+        })
+      })
     })
 
     describe('the throwOnStdErr option:', function () {
