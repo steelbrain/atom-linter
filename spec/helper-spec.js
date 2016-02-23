@@ -83,9 +83,9 @@ describe('linter helpers', function () {
       })
     })
 
-    describe('the timeout option:', function() {
-      it('times the process out after certain time', function() {
-        waitsForAsync(async function() {
+    describe('the timeout option:', function () {
+      it('times the process out after certain time', function () {
+        waitsForAsync(async function () {
           try {
             await helpers.execNode(timeoutScript)
             expect(false).toBe(true)

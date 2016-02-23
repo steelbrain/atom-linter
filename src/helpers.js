@@ -149,15 +149,15 @@ export async function exec(
     if (options.stdin) {
       try {
         spawnedProcess.process.stdin.write(options.stdin.toString())
-      } catch (_) { }
+      } catch (_) { /* No Op */ }
     }
     try {
       spawnedProcess.process.stdin.end()
-    } catch (_) {}
-    timeout = setTimeout(function() {
+    } catch (_) { /* No Op */ }
+    timeout = setTimeout(function () {
       try {
         spawnedProcess.kill()
-      } catch (_) { }
+      } catch (_) { /* No Op */ }
       reject(new Error('Process execution timed out'))
     }, options.timeout)
   })
