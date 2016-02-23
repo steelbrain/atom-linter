@@ -92,7 +92,7 @@ export async function exec(
     env: await consistentEnv.async(),
     stream: 'stdout',
     throwOnStdErr: true,
-    timeout: 10000 // ten seconds
+    timeout: 10000 // Ten seconds in ms
   }, opts)
   let timeout
 
