@@ -154,11 +154,13 @@ export async function exec(
     try {
       spawnedProcess.process.stdin.end()
     } catch (_) { /* No Op */ }
-    timeout = setTimeout(function () {
-      try {
-        spawnedProcess.kill()
-      } catch (_) { /* No Op */ }
-      reject(new Error('Process execution timed out'))
-    }, options.timeout)
+    if (options.timeout !== Infinity) {
+      timeout = setTimeout(function () {
+        try {
+          spawnedProcess.kill()
+        } catch (_) { /* No Op */ }
+        reject(new Error('Process execution timed out'))
+      }, options.timeout)
+    }
   })
 }
