@@ -87,7 +87,7 @@ describe('linter helpers', function () {
       it('times the process out after certain time', function () {
         waitsForAsync(async function () {
           try {
-            await helpers.execNode(timeoutScript)
+            await helpers.execNode(timeoutScript, [], { timeout: 1000 })
             expect(false).toBe(true)
           } catch (_) {
             expect(_.message).toContain('timed out')
