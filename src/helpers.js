@@ -5,7 +5,7 @@
 import FS from 'fs'
 import Temp from 'tmp'
 import promisify from 'sb-promisify'
-import { getPath } from 'consistent-path'
+import consistentEnv from 'consistent-env'
 import type { TextEditor } from 'atom'
 import type { TempDirectory, ExecResult, ExecOptions } from './types'
 
@@ -82,24 +82,23 @@ export function validateFind(directory: string, name: string | Array<string>) {
   }
 }
 
-export function exec(
+export async function exec(
   command: string,
   args: Array<string>,
   opts: ExecOptions,
   isNode: boolean
 ): Promise<ExecResult> {
   const options: ExecOptions = assign({
-    env: assign({}, process.env),
+    env: await consistentEnv.async(),
     stream: 'stdout',
     throwOnStdErr: true
   }, opts)
 
-  if (isNode && options.env) {
+  if (isNode && options.env.OS) {
     delete options.env.OS
   }
-  assign(options.env, { PATH: getPath() })
 
-  return new Promise(function (resolve, reject) {
+  return await new Promise(function (resolve, reject) {
     const data = { stdout: [], stderr: [] }
     const handleError = function (error) {
       if (error && error.code === 'EACCES' ||
