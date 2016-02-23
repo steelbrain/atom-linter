@@ -105,7 +105,7 @@ export async function exec(
         (error && error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)
       ) {
         const newError = new Error(`Failed to spawn command '${command}'.` +
-          ` Make sure it's a file, not a directory, and it's executable.`)
+          ' Make sure it\'s a file, not a directory, and it\'s executable.')
         newError.name = 'BufferedProcessError'
         reject(newError)
       }
