@@ -10,8 +10,8 @@ and make things easier for yourself.
 enum stream = {stdout, stderr, both}
 export const FindCache: Map
 class Helpers{
-  static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
-  static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout'})
+  static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout', timeout: 10000 | Infinity})
+  static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout', timeout: 10000 | Infinity})
   static parse(data: String, regex: String, options: Object = {baseReduction: 1, flags: ""})
   static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number, colStart: Number = <firstColumn>):Array
   static find(directory:String, names: String | Array<string>): ?String

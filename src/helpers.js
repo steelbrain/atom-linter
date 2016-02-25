@@ -91,8 +91,10 @@ export async function exec(
   const options: ExecOptions = assign({
     env: await consistentEnv.async(),
     stream: 'stdout',
-    throwOnStdErr: true
+    throwOnStdErr: true,
+    timeout: 10000 // Ten seconds in ms
   }, opts)
+  let timeout
 
   if (isNode && options.env.OS) {
     delete options.env.OS
@@ -122,6 +124,7 @@ export async function exec(
         data.stderr.push(chunk)
       },
       exit() {
+        clearTimeout(timeout)
         if (options.stream === 'stdout') {
           if (data.stderr.length && options.throwOnStdErr) {
             handleError(new Error(data.stderr.join('').trim()))
@@ -146,10 +149,18 @@ export async function exec(
     if (options.stdin) {
       try {
         spawnedProcess.process.stdin.write(options.stdin.toString())
-        spawnedProcess.process.stdin.end()
-      } catch (_) {
-        // Do nothing
-      }
+      } catch (_) { /* No Op */ }
+    }
+    try {
+      spawnedProcess.process.stdin.end()
+    } catch (_) { /* No Op */ }
+    if (options.timeout !== Infinity) {
+      timeout = setTimeout(function () {
+        try {
+          spawnedProcess.kill()
+        } catch (_) { /* No Op */ }
+        reject(new Error('Process execution timed out'))
+      }, options.timeout)
     }
   })
 }

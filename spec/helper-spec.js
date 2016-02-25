@@ -10,6 +10,7 @@ const bothFile = path.join(__dirname, 'fixtures', 'both.js')
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const stderrFile = path.join(__dirname, 'fixtures', 'stderr.js')
+const timeoutScript = path.join(__dirname, 'fixtures', 'timeout.js')
 const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
   (process.platform !== 'win32' ? '.sh' : '.bat')
 const testFile = path.join(__dirname, 'fixtures', 'test.txt')
@@ -79,6 +80,28 @@ describe('linter helpers', function () {
         } catch (_) {
           expect(_.message).toContain('not a directory')
         }
+      })
+    })
+
+    describe('the timeout option:', function () {
+      it('times the process out after certain time', function () {
+        waitsForAsync(async function () {
+          try {
+            await helpers.execNode(timeoutScript, [], { timeout: 1000 })
+            expect(false).toBe(true)
+          } catch (_) {
+            expect(_.message).toContain('timed out')
+          }
+        })
+      })
+      it('has no timeout if Infinity is specified', function () {
+        waitsForAsync(async function () {
+          try {
+            await helpers.execNode(timeoutScript, [], { timeout: Infinity })
+          } catch (_) {
+            expect(false).toBe(true)
+          }
+        })
       })
     })
 
