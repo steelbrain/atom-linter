@@ -9,18 +9,6 @@ import consistentEnv from 'consistent-env'
 import type { TextEditor } from 'atom'
 import type { TempDirectory, ExecResult, ExecOptions } from './types'
 
-let BufferedProcess
-let BufferedNodeProcess
-try {
-  const Atom = require('atom')
-  BufferedProcess = Atom.BufferedProcess
-  BufferedNodeProcess = Atom.BufferedNodeProcess
-} catch (_) {
-  BufferedNodeProcess = BufferedProcess = function () {
-    throw new Error('Process execution is not available')
-  }
-}
-
 const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 export const writeFile = promisify(FS.writeFile)
 export const unlinkFile = promisify(FS.unlink)
@@ -80,87 +68,4 @@ export function validateFind(directory: string, name: string | Array<string>) {
   } else if (typeof name !== 'string' && !(name instanceof Array)) {
     throw new Error('Invalid or no `name` provided')
   }
-}
-
-export async function exec(
-  command: string,
-  args: Array<string>,
-  opts: ExecOptions,
-  isNode: boolean
-): Promise<ExecResult> {
-  const options: ExecOptions = assign({
-    env: await consistentEnv.async(),
-    stream: 'stdout',
-    throwOnStdErr: true,
-    timeout: 10000 // Ten seconds in ms
-  }, opts)
-  let timeout
-
-  if (isNode && options.env.OS) {
-    delete options.env.OS
-  }
-
-  return await new Promise(function (resolve, reject) {
-    const data = { stdout: [], stderr: [] }
-    const handleError = function (error) {
-      if (error && error.code === 'EACCES' ||
-        (error && error.message && error.message.indexOf(COMMAND_NOT_RECOGNIZED_MESSAGE) !== -1)
-      ) {
-        const newError = new Error(`Failed to spawn command '${command}'.` +
-          ' Make sure it\'s a file, not a directory, and it\'s executable.')
-        newError.name = 'BufferedProcessError'
-        reject(newError)
-      }
-      reject(error)
-    }
-    const parameters = {
-      command,
-      args,
-      options,
-      stdout(chunk) {
-        data.stdout.push(chunk)
-      },
-      stderr(chunk) {
-        data.stderr.push(chunk)
-      },
-      exit() {
-        clearTimeout(timeout)
-        if (options.stream === 'stdout') {
-          if (data.stderr.length && options.throwOnStdErr) {
-            handleError(new Error(data.stderr.join('').trim()))
-          } else {
-            resolve(data.stdout.join('').trim())
-          }
-        } else if (options.stream === 'stderr') {
-          resolve(data.stderr.join('').trim())
-        } else {
-          resolve({ stdout: data.stdout.join('').trim(), stderr: data.stderr.join('').trim() })
-        }
-      }
-    }
-    const spawnedProcess = isNode ?
-      new BufferedNodeProcess(parameters) :
-      new BufferedProcess(parameters)
-
-    spawnedProcess.onWillThrowError(function ({ error }) {
-      handleError(error)
-    })
-
-    if (options.stdin) {
-      try {
-        spawnedProcess.process.stdin.write(options.stdin.toString())
-      } catch (_) { /* No Op */ }
-    }
-    try {
-      spawnedProcess.process.stdin.end()
-    } catch (_) { /* No Op */ }
-    if (options.timeout !== Infinity) {
-      timeout = setTimeout(function () {
-        try {
-          spawnedProcess.kill()
-        } catch (_) { /* No Op */ }
-        reject(new Error('Process execution timed out'))
-      }, options.timeout)
-    }
-  })
 }

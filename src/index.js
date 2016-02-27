@@ -11,24 +11,6 @@ import type { TempFiles, ExecOptions, ExecResult } from './types'
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function exec(
-  command: string,
-  args: Array<string> = [],
-  options: ExecOptions = {}
-): Promise<ExecResult> {
-  Helpers.validateExec(command, args, options)
-  return Helpers.exec(command, args, options, false)
-}
-
-export function execNode(
-  command: string,
-  args: Array<string> = [],
-  options: ExecOptions = {}
-): Promise<ExecResult> {
-  Helpers.validateExec(command, args, options)
-  return Helpers.exec(command, args, options, true)
-}
-
 export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: number): Range {
   Helpers.validateEditor(textEditor)
   let lineNumber = line
@@ -262,3 +244,5 @@ export function parse(data, regex, opts = {}) {
 
   return messages
 }
+
+export { exec, execNode } from 'sb-exec'
