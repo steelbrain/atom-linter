@@ -6,12 +6,13 @@ and make things easier for yourself.
 
 #### API
 
+For proper API docs of `exec` and `execNode`, please goto [`sb-exec README`](https://github.com/steelbrain/exec/blob/master/README.md)
+
 ```js
-enum stream = {stdout, stderr, both}
 export const FindCache: Map
 class Helpers{
-  static exec(command: String, args: Array<string> = [], options: Object = {stream: 'stdout', timeout: 10000 | Infinity})
-  static execNode(filePath: String, args: Array<string> = [], options: Object = {stream: 'stdout', timeout: 10000 | Infinity})
+  static exec(command: String, args: Array<string> = [], options: Object)
+  static execNode(filePath: String, args: Array<string> = [], options: Object)
   static parse(data: String, regex: String, options: Object = {baseReduction: 1, flags: ""})
   static rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number, colStart: Number = <firstColumn>):Array
   static find(directory:String, names: String | Array<string>): ?String
