@@ -6,20 +6,11 @@ import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
 const helpersOfHelpers = require('../src/helpers')
 const helpers = require('../src/index')
 
-const bothFile = path.join(__dirname, 'fixtures', 'both.js')
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
-const stderrFile = path.join(__dirname, 'fixtures', 'stderr.js')
-const timeoutScript = path.join(__dirname, 'fixtures', 'timeout.js')
-const stderrScript = path.join(__dirname, 'fixtures', 'stderr') +
-  (process.platform !== 'win32' ? '.sh' : '.bat')
-const testFile = path.join(__dirname, 'fixtures', 'test.txt')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
-const testContents = fs.readFileSync(testFile).toString().trim()
-
 describe('linter helpers', function () {
-
   describe('::rangeFromLineNumber', function () {
     it('cries when invalid textEditor is passed', () =>
       expect(() =>

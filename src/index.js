@@ -6,7 +6,7 @@ import * as Path from 'path'
 import * as FS from 'fs'
 import * as Helpers from './helpers'
 import type { TextEditor, Range } from 'atom'
-import type { TempFiles, ExecOptions, ExecResult } from './types'
+import type { TempFiles } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()

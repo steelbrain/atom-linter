@@ -5,11 +5,9 @@
 import FS from 'fs'
 import Temp from 'tmp'
 import promisify from 'sb-promisify'
-import consistentEnv from 'consistent-env'
 import type { TextEditor } from 'atom'
-import type { TempDirectory, ExecResult, ExecOptions } from './types'
+import type { TempDirectory } from './types'
 
-const COMMAND_NOT_RECOGNIZED_MESSAGE = 'is not recognized as an internal or external command'
 export const writeFile = promisify(FS.writeFile)
 export const unlinkFile = promisify(FS.unlink)
 export const assign = Object.assign || function (target, source) {

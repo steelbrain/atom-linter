@@ -1,1 +1,0 @@
-process.stderr.write('STDERR')
