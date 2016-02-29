@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## 4.6.0
 
 *   Add `timeout` option to exec, with a default value of 10 seconds
 *   Use `consistent-env` instead of `consistent-path`
