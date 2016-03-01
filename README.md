@@ -6,7 +6,7 @@ and make things easier for yourself.
 
 #### API
 
-For proper API docs of `exec` and `execNode`, please goto [`sb-exec README`](https://github.com/steelbrain/exec/blob/master/README.md)
+For full documentation of `exec` and `execNode` API, please refer to [`sb-exec README`](https://github.com/steelbrain/exec/blob/master/README.md)
 
 ```js
 export const FindCache: Map
