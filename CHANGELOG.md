@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.6.1
+
+*  Republish because of an unknown deployment issue
+
 ## 4.6.0
 
 *   Add `timeout` option to exec, with a default value of 10 seconds
