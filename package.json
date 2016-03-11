@@ -29,7 +29,7 @@
     "tmp": "~0.0.28"
   },
   "devDependencies": {
-    "eslint": "^2.2.0",
+    "eslint": "^2.3.0",
     "babel-eslint": "^5.0.0",
     "eslint-config-airbnb": "^6.0.2",
     "ucompiler": "^3.0.1",
