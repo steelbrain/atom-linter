@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "eslint": "^2.2.0",
-    "babel-eslint": "^5.0.0",
+    "babel-eslint": "6.0.0-beta.6",
     "eslint-config-airbnb": "^6.0.2",
     "ucompiler": "^3.0.1",
     "ucompiler-plugin-babel": "^3.0.0",
