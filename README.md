@@ -10,16 +10,16 @@ For full documentation of `exec` and `execNode` API, please refer to [`sb-exec R
 
 ```js
 export const FindCache: Map
-export function exec(command: String, args: Array<string> = [], options: Object)
-export function execNode(filePath: String, args: Array<string> = [], options: Object)
-export function parse(data: String, regex: String, options: Object = {baseReduction: 1, flags: ""})
-export function rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number, colStart: Number = <firstColumn>):Array
-export function find(directory:String, names: String | Array<string>): ?String
-export function findCached(directory:String, names: String | Array<string>): ?String
+export function exec(command: String, args: Array<string> = [], options: Object): Promise
+export function execNode(filePath: String, args: Array<string> = [], options: Object): Promise
+export function parse(data: String, regex: String, options: Object = {flags: 'g'}): Array<Linter$Message>
+export function rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number = 0, colStart: Number = <firstTextColumn>): Array
+export function find(directory: String, names: String | Array<string>): ?String
+export function findCached(directory: String, names: String | Array<string>): ?String
 export function findAsync(directory: String, names: String | Array<string>): Promise<?String>
 export function findCachedAsync(directory: String, names: String | Array<string>): Promise<?String>
-export function tempFile<T>(fileName:String, fileContents:String, Callback:Function<T>):Promise<T>
-export function tempFiles<T>(filesNames:Array<{name: String, contents: String}>, callback:Function<T>):Promise<T>
+export function tempFile<T>(fileName: String, fileContents: String, callback: Function<T>): Promise<T>
+export function tempFiles<T>(filesNames: Array<{ name: String, contents: String }>, callback: Function<T>): Promise<T>
 ```
 
 #### License
