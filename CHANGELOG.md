@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.7.0
+
+* Use `sb-exec` for process execution, to include a bugfix for Atom 1.7.0
+
 ## 4.6.1
 
 *  Republish because of an unknown deployment issue
