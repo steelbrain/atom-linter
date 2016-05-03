@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.7.1
+
+* Use an alternative technique to export `exec` and `execNode` methods to allow temporary assignments, such as in-specs to work
+
 ## 4.7.0
 
 * Use `sb-exec` for process execution, to include a bugfix for Atom 1.7.0
