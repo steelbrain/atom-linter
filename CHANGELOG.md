@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0
+
+- Bump major version of `sb-exec`, it contains fixes for windows and improved handling of error codes. This change shouldn't break most of the dependents, but if it does, they can be fixed by setting `allowEmptyStderr` to `true` in `exec*` methods
+
 ## 4.7.1
 
 * Use an alternative technique to export `exec` and `execNode` methods to allow temporary assignments, such as in-specs to work
