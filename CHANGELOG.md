@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- Bump patch version of `sb-exec` to include `ignoreExitCode` option
+
 ## 5.0.0
 
 - Bump major version of `sb-exec`, it contains fixes for windows and improved handling of error codes. This change shouldn't break most of the dependents, but if it does, they can be fixed by setting `allowEmptyStderr` to `true` in `exec*` methods
