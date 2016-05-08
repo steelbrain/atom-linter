@@ -7,6 +7,7 @@ import * as FS from 'fs'
 import * as Helpers from './helpers'
 import type { TextEditor, Range } from 'atom'
 import type { TempFiles } from './types'
+import { exec, execNode } from 'sb-exec'
 
 let NamedRegexp = null
 export const FindCache = new Map()
@@ -245,4 +246,4 @@ export function parse(data, regex, opts = {}) {
   return messages
 }
 
-export { exec, execNode } from 'sb-exec'
+export { exec, execNode }
