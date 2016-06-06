@@ -97,6 +97,21 @@ describe('linter helpers', function () {
         return expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
       })
     )
+
+    it('returns a range with colStart and length are provided', () => {
+      waitsForAsync(async function () {
+        await atom.workspace.open(somethingFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        const range = helpers.rangeFromLineNumber(textEditor, 3, 10, 4)
+        expect(range instanceof Array).toBe(true)
+        expect(range[0] instanceof Array).toBe(true)
+        expect(range[1] instanceof Array).toBe(true)
+        expect(range[0][0]).toEqual(3)
+        expect(range[0][1]).toEqual(10)
+        expect(range[1][0]).toEqual(3)
+        expect(range[1][1]).toEqual(14)
+      })
+    })
   })
 
   describe('::parse', function () {
