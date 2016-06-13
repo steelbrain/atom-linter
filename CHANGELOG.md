@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.2
+
+- Bump patch version of `sb-exec` to include support for non-stringish parameters
+
 ## 5.0.1
 
 - Bump patch version of `sb-exec` to include `ignoreExitCode` option
