@@ -12,7 +12,7 @@ import { exec, execNode } from 'sb-exec'
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: number): Range {
+export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: ?number): Range {
   Helpers.validateEditor(textEditor)
   let lineNumber = line
 
@@ -43,9 +43,16 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: number, column
     throw new Error(`Column start (${colStart}) greater than line length (${lineLength})`)
   }
 
+  let colEnd = lineLength
+  const rowText = buffer.lineForRow(lineNumber).substr(colStart)
+  const match = /^( +|[\$\w]+)/.exec(rowText)
+  if (match) {
+    colEnd = colStart + match.index + match[0].length
+  }
+
   return [
     [lineNumber, colStart],
-    [lineNumber, lineLength]
+    [lineNumber, colEnd]
   ]
 }
 
