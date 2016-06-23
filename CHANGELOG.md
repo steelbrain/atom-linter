@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.0
+
+- Update `rangeFromLineNumber` to return a range that wraps a word not an entire line. (API breaking change)
+
 ## 5.0.2
 
 - Bump patch version of `sb-exec` to include support for non-stringish parameters
