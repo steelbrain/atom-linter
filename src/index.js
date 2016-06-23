@@ -12,11 +12,11 @@ import { exec, execNode } from 'sb-exec'
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: number): Range {
+export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, column: ?number): Range {
   Helpers.validateEditor(textEditor)
   let lineNumber = line
 
-  if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
+  if (typeof lineNumber !== 'number' || !Number.isFinite(lineNumber) || lineNumber < 0) {
     lineNumber = 0
   }
 
@@ -27,25 +27,28 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: number, column
     throw new Error(`Line number (${lineNumber}) greater than maximum line (${lineMax})`)
   }
 
-  let colStart = column
-  if (!Number.isFinite(colStart) || Number.isNaN(colStart) || colStart < 0) {
-    const indentation = buffer.lineForRow(lineNumber).match(/^\s+/)
-    if (indentation && indentation.length) {
-      colStart = indentation[0].length
-    } else {
-      colStart = 0
-    }
+  const columnGiven = typeof column === 'number' && Number.isFinite(column) && column > -1
+  let lineText = buffer.lineForRow(lineNumber)
+  const lineLength = lineText.length
+  if (columnGiven && column > lineLength) {
+    throw new Error(`Column start (${column}) greater than line length (${lineLength})`)
+  } else if (columnGiven) {
+    lineText = lineText.substr(column)
   }
 
-  const lineLength = buffer.lineLengthForRow(lineNumber)
-
-  if (colStart > lineLength) {
-    throw new Error(`Column start (${colStart}) greater than line length (${lineLength})`)
+  let colEnd = lineLength
+  let colStart = columnGiven ? column : 0
+  const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(lineText)
+  if (match) {
+    colEnd = colStart + match.index + match[0].length
+    if (!columnGiven) {
+      colStart = match.index
+    }
   }
 
   return [
     [lineNumber, colStart],
-    [lineNumber, lineLength]
+    [lineNumber, colEnd]
   ]
 }
 
