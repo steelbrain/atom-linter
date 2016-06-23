@@ -12,11 +12,11 @@ import { exec, execNode } from 'sb-exec'
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function rangeFromLineNumber(textEditor: TextEditor, line: number, column: ?number): Range {
+export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, column: ?number): Range {
   Helpers.validateEditor(textEditor)
   let lineNumber = line
 
-  if (!Number.isFinite(lineNumber) || Number.isNaN(lineNumber) || lineNumber < 0) {
+  if (typeof lineNumber !== 'number' || !Number.isFinite(lineNumber) || lineNumber < 0) {
     lineNumber = 0
   }
 
@@ -38,8 +38,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: number, column
 
   let colEnd = lineLength
   let colStart = columnGiven ? column : 0
-  const rowText = buffer.lineForRow(lineNumber).substr(colStart)
-  const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(rowText)
+  const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(lineText)
   if (match) {
     colEnd = colStart + match.index + match[0].length
     if (!columnGiven) {
