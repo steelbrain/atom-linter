@@ -22,9 +22,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 7]])
+        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 7]])
+        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 7]])
       })
     )
 
@@ -32,8 +32,8 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
-        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 2]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 2]])
       })
     )
 
@@ -48,7 +48,7 @@ describe('linter helpers', function () {
         expect(range[0][0]).toEqual(7)
         expect(range[0][1]).toEqual(0)
         expect(range[1][0]).toEqual(7)
-        expect(range[1][1]).toEqual(43)
+        expect(range[1][1]).toEqual(2)
       })
     )
 
@@ -63,7 +63,7 @@ describe('linter helpers', function () {
         expect(range[0][0]).toEqual(7)
         expect(range[0][1]).toEqual(4)
         expect(range[1][0]).toEqual(7)
-        expect(range[1][1]).toEqual(43)
+        expect(range[1][1]).toEqual(11)
       })
     )
 
