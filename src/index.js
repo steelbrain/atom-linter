@@ -45,7 +45,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: number, column
 
   let colEnd = lineLength
   const rowText = buffer.lineForRow(lineNumber).substr(colStart)
-  const match = /^( +|[\$\w]+)/.exec(rowText)
+  const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(rowText)
   if (match) {
     colEnd = colStart + match.index + match[0].length
   }
