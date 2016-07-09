@@ -10,14 +10,6 @@ import type { TempDirectory } from './types'
 
 export const writeFile = promisify(FS.writeFile)
 export const unlinkFile = promisify(FS.unlink)
-export const assign = Object.assign || function (target, source) {
-  for (const key in source) {
-    if (source.hasOwnProperty(key)) {
-      target[key] = source[key]
-    }
-  }
-  return target
-}
 
 function escapeRegexp(string: string): string {
   // Shamelessly stolen from https://github.com/atom/underscore-plus/blob/130913c179fe1d718a14034f4818adaf8da4db12/src/underscore-plus.coffee#L138
@@ -27,7 +19,7 @@ function escapeRegexp(string: string): string {
 export function getWordRegexp(textEditor: TextEditor, bufferPosition: Range) {
   const scopeDescriptor = textEditor.scopeDescriptorForBufferPosition(bufferPosition)
   const nonWordCharacters = escapeRegexp(atom.config.get('editor.nonWordCharacters', {
-    scope: scopeDescriptor
+    scope: scopeDescriptor,
   }))
   return new RegExp(`^[\t ]*$|[^\\s${nonWordCharacters}]+`)
 }

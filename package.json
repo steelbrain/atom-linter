@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "apm test",
+    "lint": "eslint .",
     "watch": "ucompiler watch",
     "compile": "ucompiler go"
   },
@@ -29,44 +30,15 @@
     "tmp": "~0.0.28"
   },
   "devDependencies": {
-    "eslint": "^2.4.0",
     "babel-eslint": "^6.0.0-beta.6",
-    "eslint-config-airbnb": "^6.0.2",
+    "babel-preset-steelbrain": "^2.0.1",
+    "eslint-config-steelbrain": "^1.0.1",
+    "jasmine-fix": "^1.0.0",
     "ucompiler": "^3.0.1",
     "ucompiler-plugin-babel": "^3.0.0",
-    "ucompiler-plugin-newline": "^3.0.0",
-    "babel-preset-steelbrain": "^2.0.1"
+    "ucompiler-plugin-newline": "^3.0.0"
   },
   "eslintConfig": {
-    "rules": {
-      "no-param-reassign": [
-        2,
-        {
-          "props": false
-        }
-      ],
-      "func-names": 0,
-      "comma-dangle": 0,
-      "no-extra-semi": 1,
-      "no-loop-func": 0,
-      "semi": [
-        2,
-        "never"
-      ],
-      "prefer-arrow-callback": 0,
-      "max-len": [
-        2,
-        200
-      ]
-    },
-    "extends": "airbnb/base",
-    "parser": "babel-eslint",
-    "globals": {
-      "atom": "true"
-    },
-    "env": {
-      "es6": true,
-      "node": true
-    }
+    "extends": "steelbrain"
   }
 }
