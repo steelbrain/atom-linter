@@ -1,5 +1,6 @@
 'use babel'
 
+import 'jasmine-fix'
 import * as fs from 'fs'
 import * as path from 'path'
 import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
@@ -104,8 +105,8 @@ describe('linter helpers', function () {
           type: 'type',
           text: 'message',
           filePath: null,
-          range: [[0, 0], [0, 0]]
-        }
+          range: [[0, 0], [0, 0]],
+        },
       ]
       let results = helpers.parse(input, regex, { flags: 'i' })
       expect(results).toEqual(output)
@@ -117,8 +118,8 @@ describe('linter helpers', function () {
           type: 'type',
           text: 'message',
           filePath: null,
-          range: [[0, 0], [0, 0]]
-        }
+          range: [[0, 0], [0, 0]],
+        },
       ]
       results = helpers.parse(input, regex, { flags: 'gi' })
       expect(results).toEqual(output)
@@ -228,7 +229,7 @@ describe('linter helpers', function () {
       waitsForAsync(async () =>
         await helpers.tempFiles([
           { name: 'foo.js', contents: 'Foo!' },
-          { name: 'bar.js', contents: 'Bar!' }
+          { name: 'bar.js', contents: 'Bar!' },
         ], filepaths => {
           expect(filepaths[0].indexOf('atom-linter_')).not.toBe(-1)
           expect(path.basename(filepaths[0])).toBe('foo.js')

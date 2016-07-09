@@ -1,18 +1,20 @@
 dependencies:
-  pre:
-    # Force updating wget due to the current containers being too out of date
-    - sudo apt-get update
-    - sudo apt-get install wget
   override:
-    - wget -O atom-amd64.deb https://atom.io/download/deb
-    # - sudo apt-get update # Cut out until wget is fixed on the containers
+    - curl -L https://atom.io/download/deb -o atom-amd64.deb
     - sudo dpkg --install atom-amd64.deb || true
+    - sudo apt-get update
     - sudo apt-get -f install
-    - apm install
+    - node --version
+    - npm --version
+    - atom --version
+    - rm -rf node_modules; npm install
+    - npm run compile
 
 test:
   override:
-    - atom -v
-    - apm -v
-    - ./node_modules/.bin/eslint ./
-    - apm test
+    - npm run lint
+    - npm test
+
+machine:
+  node:
+    version: 6.3.0

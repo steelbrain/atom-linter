@@ -4,10 +4,10 @@
 
 import * as Path from 'path'
 import * as FS from 'fs'
-import * as Helpers from './helpers'
-import type { TextEditor, Range } from 'atom'
-import type { TempFiles } from './types'
 import { exec, execNode } from 'sb-exec'
+import type { TextEditor, Range } from 'atom'
+import * as Helpers from './helpers'
+import type { TempFiles } from './types'
 
 let NamedRegexp = null
 export const FindCache = new Map()
@@ -48,7 +48,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
 
   return [
     [lineNumber, colStart],
-    [lineNumber, colEnd]
+    [lineNumber, colEnd],
   ]
 }
 
@@ -194,7 +194,7 @@ export function tempFile<T>(
 
   return tempFiles([{
     name: fileName,
-    contents: fileContents
+    contents: fileContents,
   }], function (results) {
     return callback(results[0])
   })
@@ -210,10 +210,11 @@ export function parse(data, regex, opts = {}) {
   }
 
   if (NamedRegexp === null) {
+    /* eslint-disable global-require */
     NamedRegexp = require('named-js-regexp')
   }
 
-  const options = Helpers.assign({ flags: '' }, opts)
+  const options = Object.assign({ flags: '' }, opts)
   if (options.flags.indexOf('g') === -1) {
     options.flags += 'g'
   }
@@ -240,7 +241,7 @@ export function parse(data, regex, opts = {}) {
       range: [
         [lineStart > 0 ? lineStart - 1 : 0, colStart > 0 ? colStart - 1 : 0],
         [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
-      ]
+      ],
     })
 
     rawMatch = compiledRegexp.exec(data)
