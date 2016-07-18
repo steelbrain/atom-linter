@@ -23,9 +23,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor).serialize()).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, -1).serialize()).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, 'a').serialize()).toEqual([[0, 0], [0, 30]])
       })
     )
 
@@ -33,8 +33,8 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
-        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, -1).serialize()).toEqual([[7, 0], [7, 43]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a').serialize()).toEqual([[7, 0], [7, 43]])
       })
     )
 
@@ -42,7 +42,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        const range = helpers.rangeFromLineNumber(textEditor, 7)
+        const range = helpers.rangeFromLineNumber(textEditor, 7).serialize()
         expect(range).toEqual([[7, 0], [7, 43]])
       })
     )
@@ -51,7 +51,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        const range = helpers.rangeFromLineNumber(textEditor, 7, 4)
+        const range = helpers.rangeFromLineNumber(textEditor, 7, 4).serialize()
         expect(range).toEqual([[7, 4], [7, 11]])
       })
     )
@@ -80,10 +80,10 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(mixedIndentFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])
-        expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])
-        expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])
-        expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 0).serialize()).toEqual([[0, 0], [0, 3]])
+        expect(helpers.rangeFromLineNumber(textEditor, 1).serialize()).toEqual([[1, 2], [1, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 2).serialize()).toEqual([[2, 1], [2, 4]])
+        expect(helpers.rangeFromLineNumber(textEditor, 3).serialize()).toEqual([[3, 2], [3, 5]])
       })
     )
 
@@ -91,10 +91,10 @@ describe('linter helpers', function () {
       waitsForAsync(async function() {
         await atom.workspace.open(mixedIndentFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 0, 0)).toEqual([[0, 0], [0, 3]])
-        expect(helpers.rangeFromLineNumber(textEditor, 1, 0)).toEqual([[1, 0], [1, 5]])
-        expect(helpers.rangeFromLineNumber(textEditor, 2, 0)).toEqual([[2, 0], [2, 4]])
-        expect(helpers.rangeFromLineNumber(textEditor, 3, 0)).toEqual([[3, 0], [3, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 0, 0).serialize()).toEqual([[0, 0], [0, 3]])
+        expect(helpers.rangeFromLineNumber(textEditor, 1, 0).serialize()).toEqual([[1, 0], [1, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 2, 0).serialize()).toEqual([[2, 0], [2, 4]])
+        expect(helpers.rangeFromLineNumber(textEditor, 3, 0).serialize()).toEqual([[3, 0], [3, 5]])
       })
     })
   })
