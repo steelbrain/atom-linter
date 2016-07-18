@@ -31,9 +31,6 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
   const lineText = buffer.lineForRow(lineNumber)
   let colEnd = lineText.length
   let colStart = columnGiven ? column : 0
-  if (columnGiven && column > lineText.length) {
-    throw new Error(`Column start (${column}) greater than line length (${lineText.length})`)
-  }
   if (columnGiven) {
     const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(lineText.substr(column))
     if (match) {
@@ -44,6 +41,9 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
     if (indentation) {
       colStart = indentation[0].length
     }
+  }
+  if (colStart > lineText.length) {
+    throw new Error(`Column start (${colStart}) greater than line length (${lineText.length})`)
   }
 
   return [
