@@ -3,3 +3,4 @@ node_modules
 /spec
 /src
 .flowconfig
+.DS_Store
