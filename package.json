@@ -39,6 +39,9 @@
     "ucompiler-plugin-newline": "^3.0.0"
   },
   "eslintConfig": {
-    "extends": "steelbrain"
+    "extends": "steelbrain",
+    "rules": {
+      "no-duplicate-imports": 0
+    }
   }
 }
