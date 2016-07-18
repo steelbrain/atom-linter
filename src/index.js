@@ -28,22 +28,22 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
   }
 
   const columnGiven = typeof column === 'number' && Number.isFinite(column) && column > -1
-  let lineText = buffer.lineForRow(lineNumber)
-  const lineLength = lineText.length
-  if (columnGiven && column > lineLength) {
-    throw new Error(`Column start (${column}) greater than line length (${lineLength})`)
-  } else if (columnGiven) {
-    lineText = lineText.substr(column)
-  }
-
-  let colEnd = lineLength
+  const lineText = buffer.lineForRow(lineNumber)
+  let colEnd = lineText.length
   let colStart = columnGiven ? column : 0
-  const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(lineText)
-  if (match) {
-    colEnd = colStart + match.index + match[0].length
-    if (!columnGiven) {
-      colStart = match.index
+  if (columnGiven) {
+    const match = Helpers.getWordRegexp(textEditor, [lineNumber, colStart]).exec(lineText.substr(column))
+    if (match) {
+      colEnd = colStart + match.index + match[0].length
     }
+  } else {
+    const indentation = lineText.match(/^\s+/)
+    if (indentation) {
+      colStart = indentation[0].length
+    }
+  }
+  if (colStart > lineText.length) {
+    throw new Error(`Column start (${colStart}) greater than line length (${lineText.length})`)
   }
 
   return [
