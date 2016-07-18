@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.0
+
+- Make rangeFromLineNumber return entire line if no colStart is provided. (API breaking change)
+
 ## 6.0.0
 
 - Update `rangeFromLineNumber` to return a range that wraps a word not an entire line. (API breaking change)
