@@ -12,7 +12,7 @@ const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 describe('linter helpers', function () {
-  fdescribe('::rangeFromLineNumber', function () {
+  describe('::rangeFromLineNumber', function () {
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
         helpers.rangeFromLineNumber()
@@ -60,7 +60,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        return expect(() =>
+        expect(() =>
           helpers.rangeFromLineNumber(textEditor, 7, 50)
         ).toThrow()
       })
@@ -70,7 +70,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        return expect(() =>
+        expect(() =>
           helpers.rangeFromLineNumber(textEditor, 11)
         ).toThrow()
       })
@@ -83,9 +83,20 @@ describe('linter helpers', function () {
         expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])
         expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])
         expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])
-        return expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
       })
     )
+
+    it('returns a smart colEnd when starting position is provided', function() {
+      waitsForAsync(async function() {
+        await atom.workspace.open(mixedIndentFile)
+        const textEditor = atom.workspace.getActiveTextEditor()
+        expect(helpers.rangeFromLineNumber(textEditor, 0, 0)).toEqual([[0, 0], [0, 3]])
+        expect(helpers.rangeFromLineNumber(textEditor, 1, 0)).toEqual([[1, 0], [1, 5]])
+        expect(helpers.rangeFromLineNumber(textEditor, 2, 0)).toEqual([[2, 0], [2, 4]])
+        expect(helpers.rangeFromLineNumber(textEditor, 3, 0)).toEqual([[3, 0], [3, 5]])
+      })
+    })
   })
 
   describe('::parse', function () {
