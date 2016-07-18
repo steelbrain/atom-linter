@@ -12,7 +12,7 @@ const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 describe('linter helpers', function () {
-  describe('::rangeFromLineNumber', function () {
+  fdescribe('::rangeFromLineNumber', function () {
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
         helpers.rangeFromLineNumber()
@@ -23,9 +23,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 7]])
-        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 7]])
-        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 7]])
+        expect(helpers.rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
+        expect(helpers.rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
       })
     )
 
@@ -33,8 +33,8 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 2]])
-        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 2]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
+        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
       })
     )
 
@@ -43,7 +43,7 @@ describe('linter helpers', function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
         const range = helpers.rangeFromLineNumber(textEditor, 7)
-        expect(range).toEqual([[7, 0], [7, 2]])
+        expect(range).toEqual([[7, 0], [7, 43]])
       })
     )
 
