@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.0
+
+- Upgrade from `sb-exec@2.x` to `sb-exec@3.x` to include compatibility fixes for npm path and general fixes for windows
+
 ## 7.0.0
 
 - Return `Range`s from `rangeFromLineNumber`
