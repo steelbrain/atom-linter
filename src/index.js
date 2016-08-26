@@ -44,7 +44,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
     }
   }
   if (colStart > lineText.length) {
-    throw new Error(`Column start (${colStart}) greater than line length (${lineText.length})`)
+    throw new Error(`Column start (${colStart || 0}) greater than line length (${lineText.length})`)
   }
 
   return Range.fromObject([
@@ -155,8 +155,6 @@ export async function tempFiles<T>(
 
   const tempDirectory = await Helpers.getTempDirectory('atom-linter_')
   const filePaths = []
-  let result
-  let error
 
   await Promise.all(files.map(function (file) {
     const fileName = file.name
@@ -166,18 +164,13 @@ export async function tempFiles<T>(
     return Helpers.writeFile(filePath, fileContents)
   }))
   try {
-    result = await callback(filePaths)
-  } catch (_) {
-    error = _
+    return await callback(filePaths)
+  } finally {
+    await Promise.all(filePaths.map(function (filePath) {
+      return Helpers.unlinkFile(filePath)
+    }))
+    tempDirectory.cleanup()
   }
-  await Promise.all(filePaths.map(function (filePath) {
-    return Helpers.unlinkFile(filePath)
-  }))
-  tempDirectory.cleanup()
-  if (error) {
-    throw error
-  }
-  return result
 }
 
 export function tempFile<T>(
@@ -201,21 +194,23 @@ export function tempFile<T>(
   })
 }
 
-export function parse(data, regex, opts = {}) {
+export function parse(data: string, regex: string, givenOptions: { flags?: string, filePath?: string } = {}) {
   if (typeof data !== 'string') {
     throw new Error('Invalid or no `data` provided')
   } else if (typeof regex !== 'string') {
     throw new Error('Invalid or no `regex` provided')
-  } else if (typeof opts !== 'object') {
+  } else if (typeof givenOptions !== 'object') {
     throw new Error('Invalid or no `options` provided')
   }
 
   if (NamedRegexp === null) {
     /* eslint-disable global-require */
     NamedRegexp = require('named-js-regexp')
+    /* eslint-enable global-require */
   }
 
-  const options = Object.assign({ flags: '' }, opts)
+  const defaultOptions: Object = { flags: '' }
+  const options = Object.assign(defaultOptions, givenOptions)
   if (options.flags.indexOf('g') === -1) {
     options.flags += 'g'
   }

@@ -1,4 +1,4 @@
-'use babel'
+/* @flow */
 
 import 'jasmine-fix'
 import * as fs from 'fs'
@@ -13,6 +13,10 @@ const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 describe('linter helpers', function () {
   describe('::rangeFromLineNumber', function () {
+    function rangeFromLineNumber(textEditor: any, line: any) {
+      return helpers.rangeFromLineNumber(textEditor, line)
+    }
+
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
         helpers.rangeFromLineNumber()
@@ -23,9 +27,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor).serialize()).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, -1).serialize()).toEqual([[0, 0], [0, 30]])
-        expect(helpers.rangeFromLineNumber(textEditor, 'a').serialize()).toEqual([[0, 0], [0, 30]])
+        expect(rangeFromLineNumber(textEditor).serialize()).toEqual([[0, 0], [0, 30]])
+        expect(rangeFromLineNumber(textEditor, -1).serialize()).toEqual([[0, 0], [0, 30]])
+        expect(rangeFromLineNumber(textEditor, 'a').serialize()).toEqual([[0, 0], [0, 30]])
       })
     )
 
@@ -33,8 +37,8 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 7, -1).serialize()).toEqual([[7, 0], [7, 43]])
-        expect(helpers.rangeFromLineNumber(textEditor, 7, 'a').serialize()).toEqual([[7, 0], [7, 43]])
+        expect(rangeFromLineNumber(textEditor, 7, -1).serialize()).toEqual([[7, 0], [7, 43]])
+        expect(rangeFromLineNumber(textEditor, 7, 'a').serialize()).toEqual([[7, 0], [7, 43]])
       })
     )
 
@@ -100,12 +104,16 @@ describe('linter helpers', function () {
   })
 
   describe('::parse', function () {
+    function parse(a: any = undefined, b: any = undefined, c: any = undefined) {
+      return helpers.parse(a, b, c)
+    }
+
     it('cries when no argument is passed', () =>
-      expect(() => helpers.parse()).toThrow()
+      expect(() => parse()).toThrow()
     )
 
     it("cries when data isn't string", () =>
-      expect(() => helpers.parse([], '')).toThrow()
+      expect(() => parse([], '')).toThrow()
     )
 
     it('works', function () {
@@ -138,8 +146,12 @@ describe('linter helpers', function () {
   })
 
   describe('::find', function () {
+    function find(dir: any, names: any) {
+      return helpers.find(dir, names)
+    }
+
     it('cries when no argument is passed', () =>
-      expect(() => helpers.find()).toThrow()
+      expect(() => find()).toThrow()
     )
 
     it('works', function () {
@@ -156,9 +168,13 @@ describe('linter helpers', function () {
   })
 
   describe('::findAsync', function () {
+    function findAsync(dir: any, names: any) {
+      return helpers.findAsync(dir, names)
+    }
+
     it('cries when no argument is passed', () =>
       waitsForAsyncRejection(async function () {
-        return await helpers.findAsync()
+        return await findAsync()
       })
     )
 
@@ -182,12 +198,16 @@ describe('linter helpers', function () {
   })
 
   describe('::tempFile', function () {
+    function tempFile(a: any = undefined, b: any = undefined, c: any = undefined) {
+      return helpers.tempFile(a, b, c)
+    }
+
     it('cries when arguments are invalid', function () {
-      expect(() => helpers.tempFile()).toThrow()
-      expect(() => helpers.tempFile(null, null, null)).toThrow()
-      expect(() => helpers.tempFile('', null, null)).toThrow()
-      expect(() => helpers.tempFile('', '', null)).toThrow()
-      expect(() => helpers.tempFile('', '', '')).toThrow()
+      expect(() => tempFile()).toThrow()
+      expect(() => tempFile(null, null, null)).toThrow()
+      expect(() => tempFile('', null, null)).toThrow()
+      expect(() => tempFile('', '', null)).toThrow()
+      expect(() => tempFile('', '', '')).toThrow()
     })
 
     it('works and accepts a callback and returns a promise and its promise' +
@@ -198,39 +218,43 @@ describe('linter helpers', function () {
           expect(path.basename(filepath)).toBe('somefile.js')
           expect(fs.existsSync(filepath)).toBe(true)
           expect(fs.readFileSync(filepath).toString()).toBe('Hey There')
-          return 1
+          return Promise.resolve(1)
         })
       , 1)
     )
   })
 
   describe('::tempFiles', function () {
+    function tempFiles(a: any = undefined, b: any = undefined) {
+      return helpers.tempFiles(a, b)
+    }
+
     it('cries when arguments are invalid', function () {
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles()
+        await tempFiles()
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles(null, null)
+        await tempFiles(null, null)
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles('', null)
+        await tempFiles('', null)
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles('', '')
+        await tempFiles('', '')
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles(null, '')
+        await tempFiles(null, '')
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles([], '')
+        await tempFiles([], '')
       })
       waitsForAsyncRejection(async function () {
-        await helpers.tempFiles([], null)
+        await tempFiles([], null)
       })
       waitsForAsync(async function () {
         return await helpers.tempFiles([], function (files) {
           expect(files).toEqual([])
-          return 50
+          return Promise.resolve(50)
         })
       }, 50)
     })
@@ -250,7 +274,7 @@ describe('linter helpers', function () {
           expect(path.basename(filepaths[1])).toBe('bar.js')
           expect(fs.existsSync(filepaths[1])).toBe(true)
           expect(fs.readFileSync(filepaths[1]).toString()).toBe('Bar!')
-          return filepaths
+          return Promise.resolve(filepaths)
         }).then(result => expect(result.length).toBe(2))
       )
     )
