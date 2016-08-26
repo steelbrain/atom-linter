@@ -222,7 +222,7 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
     const match = rawMatch.groups()
     const type = match.type
     const text = match.message
-    const file = match.file || options.filePath || null
+    const file = match.file || options.filePath
 
     const lineStart = match.lineStart || match.line || 0
     const colStart = match.colStart || match.col || 0
