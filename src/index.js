@@ -209,7 +209,8 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
     /* eslint-enable global-require */
   }
 
-  const options = Object.assign({ flags: '', filePath: '' }, givenOptions)
+  const defaultOptions: Object = { flags: '' }
+  const options = Object.assign(defaultOptions, givenOptions)
   if (options.flags.indexOf('g') === -1) {
     options.flags += 'g'
   }
@@ -222,7 +223,7 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
     const match = rawMatch.groups()
     const type = match.type
     const text = match.message
-    const file = match.file || options.filePath
+    const file = match.file || options.filePath || null
 
     const lineStart = match.lineStart || match.line || 0
     const colStart = match.colStart || match.col || 0
