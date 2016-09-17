@@ -246,4 +246,7 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
   return messages
 }
 
-export { exec, execNode }
+const execProxy = Helpers.wrapExec(exec)
+const execNodeProxy = Helpers.wrapExec(execNode)
+
+export { execProxy as exec, execNodeProxy as execNode }
