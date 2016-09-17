@@ -77,7 +77,10 @@ export function wrapExec(callback: Function): Function {
   return function(filePath: string, parameters: Array<string>, options: Object) {
     return callback(filePath, parameters, options).catch(function(error) {
       if (error.code === 'ENOENT') {
-        throw new Error(`Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`)
+        const newError = new Error(`Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`)
+        // $FlowIgnore: Custom property
+        newError.code = 'ENOENT'
+        throw newError
       }
       throw error
     })
