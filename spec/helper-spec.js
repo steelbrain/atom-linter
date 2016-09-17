@@ -1,11 +1,11 @@
 /* @flow */
 
-import 'jasmine-fix'
+import { it } from 'jasmine-fix'
 import * as fs from 'fs'
 import * as path from 'path'
 import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
-const helpersOfHelpers = require('../src/helpers')
-const helpers = require('../src/index')
+import * as helpersOfHelpers from '../src/helpers'
+import * as helpers from '../src/index'
 
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
@@ -314,6 +314,51 @@ describe('linter helpers', function () {
 
         atom.workspace.isTextEditor = _
       })
+    })
+  })
+  describe('wrapExec', function() {
+    it('resolves properly', async function() {
+      const uniqueObj = {}
+      const [a, b, c] = [{}, {}, {}]
+      const wrapped = helpersOfHelpers.wrapExec(async function(givenA, givenB, givenC) {
+        expect(givenA).toBe(a)
+        expect(givenB).toBe(b)
+        expect(givenC).toBe(c)
+        return uniqueObj
+      })
+      expect(await wrapped(a, b, c)).toBe(uniqueObj)
+    })
+    it('rejects non-ENOENT errors properly', async function() {
+      const wrapped = helpersOfHelpers.wrapExec(async function() {
+        const error = new Error('Something')
+        // $FlowIgnore: Custom property
+        error.code = 'EAGAIN'
+        throw error
+      })
+      try {
+        await wrapped()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Something')
+        expect(error.code).toBe('EAGAIN')
+      }
+    })
+    it('changes message of ENOENT errors', async function() {
+      const wrapped = helpersOfHelpers.wrapExec(async function() {
+        const error = new Error('Failed to spawn something')
+        // $FlowIgnore: Custom property
+        error.code = 'ENOENT'
+        // $FlowIgnore: Custom property
+        error.path = 'some-file'
+        throw error
+      })
+      try {
+        await wrapped()
+        expect(false).toBe(true)
+      } catch (error) {
+        expect(error.message).toBe('Failed to spawn command `some-file`. Make sure `some-file` is installed and on your PATH')
+        expect(error.code).toBe('ENOENT')
+      }
     })
   })
 })

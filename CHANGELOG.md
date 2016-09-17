@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.1.0
+
+- Handle `ENOENT` properly and show a nice message
+
 ## 8.0.0
 
 - Upgrade from `sb-exec@2.x` to `sb-exec@3.x` to include compatibility fixes for npm path and general fixes for Windows
