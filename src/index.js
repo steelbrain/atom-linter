@@ -44,7 +44,7 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
     }
   }
   if (colStart > lineText.length) {
-    throw new Error(`Column start (${colStart || 0}) greater than line length (${lineText.length})`)
+    throw new Error(`Column start (${colStart || 0}) greater than line length (${lineText.length}) for line ${lineNumber}`)
   }
 
   return Range.fromObject([
