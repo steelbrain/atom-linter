@@ -5,6 +5,7 @@
 - Show line number in col too big error messages
 - Handle `ENOENT` properly and show a nice message
 - Bump `sb-exec` to v3.0.3 to include fix for an inconsistent behavior on windows bug (See [steelbrain/exec#48](https://github.com/steelbrain/exec/issues/47))
+- Bump `sb-exec` to 3.1.0 to include `kill()` support for spawned processes
 
 ## 8.0.0
 
