@@ -1,6 +1,3 @@
 {
-  "extends": "steelbrain",
-  "rules": {
-    "no-duplicate-imports": "off"
-  }
+  "extends": "steelbrain"
 }

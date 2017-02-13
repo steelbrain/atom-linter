@@ -4,9 +4,8 @@
 
 import * as Path from 'path'
 import * as FS from 'fs'
-import { Range } from 'atom'
 import { exec, execNode } from 'sb-exec'
-import type { TextEditor } from 'atom'
+import type { TextEditor, Range } from 'atom'
 import * as Helpers from './helpers'
 import type { TempFiles } from './types'
 
@@ -47,10 +46,10 @@ export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, colum
     throw new Error(`Column start (${colStart || 0}) greater than line length (${lineText.length}) for line ${lineNumber}`)
   }
 
-  return Range.fromObject([
+  return [
     [lineNumber, colStart],
     [lineNumber, colEnd],
-  ])
+  ]
 }
 
 export async function findAsync(directory: string, name: string | Array<string>): Promise<?string> {
