@@ -12,14 +12,14 @@ const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
 
 describe('linter helpers', function () {
-  describe('::rangeFromLineNumber', function () {
-    function rangeFromLineNumber(textEditor: any, line: any) {
-      return helpers.rangeFromLineNumber(textEditor, line)
+  describe('::generateRange', function () {
+    function generateRange(textEditor: any, line: any) {
+      return helpers.generateRange(textEditor, line)
     }
 
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
-        helpers.rangeFromLineNumber()
+        helpers.generateRange()
       ).toThrow()
     )
 
@@ -27,9 +27,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(rangeFromLineNumber(textEditor)).toEqual([[0, 0], [0, 30]])
-        expect(rangeFromLineNumber(textEditor, -1)).toEqual([[0, 0], [0, 30]])
-        expect(rangeFromLineNumber(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
+        expect(generateRange(textEditor)).toEqual([[0, 0], [0, 30]])
+        expect(generateRange(textEditor, -1)).toEqual([[0, 0], [0, 30]])
+        expect(generateRange(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
       })
     )
 
@@ -37,8 +37,8 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(rangeFromLineNumber(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
-        expect(rangeFromLineNumber(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
+        expect(generateRange(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
+        expect(generateRange(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
       })
     )
 
@@ -46,7 +46,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        const range = helpers.rangeFromLineNumber(textEditor, 7)
+        const range = helpers.generateRange(textEditor, 7)
         expect(range).toEqual([[7, 0], [7, 43]])
       })
     )
@@ -55,7 +55,7 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        const range = helpers.rangeFromLineNumber(textEditor, 7, 4)
+        const range = helpers.generateRange(textEditor, 7, 4)
         expect(range).toEqual([[7, 4], [7, 11]])
       })
     )
@@ -65,7 +65,7 @@ describe('linter helpers', function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
         expect(() =>
-          helpers.rangeFromLineNumber(textEditor, 7, 50)
+          helpers.generateRange(textEditor, 7, 50)
         ).toThrow()
       })
     )
@@ -75,7 +75,7 @@ describe('linter helpers', function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
         expect(() =>
-          helpers.rangeFromLineNumber(textEditor, 11)
+          helpers.generateRange(textEditor, 11)
         ).toThrow()
       })
     )
@@ -84,10 +84,10 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(mixedIndentFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 0)).toEqual([[0, 0], [0, 3]])
-        expect(helpers.rangeFromLineNumber(textEditor, 1)).toEqual([[1, 2], [1, 5]])
-        expect(helpers.rangeFromLineNumber(textEditor, 2)).toEqual([[2, 1], [2, 4]])
-        expect(helpers.rangeFromLineNumber(textEditor, 3)).toEqual([[3, 2], [3, 5]])
+        expect(helpers.generateRange(textEditor, 0)).toEqual([[0, 0], [0, 3]])
+        expect(helpers.generateRange(textEditor, 1)).toEqual([[1, 2], [1, 5]])
+        expect(helpers.generateRange(textEditor, 2)).toEqual([[2, 1], [2, 4]])
+        expect(helpers.generateRange(textEditor, 3)).toEqual([[3, 2], [3, 5]])
       })
     )
 
@@ -95,10 +95,10 @@ describe('linter helpers', function () {
       waitsForAsync(async function() {
         await atom.workspace.open(mixedIndentFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(helpers.rangeFromLineNumber(textEditor, 0, 0)).toEqual([[0, 0], [0, 3]])
-        expect(helpers.rangeFromLineNumber(textEditor, 1, 0)).toEqual([[1, 0], [1, 5]])
-        expect(helpers.rangeFromLineNumber(textEditor, 2, 0)).toEqual([[2, 0], [2, 4]])
-        expect(helpers.rangeFromLineNumber(textEditor, 3, 0)).toEqual([[3, 0], [3, 5]])
+        expect(helpers.generateRange(textEditor, 0, 0)).toEqual([[0, 0], [0, 3]])
+        expect(helpers.generateRange(textEditor, 1, 0)).toEqual([[1, 0], [1, 5]])
+        expect(helpers.generateRange(textEditor, 2, 0)).toEqual([[2, 0], [2, 4]])
+        expect(helpers.generateRange(textEditor, 3, 0)).toEqual([[3, 0], [3, 5]])
       })
     })
   })
