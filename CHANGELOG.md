@@ -2,47 +2,47 @@
 
 ## 8.1.0
 
-- Show line number in col too big error messages
-- Handle `ENOENT` properly and show a nice message
-- Bump `sb-exec` to v3.0.3 to include fix for an inconsistent behavior on windows bug (See [steelbrain/exec#48](https://github.com/steelbrain/exec/issues/47))
-- Bump `sb-exec` to 3.1.0 to include `kill()` support for spawned processes
+*   Show line number in col too big error messages
+*   Handle `ENOENT` properly and show a nice message
+*   Bump `sb-exec` to v3.0.3 to include fix for an inconsistent behavior on windows bug (See [steelbrain/exec#48](https://github.com/steelbrain/exec/issues/47))
+*   Bump `sb-exec` to 3.1.0 to include `kill()` support for spawned processes
 
 ## 8.0.0
 
-- Upgrade from `sb-exec@2.x` to `sb-exec@3.x` to include compatibility fixes for npm path and general fixes for Windows
+*   Upgrade from `sb-exec@2.x` to `sb-exec@3.x` to include compatibility fixes for npm path and general fixes for Windows
 
 ## 7.0.0
 
-- Return `Range`s from `rangeFromLineNumber`
-- Make `rangeFromLineNumber` return entire line if no colStart is provided. (API breaking change)
+*   Return `Range`s from `rangeFromLineNumber`
+*   Make `rangeFromLineNumber` return entire line if no colStart is provided. (API breaking change)
 
 ## 6.0.0
 
-- Update `rangeFromLineNumber` to return a range that wraps a word not an entire line. (API breaking change)
+*   Update `rangeFromLineNumber` to return a range that wraps a word not an entire line. (API breaking change)
 
 ## 5.0.2
 
-- Bump patch version of `sb-exec` to include support for non-stringish parameters
+*   Bump patch version of `sb-exec` to include support for non-stringish parameters
 
 ## 5.0.1
 
-- Bump patch version of `sb-exec` to include `ignoreExitCode` option
+*   Bump patch version of `sb-exec` to include `ignoreExitCode` option
 
 ## 5.0.0
 
-- Bump major version of `sb-exec`, it contains fixes for windows and improved handling of error codes. This change shouldn't break most of the dependents, but if it does, they can be fixed by setting `allowEmptyStderr` to `true` in `exec*` methods
+*   Bump major version of `sb-exec`, it contains fixes for windows and improved handling of error codes. This change shouldn't break most of the dependents, but if it does, they can be fixed by setting `allowEmptyStderr` to `true` in `exec*` methods
 
 ## 4.7.1
 
-* Use an alternative technique to export `exec` and `execNode` methods to allow temporary assignments, such as in-specs to work
+*   Use an alternative technique to export `exec` and `execNode` methods to allow temporary assignments, such as in-specs to work
 
 ## 4.7.0
 
-* Use `sb-exec` for process execution, to include a bugfix for Atom 1.7.0
+*   Use `sb-exec` for process execution, to include a bugfix for Atom 1.7.0
 
 ## 4.6.1
 
-*  Republish because of an unknown deployment issue
+*   Republish because of an unknown deployment issue
 
 ## 4.6.0
 
@@ -186,7 +186,7 @@
 ## 3.2.1
 
 *   Couple of fixes for `findFile`
-*   Correct npm `test` script
+*   Correct `npm test` script
 
 ## 3.2.0
 
