@@ -1,7 +1,9 @@
 # Changelog
 
-## 8.1.0
+## 9.0.0
 
+*   Rename `rangeFromLineNumber` to `generateRange`
+*   Return Range-compatible Array instead of Range in generateRange
 *   Show line number in col too big error messages
 *   Handle `ENOENT` properly and show a nice message
 *   Bump `sb-exec` to v3.0.3 to include fix for an inconsistent behavior on windows bug (See [steelbrain/exec#48](https://github.com/steelbrain/exec/issues/47))
