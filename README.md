@@ -13,7 +13,7 @@ export const FindCache: Map
 export function exec(command: String, args: Array<string> = [], options: Object): Promise
 export function execNode(filePath: String, args: Array<string> = [], options: Object): Promise
 export function parse(data: String, regex: String, options: Object = {flags: 'g'}): Array<Linter$Message>
-export function rangeFromLineNumber(textEditor: TextEditor, lineNumber: Number = 0, colStart: Number = <firstTextColumn>): Array
+export function generateRange(textEditor: TextEditor, lineNumber: Number = 0, colStart: Number = <firstTextColumn>): Array
 export function find(directory: String, names: String | Array<string>): ?String
 export function findCached(directory: String, names: String | Array<string>): ?String
 export function findAsync(directory: String, names: String | Array<string>): Promise<?String>

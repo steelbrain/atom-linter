@@ -12,7 +12,7 @@ import type { TempFiles } from './types'
 let NamedRegexp = null
 export const FindCache = new Map()
 
-export function rangeFromLineNumber(textEditor: TextEditor, line: ?number, column: ?number): Range {
+export function generateRange(textEditor: TextEditor, line: ?number, column: ?number): Range {
   Helpers.validateEditor(textEditor)
   let lineNumber = line
 
