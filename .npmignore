@@ -1,4 +1,5 @@
 .idea
+decls
 node_modules
 /spec
 /src
