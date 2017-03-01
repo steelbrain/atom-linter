@@ -1,5 +1,9 @@
 # Changelog
 
+## 9.0.1
+
+*  Make `exec` and `execNode` behave the way they were supposed and documented to be by restoring their 10 seconds default timeout
+
 ## 9.0.0
 
 *   Rename `rangeFromLineNumber` to `generateRange`

@@ -323,7 +323,7 @@ describe('linter helpers', function () {
       const wrapped = helpersOfHelpers.wrapExec(async function(givenA, givenB, givenC) {
         expect(givenA).toBe(a)
         expect(givenB).toBe(b)
-        expect(givenC).toBe(c)
+        expect(givenC).toEqual({ timeout: 10000 })
         return uniqueObj
       })
       expect(await wrapped(a, b, c)).toBe(uniqueObj)
