@@ -1,6 +1,6 @@
 /* @flow */
 
-import { it } from 'jasmine-fix'
+import { it, wait } from 'jasmine-fix'
 import * as fs from 'fs'
 import * as path from 'path'
 import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
@@ -155,10 +155,10 @@ describe('linter helpers', function () {
     )
 
     it('works', function () {
-      expect(helpers.find(__dirname, 'package.json')).
-        toBe(packageJsonPath)
-      expect(helpers.findCached(__dirname, 'package.json')).
-        toBe(packageJsonPath)
+      expect(helpers.find(__dirname, 'package.json'))
+        .toBe(packageJsonPath)
+      expect(helpers.findCached(__dirname, 'package.json'))
+        .toBe(packageJsonPath)
     })
 
     it('returns null if no file is found', function () {
@@ -212,8 +212,9 @@ describe('linter helpers', function () {
 
     it('works and accepts a callback and returns a promise and its promise' +
       ' value is that returned by the callback', () =>
+      // eslint-disable-next-line arrow-parens
       waitsForAsync(async () =>
-        await helpers.tempFile('somefile.js', 'Hey There', filepath => {
+        await helpers.tempFile('somefile.js', 'Hey There', (filepath) => {
           expect(filepath.indexOf('atom-linter_')).not.toBe(-1)
           expect(path.basename(filepath)).toBe('somefile.js')
           expect(fs.existsSync(filepath)).toBe(true)
@@ -261,11 +262,12 @@ describe('linter helpers', function () {
 
     it('works and accepts a callback and returns a promise and its promise ' +
       'value is that returned by the callback', () =>
+      // eslint-disable-next-line arrow-parens
       waitsForAsync(async () =>
         await helpers.tempFiles([
           { name: 'foo.js', contents: 'Foo!' },
           { name: 'bar.js', contents: 'Bar!' },
-        ], filepaths => {
+        ], (filepaths) => {
           expect(filepaths[0].indexOf('atom-linter_')).not.toBe(-1)
           expect(path.basename(filepaths[0])).toBe('foo.js')
           expect(fs.existsSync(filepaths[0])).toBe(true)
@@ -321,6 +323,7 @@ describe('linter helpers', function () {
       const uniqueObj = {}
       const [a, b, c] = [{}, {}, {}]
       const wrapped = helpersOfHelpers.wrapExec(async function(givenA, givenB, givenC) {
+        await wait(10)
         expect(givenA).toBe(a)
         expect(givenB).toBe(b)
         expect(givenC).toEqual({ timeout: 10000 })
@@ -330,6 +333,7 @@ describe('linter helpers', function () {
     })
     it('rejects non-ENOENT errors properly', async function() {
       const wrapped = helpersOfHelpers.wrapExec(async function() {
+        await wait(10)
         const error = new Error('Something')
         // $FlowIgnore: Custom property
         error.code = 'EAGAIN'
@@ -345,6 +349,7 @@ describe('linter helpers', function () {
     })
     it('changes message of ENOENT errors', async function() {
       const wrapped = helpersOfHelpers.wrapExec(async function() {
+        await wait(10)
         const error = new Error('Failed to spawn something')
         // $FlowIgnore: Custom property
         error.code = 'ENOENT'
