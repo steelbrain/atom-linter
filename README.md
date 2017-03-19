@@ -1,6 +1,8 @@
 atom-linter
 ===========
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/steelbrain/atom-linter.svg)](https://greenkeeper.io/)
+
 atom-linter is an npm helper module that you can import in your Linter Providers
 and make things easier for yourself.
 
