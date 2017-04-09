@@ -73,9 +73,35 @@ export function validateFind(directory: string, name: string | Array<string>) {
   }
 }
 
+const processMap: Map<string, Function> = new Map()
+
 export function wrapExec(callback: Function): Function {
   return function(filePath: string, parameters: Array<string>, options: Object) {
-    return callback(filePath, parameters, Object.assign({ timeout: 10000 }, options)).catch(function(error) {
+    let killed = false
+    const spawned = callback(filePath, parameters, Object.assign({ timeout: 10000 }, options))
+    let mirror = spawned
+
+    if (options.uniqueKey) {
+      if (typeof options.uniqueKey !== 'string') throw new Error('options.uniqueKey must be a string')
+
+      const oldValue = processMap.get(options.uniqueKey)
+      if (oldValue) {
+        oldValue()
+      }
+      processMap.set(options.uniqueKey, function() {
+        killed = true
+        spawned.kill()
+      })
+      mirror = mirror.then(function(value) {
+        if (killed) return null
+        return value
+      }, function(error) {
+        if (killed) return null
+        throw error
+      })
+    }
+
+    return mirror.catch(function(error) {
       if (error.code === 'ENOENT') {
         const newError = new Error(`Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`)
         // $FlowIgnore: Custom property
