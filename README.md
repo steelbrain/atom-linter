@@ -37,6 +37,8 @@ const myLinter = {
   // ...
   async lint(textEditor) {
     const output = atomLinter.exec('myprogram', ['parameter1', 'parameter2'], { uniqueKey: 'my-linter' })
+    // NOTE: Providers should also return null if they get null from exec
+    // Returning null from provider will tell base linter to keep existing messages
     if (output === null) {
       return null
     }
