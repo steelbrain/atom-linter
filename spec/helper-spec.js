@@ -1,8 +1,9 @@
 /* @flow */
 
-import { it, wait } from 'jasmine-fix'
 import * as fs from 'fs'
 import * as path from 'path'
+import { execNode } from 'sb-exec'
+import { it, wait } from 'jasmine-fix'
 import { waitsForAsync, waitsForAsyncRejection } from './spec-helpers'
 import * as helpersOfHelpers from '../src/helpers'
 import * as helpers from '../src/index'
@@ -10,6 +11,7 @@ import * as helpers from '../src/index'
 const mixedIndentFile = path.join(__dirname, 'fixtures', 'mixedIndent.txt')
 const somethingFile = path.join(__dirname, 'fixtures', 'something.js')
 const packageJsonPath = fs.realpathSync(`${__dirname}/../package.json`)
+const wait2SecondsFile = path.join(__dirname, 'fixtures', 'wait-2-seconds.js')
 
 describe('linter helpers', function () {
   describe('::generateRange', function () {
@@ -362,6 +364,18 @@ describe('linter helpers', function () {
         expect(error.message).toBe('Failed to spawn command `some-file`. Make sure `some-file` is installed and on your PATH')
         expect(error.code).toBe('ENOENT')
       }
+    })
+    it('makes sure to kill when uniqueKey is provided', async function() {
+      const wrapped = helpersOfHelpers.wrapExec(execNode)
+      const firstPromise = wrapped(wait2SecondsFile, [], { uniqueKey: 'a', stream: 'stdout' })
+      const secondPromise = wrapped(wait2SecondsFile, [], { uniqueKey: 'a', stream: 'stdout' })
+      const thirdPromise = wrapped(wait2SecondsFile, [], { uniqueKey: 'b', stream: 'stdout' })
+      const forthPromise = wrapped(wait2SecondsFile, [], { uniqueKey: 'b', stream: 'stdout' })
+
+      expect(await firstPromise).toBe(null)
+      expect(await thirdPromise).toBe(null)
+      expect(await secondPromise).toBe('2 seconds have passed')
+      expect(await forthPromise).toBe('2 seconds have passed')
     })
   })
 })
