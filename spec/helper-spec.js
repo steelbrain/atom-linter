@@ -320,7 +320,7 @@ describe('linter helpers', function () {
       })
     })
   })
-  fdescribe('wrapExec', function() {
+  describe('wrapExec', function() {
     it('resolves properly', async function() {
       const uniqueObj = {}
       const [a, b, c] = [{}, {}, {}]
