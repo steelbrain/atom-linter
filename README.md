@@ -24,6 +24,28 @@ export function tempFile<T>(fileName: String, fileContents: String, callback: Fu
 export function tempFiles<T>(filesNames: Array<{ name: String, contents: String }>, callback: Function<T>): Promise<T>
 ```
 
+#### Unique Spawning
+
+To make sure that old processes spawned by your linter provider are terminated on a newer invocation, you can specify `uniqueKey: "my-linter"` in `exec` or `execNode` options. Please note that killed processes will return `null` as return value, so make sure to handle that.
+
+Example:
+
+```js
+import atomLinter from 'atom-linter'
+
+const myLinter = {
+  // ...
+  async lint(textEditor) {
+    const output = atomLinter.exec('myprogram', ['parameter1', 'parameter2'], { uniqueKey: 'my-linter' })
+    if (output === null) {
+      return null
+    }
+    // ... parse output and return messages
+    return []
+  }
+}
+```
+
 #### License
 
 This project is licensed under the terms of MIT License, see the LICENSE file for more info
