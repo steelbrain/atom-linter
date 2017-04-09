@@ -76,7 +76,7 @@ export function validateFind(directory: string, name: string | Array<string>) {
 const processMap: Map<string, Function> = new Map()
 
 export function wrapExec(callback: Function): Function {
-  return function(filePath: string, parameters: Array<string>, options: Object) {
+  return function(filePath: string, parameters: Array<string>, options: Object = {}) {
     let killed = false
     const spawned = callback(filePath, parameters, Object.assign({ timeout: 10000 }, options))
     let mirror = spawned
