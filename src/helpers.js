@@ -13,7 +13,7 @@ export const unlinkFile = promisify(FS.unlink)
 
 function escapeRegexp(string: string): string {
   // Shamelessly stolen from https://github.com/atom/underscore-plus/blob/130913c179fe1d718a14034f4818adaf8da4db12/src/underscore-plus.coffee#L138
-  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+  return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 export function getWordRegexp(textEditor: TextEditor, bufferPosition: Range) {
