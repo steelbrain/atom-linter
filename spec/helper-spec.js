@@ -21,8 +21,8 @@ describe('linter helpers', function () {
 
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
-        helpers.generateRange()
-      ).toThrow()
+        helpers.generateRange(),
+      ).toThrow(),
     )
 
     it('returns a range pointing at file start if no or invalid line is provided', () =>
@@ -32,7 +32,7 @@ describe('linter helpers', function () {
         expect(generateRange(textEditor)).toEqual([[0, 0], [0, 30]])
         expect(generateRange(textEditor, -1)).toEqual([[0, 0], [0, 30]])
         expect(generateRange(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
-      })
+      }),
     )
 
     it('ignores an invalid starting column', () =>
@@ -41,7 +41,7 @@ describe('linter helpers', function () {
         const textEditor = atom.workspace.getActiveTextEditor()
         expect(generateRange(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
         expect(generateRange(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
-      })
+      }),
     )
 
     it('returns a range (array) with some valid points', () =>
@@ -50,7 +50,7 @@ describe('linter helpers', function () {
         const textEditor = atom.workspace.getActiveTextEditor()
         const range = helpers.generateRange(textEditor, 7)
         expect(range).toEqual([[7, 0], [7, 43]])
-      })
+      }),
     )
 
     it('returns a range (array) with some valid points and provided colStart', () =>
@@ -59,7 +59,7 @@ describe('linter helpers', function () {
         const textEditor = atom.workspace.getActiveTextEditor()
         const range = helpers.generateRange(textEditor, 7, 4)
         expect(range).toEqual([[7, 4], [7, 11]])
-      })
+      }),
     )
 
     it('cries when colStart is greater than line length', () =>
@@ -67,9 +67,9 @@ describe('linter helpers', function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
         expect(() =>
-          helpers.generateRange(textEditor, 7, 50)
+          helpers.generateRange(textEditor, 7, 50),
         ).toThrow()
-      })
+      }),
     )
 
     it('cries when lineNumber is greater than the maximum line', () =>
@@ -77,9 +77,9 @@ describe('linter helpers', function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
         expect(() =>
-          helpers.generateRange(textEditor, 11)
+          helpers.generateRange(textEditor, 11),
         ).toThrow()
-      })
+      }),
     )
 
     it('handles files with mixed intentation', () =>
@@ -90,7 +90,7 @@ describe('linter helpers', function () {
         expect(helpers.generateRange(textEditor, 1)).toEqual([[1, 2], [1, 5]])
         expect(helpers.generateRange(textEditor, 2)).toEqual([[2, 1], [2, 4]])
         expect(helpers.generateRange(textEditor, 3)).toEqual([[3, 2], [3, 5]])
-      })
+      }),
     )
 
     it('returns a smart colEnd when starting position is provided', function() {
@@ -111,11 +111,11 @@ describe('linter helpers', function () {
     }
 
     it('cries when no argument is passed', () =>
-      expect(() => parse()).toThrow()
+      expect(() => parse()).toThrow(),
     )
 
     it("cries when data isn't string", () =>
-      expect(() => parse([], '')).toThrow()
+      expect(() => parse([], '')).toThrow(),
     )
 
     it('works', function () {
@@ -153,7 +153,7 @@ describe('linter helpers', function () {
     }
 
     it('cries when no argument is passed', () =>
-      expect(() => find()).toThrow()
+      expect(() => find()).toThrow(),
     )
 
     it('works', function () {
@@ -176,25 +176,25 @@ describe('linter helpers', function () {
 
     it('cries when no argument is passed', () =>
       waitsForAsyncRejection(async function () {
-        return await findAsync()
-      })
+        return findAsync()
+      }),
     )
 
     it('works', function () {
       waitsForAsync(async function () {
-        return await helpers.findAsync(__dirname, 'package.json')
+        return helpers.findAsync(__dirname, 'package.json')
       }, packageJsonPath)
       waitsForAsync(async function () {
-        return await helpers.findCachedAsync(__dirname, 'package.json')
+        return helpers.findCachedAsync(__dirname, 'package.json')
       }, packageJsonPath)
     })
 
     it('returns null if no file is found', function () {
       waitsForAsync(async function () {
-        return await helpers.findAsync(__dirname, '.ucompilerrc')
+        return helpers.findAsync(__dirname, '.ucompilerrc')
       }, null)
       waitsForAsync(async function () {
-        return await helpers.findCachedAsync(__dirname, '.ucompilerrc')
+        return helpers.findCachedAsync(__dirname, '.ucompilerrc')
       }, null)
     })
   })
@@ -214,16 +214,15 @@ describe('linter helpers', function () {
 
     it('works and accepts a callback and returns a promise and its promise' +
       ' value is that returned by the callback', () =>
-      // eslint-disable-next-line arrow-parens
       waitsForAsync(async () =>
-        await helpers.tempFile('somefile.js', 'Hey There', (filepath) => {
+        helpers.tempFile('somefile.js', 'Hey There', (filepath) => {
           expect(filepath.indexOf('atom-linter_')).not.toBe(-1)
           expect(path.basename(filepath)).toBe('somefile.js')
           expect(fs.existsSync(filepath)).toBe(true)
           expect(fs.readFileSync(filepath).toString()).toBe('Hey There')
           return Promise.resolve(1)
         })
-      , 1)
+      , 1),
     )
   })
 
@@ -255,7 +254,7 @@ describe('linter helpers', function () {
         await tempFiles([], null)
       })
       waitsForAsync(async function () {
-        return await helpers.tempFiles([], function (files) {
+        return helpers.tempFiles([], function (files) {
           expect(files).toEqual([])
           return Promise.resolve(50)
         })
@@ -264,9 +263,8 @@ describe('linter helpers', function () {
 
     it('works and accepts a callback and returns a promise and its promise ' +
       'value is that returned by the callback', () =>
-      // eslint-disable-next-line arrow-parens
       waitsForAsync(async () =>
-        await helpers.tempFiles([
+        helpers.tempFiles([
           { name: 'foo.js', contents: 'Foo!' },
           { name: 'bar.js', contents: 'Bar!' },
         ], (filepaths) => {
@@ -279,8 +277,8 @@ describe('linter helpers', function () {
           expect(fs.existsSync(filepaths[1])).toBe(true)
           expect(fs.readFileSync(filepaths[1]).toString()).toBe('Bar!')
           return Promise.resolve(filepaths)
-        }).then(result => expect(result.length).toBe(2))
-      )
+        }).then(result => expect(result.length).toBe(2)),
+      ),
     )
   })
   describe('validateEditor', function () {

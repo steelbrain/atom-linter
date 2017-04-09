@@ -64,6 +64,10 @@ export async function findAsync(directory: string, name: string | Array<string>)
     }
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName)
+      // NOTE: If we follow ESLint here and collect all promises and await at once
+      // It'll end up being more inefficient, we'll be doing more fs.stat calls than
+      // necessary
+      // eslint-disable-next-line no-await-in-loop
       if (await Helpers.fileExists(filePath)) {
         return filePath
       }
@@ -75,7 +79,7 @@ export async function findAsync(directory: string, name: string | Array<string>)
 }
 
 export async function findCachedAsync(
-  directory: string, name: string | Array<string>
+  directory: string, name: string | Array<string>,
 ): Promise<?string> {
   Helpers.validateFind(directory, name)
   const names = [].concat(name)
@@ -144,7 +148,7 @@ export function findCached(directory: string, name: string | Array<string>): ?st
 
 export async function tempFiles<T>(
   files: Array<TempFiles>,
-  callback: ((filePaths: Array<string>) => Promise<T>)
+  callback: ((filePaths: Array<string>) => Promise<T>),
 ): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error('Invalid or no `files` provided')
@@ -175,7 +179,7 @@ export async function tempFiles<T>(
 export function tempFile<T>(
   fileName: string,
   fileContents: string,
-  callback: ((filePath: string) => Promise<T>)
+  callback: ((filePath: string) => Promise<T>),
 ): Promise<T> {
   if (typeof fileName !== 'string') {
     throw new Error('Invalid or no `fileName` provided')
