@@ -64,10 +64,6 @@ export async function findAsync(directory: string, name: string | Array<string>)
     }
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName)
-      // NOTE: If we follow ESLint here and collect all promises and await at once
-      // It'll end up being more inefficient, we'll be doing more fs.stat calls than
-      // necessary
-      // eslint-disable-next-line no-await-in-loop
       if (await Helpers.fileExists(filePath)) {
         return filePath
       }
