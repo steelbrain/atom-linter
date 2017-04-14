@@ -1,8 +1,11 @@
 # Changelog
 
-## Upcoming
+## 10.0.0
 
 * Add `uniqueKey` support to exec options
+* exec: **Breaking**: Rename `throwOnStdErr` to `throwOnStderr
+* exec: Support `Buffer`s in `options.stdin`
+* exec: Kill all subprocesses properly on windows
 
 ## 9.0.1
 
