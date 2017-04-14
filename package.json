@@ -1,6 +1,6 @@
 {
   "name": "atom-linter",
-  "version": "9.0.1",
+  "version": "10.0.0",
   "description": "Helper module for atom linter providers",
   "main": "lib/index.js",
   "scripts": {
