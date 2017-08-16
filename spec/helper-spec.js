@@ -15,10 +15,6 @@ const wait2SecondsFile = path.join(__dirname, 'fixtures', 'wait-2-seconds.js')
 
 describe('linter helpers', function () {
   describe('::generateRange', function () {
-    function generateRange(textEditor: any, line: any) {
-      return helpers.generateRange(textEditor, line)
-    }
-
     it('cries when invalid textEditor is passed', () =>
       expect(() =>
         helpers.generateRange(),
@@ -29,9 +25,10 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(generateRange(textEditor)).toEqual([[0, 0], [0, 30]])
-        expect(generateRange(textEditor, -1)).toEqual([[0, 0], [0, 30]])
-        expect(generateRange(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
+        expect(helpers.generateRange(textEditor)).toEqual([[0, 0], [0, 30]])
+        expect(helpers.generateRange(textEditor, -1)).toEqual([[0, 0], [0, 30]])
+        // $FlowIgnore: Purposely invalid input type
+        expect(helpers.generateRange(textEditor, 'a')).toEqual([[0, 0], [0, 30]])
       }),
     )
 
@@ -39,8 +36,9 @@ describe('linter helpers', function () {
       waitsForAsync(async function () {
         await atom.workspace.open(somethingFile)
         const textEditor = atom.workspace.getActiveTextEditor()
-        expect(generateRange(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
-        expect(generateRange(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
+        expect(helpers.generateRange(textEditor, 7, -1)).toEqual([[7, 0], [7, 43]])
+        // $FlowIgnore: Purposely invalid input type
+        expect(helpers.generateRange(textEditor, 7, 'a')).toEqual([[7, 0], [7, 43]])
       }),
     )
 
