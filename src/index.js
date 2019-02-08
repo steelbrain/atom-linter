@@ -220,8 +220,8 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
 
   while (rawMatch !== null) {
     const match = rawMatch.groups()
-    const type = match.type
-    const text = match.message
+    const severity = match.type
+    const excerpt = match.message
     const file = match.file || options.filePath || null
 
     const lineStart = match.lineStart || match.line || 0
@@ -230,13 +230,15 @@ export function parse(data: string, regex: string, givenOptions: { flags?: strin
     const colEnd = match.colEnd || match.col || 0
 
     messages.push({
-      type,
-      text,
-      filePath: file,
-      range: [
-        [lineStart > 0 ? lineStart - 1 : 0, colStart > 0 ? colStart - 1 : 0],
-        [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
-      ],
+      severity,
+      excerpt,
+      location: {
+        file,
+        position: [
+          [lineStart > 0 ? lineStart - 1 : 0, colStart > 0 ? colStart - 1 : 0],
+          [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
+        ],
+      },
     })
 
     rawMatch = compiledRegexp.exec(data)

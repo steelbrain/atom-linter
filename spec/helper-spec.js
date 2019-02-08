@@ -121,10 +121,12 @@ describe('linter helpers', function () {
       let input = 'TYPE:type message:message'
       let output = [
         {
-          type: 'type',
-          text: 'message',
-          filePath: null,
-          range: [[0, 0], [0, 0]],
+          severity: 'type',
+          excerpt: 'message',
+          location: {
+            file: null,
+            position: [[0, 0], [0, 0]],
+          },
         },
       ]
       let results = helpers.parse(input, regex, { flags: 'i' })
@@ -134,10 +136,12 @@ describe('linter helpers', function () {
       input = 'TYPE:type message:message'
       output = [
         {
-          type: 'type',
-          text: 'message',
-          filePath: null,
-          range: [[0, 0], [0, 0]],
+          severity: 'type',
+          excerpt: 'message',
+          location: {
+            file: null,
+            position: [[0, 0], [0, 0]],
+          },
         },
       ]
       results = helpers.parse(input, regex, { flags: 'gi' })
