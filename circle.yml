@@ -93,6 +93,9 @@ jobs:
       - run:
           name: Lint code
           command: npm run lint
+      - run:
+          name: Run tests
+          command: npm test
   stable:
     <<: *defaults
   beta:
