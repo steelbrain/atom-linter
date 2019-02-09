@@ -7,3 +7,4 @@ declare function describe(name: string, callback: (() => void)): void;
 declare function fdescribe(name: string, callback: (() => void)): void;
 declare function beforeEach(callback: (() => void)): void;
 declare function afterEach(callback: (() => void)): void;
+declare function spyOn(object: Object, property: string): any;

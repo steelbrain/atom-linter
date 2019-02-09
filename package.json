@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/steelbrain/atom-linter#readme",
   "dependencies": {
+    "grim": "^2.0.2",
     "named-js-regexp": "^1.3.1",
     "sb-exec": "^4.0.0",
     "sb-promisify": "^2.0.1",
