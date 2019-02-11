@@ -15,8 +15,11 @@ defaults: &defaults
         name: Create VFB for Atom to run in
         command: /usr/local/bin/xvfb_start
     - run:
-        name: Cleaning package
-        command: ${APM_SCRIPT_PATH} clean
+        name: Atom version
+        command: ${ATOM_SCRIPT_PATH} --version
+    - run:
+        name: APM version
+        command: ${APM_SCRIPT_PATH} --version
     - run:
         name: Package APM package dependencies
         command: |
@@ -29,11 +32,8 @@ defaults: &defaults
         name: Package dependencies
         command: ${APM_SCRIPT_PATH} install
     - run:
-        name: Atom version
-        command: ${ATOM_SCRIPT_PATH} --version        
-    - run:
-        name: APM version
-        command: ${APM_SCRIPT_PATH} --version
+        name: Cleaning package
+        command: ${APM_SCRIPT_PATH} clean        
     - run:
         name: Package specs
         command: ${ATOM_SCRIPT_PATH} --test spec
