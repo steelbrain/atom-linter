@@ -6,12 +6,6 @@ defaults: &defaults
     - image: arcanemagus/atom-docker-ci:stable
   steps:
     - run:
-        name: Update distro
-        command: |
-          sudo apt-get update && \
-          sudo apt-get -f install --assume-yes --quiet --no-install-suggests \
-            --no-install-recommends
-    - run:
         name: Create VFB for Atom to run in
         command: /usr/local/bin/xvfb_start
     - run:
@@ -33,7 +27,7 @@ defaults: &defaults
         command: ${APM_SCRIPT_PATH} install
     - run:
         name: Cleaning package
-        command: ${APM_SCRIPT_PATH} clean        
+        command: ${APM_SCRIPT_PATH} clean
     - run:
         name: Package specs
         command: ${ATOM_SCRIPT_PATH} --test spec
