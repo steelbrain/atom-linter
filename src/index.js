@@ -10,7 +10,7 @@ import * as Helpers from './helpers'
 import type { TempFiles } from './types'
 
 let NamedRegexp = null
-export const FindCache = new Map()
+export const FindCache: Map<string, string> = new Map()
 
 export function generateRange(textEditor: TextEditor, line: ?number, column: ?number): Range {
   Helpers.validateEditor(textEditor)
