@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { execNode } from "sb-exec";
 import { it, wait } from "jasmine-fix";
+import Grim from "grim";
 import { waitsForAsync, waitsForAsyncRejection } from "./spec-helpers";
 import * as helpersOfHelpers from "../src/helpers";
 import * as helpers from "../src/index";
@@ -114,6 +115,11 @@ describe("linter helpers", function() {
   });
 
   describe("::parse", function() {
+    beforeEach(() => {
+      // Disable deprecate warnings in the specs
+      spyOn(Grim, "deprecate").andCallFake(() => {});
+    });
+
     function parse(a: any = undefined, b: any = undefined, c: any = undefined) {
       return helpers.parse(a, b, c);
     }
@@ -135,7 +141,7 @@ describe("linter helpers", function() {
           range: [[0, 0], [0, 0]]
         }
       ];
-      let results = helpers.parse(input, regex, { flags: "i" });
+      let results = parse(input, regex, { flags: "i" });
       expect(results).toEqual(output);
 
       regex = "type:(?<type>.+) message:(?<message>.+)";
@@ -148,7 +154,7 @@ describe("linter helpers", function() {
           range: [[0, 0], [0, 0]]
         }
       ];
-      results = helpers.parse(input, regex, { flags: "gi" });
+      results = parse(input, regex, { flags: "gi" });
       expect(results).toEqual(output);
     });
   });

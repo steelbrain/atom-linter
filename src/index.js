@@ -5,6 +5,7 @@
 import * as Path from "path";
 import * as FS from "fs";
 import { exec, execNode } from "sb-exec";
+import { deprecate } from "grim";
 // eslint-disable-next-line import/no-unresolved
 import type { TextEditor, Range } from "atom";
 import * as Helpers from "./helpers";
@@ -234,6 +235,10 @@ export function parse(
   regex: string,
   givenOptions: { flags?: string, filePath?: string } = {}
 ) {
+  // TODO: Remove this in atom-linter v11.
+  deprecate(
+    "The `parse` method is deprecated and will be removed in the next major release of atom-linter."
+  );
   if (typeof data !== "string") {
     throw new Error("Invalid or no `data` provided");
   } else if (typeof regex !== "string") {
