@@ -1,8 +1,7 @@
 import FS from "fs";
 import Temp from "tmp";
 
-// eslint-disable-next-line import/no-unresolved
-import type { TextEditor, Range } from "atom";
+import type { TextEditor, PointCompatible } from "atom";
 import type { TempDirectory } from "./types";
 
 export const writeFile = FS.promises.writeFile;
@@ -13,7 +12,10 @@ function escapeRegexp(string: string): string {
   return string.replace(/[$()*+./?[\\\]^{|}-]/g, "\\$&");
 }
 
-export function getWordRegexp(textEditor: TextEditor, bufferPosition: Range) {
+export function getWordRegexp(
+  textEditor: TextEditor,
+  bufferPosition: PointCompatible
+) {
   const scopeDescriptor = textEditor.scopeDescriptorForBufferPosition(
     bufferPosition
   );
