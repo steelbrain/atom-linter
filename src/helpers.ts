@@ -10,7 +10,7 @@ export const unlinkFile = FS.promises.unlink;
 
 function escapeRegexp(string: string): string {
   // Shamelessly stolen from https://github.com/atom/underscore-plus/blob/130913c179fe1d718a14034f4818adaf8da4db12/src/underscore-plus.coffee#L138
-  return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+  return string.replace(/[$()*+./?[\\\]^{|}-]/g, "\\$&");
 }
 
 export function getWordRegexp(textEditor: TextEditor, bufferPosition: Range) {
@@ -34,11 +34,12 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
       function (error, directory, cleanup) {
         if (error) {
           reject(error);
-        } else
+        } else {
           resolve({
             path: directory,
             cleanup,
           });
+        }
       }
     );
   });
@@ -113,8 +114,9 @@ export function wrapExec(
     let mirror = spawned;
 
     if (options.uniqueKey) {
-      if (typeof options.uniqueKey !== "string")
+      if (typeof options.uniqueKey !== "string") {
         throw new Error("options.uniqueKey must be a string");
+      }
       const oldValue = processMap.get(options.uniqueKey);
 
       if (oldValue) {
@@ -127,11 +129,15 @@ export function wrapExec(
       });
       mirror = mirror.then(
         function (value) {
-          if (killed) return null;
+          if (killed) {
+            return null;
+          }
           return value;
         },
         function (error) {
-          if (killed) return null;
+          if (killed) {
+            return null;
+          }
           throw error;
         }
       );
@@ -142,7 +148,7 @@ export function wrapExec(
         const newError = new Error(
           `Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`
         );
-        // $FlowIgnore: Custom property
+        // @ts-ignore: Custom property
         newError.code = "ENOENT";
         throw newError;
       }
