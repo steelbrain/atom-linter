@@ -197,7 +197,7 @@ export async function tempFiles<T>(
   }
 
   const tempDirectory = await Helpers.getTempDirectory("atom-linter_");
-  const filePaths = [];
+  const filePaths: string[] = [];
   await Promise.all(
     files.map(function (file) {
       const fileName = file.name;
