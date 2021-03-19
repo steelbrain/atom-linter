@@ -6,8 +6,8 @@ import { execNode } from "sb-exec";
 import { it, wait } from "jasmine-fix";
 import Grim from "grim";
 import { waitsForAsync, waitsForAsyncRejection } from "./spec-helpers";
-import * as helpersOfHelpers from "../src/helpers";
-import * as helpers from "../src/index";
+import * as helpersOfHelpers from "../lib/helpers";
+import * as helpers from "../lib/index";
 
 const mixedIndentFile = path.join(__dirname, "fixtures", "mixedIndent.txt");
 const somethingFile = path.join(__dirname, "fixtures", "something.js");

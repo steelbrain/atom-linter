@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier ./src --write",
     "lint": "eslint .",
-    "test": "atom --test spec",
+    "test": "npm run compile && atom --test spec",
     "clean": "rimraf lib",
     "compile": "npm run clean && tsc -p src/tsconfig.json ",
     "watch": "npm run compile --watch",
