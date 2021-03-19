@@ -1,7 +1,3 @@
-"use babel";
-
-/* @flow */
-
 import * as Path from "path";
 import * as FS from "fs";
 import { exec, execNode } from "sb-exec";
@@ -16,8 +12,8 @@ export const FindCache: Map<string, string> = new Map();
 
 export function generateRange(
   textEditor: TextEditor,
-  line: ?number,
-  column: ?number
+  line: number | null | undefined,
+  column: number | null | undefined
 ): Range {
   Helpers.validateEditor(textEditor);
   let lineNumber = line;
@@ -44,20 +40,24 @@ export function generateRange(
   const lineText = buffer.lineForRow(lineNumber);
   let colEnd = lineText.length;
   let colStart = columnGiven ? column : 0;
+
   if (columnGiven) {
     const match = Helpers.getWordRegexp(textEditor, [
       lineNumber,
-      colStart
+      colStart,
     ]).exec(lineText.substr(column));
+
     if (match) {
       colEnd = colStart + match.index + match[0].length;
     }
   } else {
     const indentation = lineText.match(/^\s+/);
+
     if (indentation) {
       colStart = indentation[0].length;
     }
   }
+
   if (colStart > lineText.length) {
     throw new Error(
       `Column start (${colStart || 0}) greater than line length (${
@@ -66,24 +66,29 @@ export function generateRange(
     );
   }
 
-  return [[lineNumber, colStart], [lineNumber, colEnd]];
+  return [
+    [lineNumber, colStart],
+    [lineNumber, colEnd],
+  ];
 }
-
 export async function findAsync(
   directory: string,
   name: string | Array<string>
-): Promise<?string> {
+): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
   const names = [].concat(name);
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
     let currentDir = chunks.join(Path.sep);
+
     if (currentDir === "") {
       currentDir = Path.resolve(directory, "/");
     }
+
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName);
+
       // NOTE: This delays each loop iteration until it is complete... but
       // since the desired result is the _first_ file that exists and not all,
       // that will have to suffice.
@@ -92,16 +97,16 @@ export async function findAsync(
         return filePath;
       }
     }
+
     chunks.pop();
   }
 
   return null;
 }
-
 export async function findCachedAsync(
   directory: string,
   name: string | Array<string>
-): Promise<?string> {
+): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
   const names = [].concat(name);
   const cacheKey = `${directory}:${names.join(",")}`;
@@ -111,25 +116,33 @@ export async function findCachedAsync(
     if (await Helpers.fileExists(cachedFilePath)) {
       return cachedFilePath;
     }
+
     FindCache.delete(cacheKey);
   }
+
   const filePath = await findAsync(directory, names);
+
   if (filePath) {
     FindCache.set(cacheKey, filePath);
   }
+
   return filePath;
 }
-
-export function find(directory: string, name: string | Array<string>): ?string {
+export function find(
+  directory: string,
+  name: string | Array<string>
+): string | null | undefined {
   Helpers.validateFind(directory, name);
   const names = [].concat(name);
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
     let currentDir = chunks.join(Path.sep);
+
     if (currentDir === "") {
       currentDir = Path.resolve(directory, "/");
     }
+
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName);
 
@@ -140,6 +153,7 @@ export function find(directory: string, name: string | Array<string>): ?string {
         // Do nothing
       }
     }
+
     chunks.pop();
   }
 
@@ -149,7 +163,7 @@ export function find(directory: string, name: string | Array<string>): ?string {
 export function findCached(
   directory: string,
   name: string | Array<string>
-): ?string {
+): string | null | undefined {
   Helpers.validateFind(directory, name);
   const names = [].concat(name);
   const cacheKey = `${directory}:${names.join(",")}`;
@@ -163,10 +177,13 @@ export function findCached(
       FindCache.delete(cacheKey);
     }
   }
+
   const filePath = find(directory, names);
+
   if (filePath) {
     FindCache.set(cacheKey, filePath);
   }
+
   return filePath;
 }
 
@@ -182,9 +199,8 @@ export async function tempFiles<T>(
 
   const tempDirectory = await Helpers.getTempDirectory("atom-linter_");
   const filePaths = [];
-
   await Promise.all(
-    files.map(function(file) {
+    files.map(function (file) {
       const fileName = file.name;
       const fileContents = file.contents;
       const filePath = Path.join(tempDirectory.path, fileName);
@@ -192,11 +208,12 @@ export async function tempFiles<T>(
       return Helpers.writeFile(filePath, fileContents);
     })
   );
+
   try {
     return await callback(filePaths);
   } finally {
     await Promise.all(
-      filePaths.map(function(filePath) {
+      filePaths.map(function (filePath) {
         return Helpers.unlinkFile(filePath);
       })
     );
@@ -221,10 +238,10 @@ export function tempFile<T>(
     [
       {
         name: fileName,
-        contents: fileContents
-      }
+        contents: fileContents,
+      },
     ],
-    function(results) {
+    function (results) {
       return callback(results[0]);
     }
   );
@@ -233,12 +250,16 @@ export function tempFile<T>(
 export function parse(
   data: string,
   regex: string,
-  givenOptions: { flags?: string, filePath?: string } = {}
+  givenOptions: {
+    flags?: string;
+    filePath?: string;
+  } = {}
 ) {
   // TODO: Remove this in atom-linter v11.
   deprecate(
     "The `parse` method is deprecated and will be removed in the next major release of atom-linter."
   );
+
   if (typeof data !== "string") {
     throw new Error("Invalid or no `data` provided");
   } else if (typeof regex !== "string") {
@@ -253,8 +274,11 @@ export function parse(
     /* eslint-enable global-require */
   }
 
-  const defaultOptions: Object = { flags: "" };
+  const defaultOptions: Record<string, any> = {
+    flags: "",
+  };
   const options = Object.assign(defaultOptions, givenOptions);
+
   if (options.flags.indexOf("g") === -1) {
     options.flags += "g";
   }
@@ -268,22 +292,19 @@ export function parse(
     const { type } = match;
     const text = match.message;
     const file = match.file || options.filePath || null;
-
     const lineStart = match.lineStart || match.line || 0;
     const colStart = match.colStart || match.col || 0;
     const lineEnd = match.lineEnd || match.line || 0;
     const colEnd = match.colEnd || match.col || 0;
-
     messages.push({
       type,
       text,
       filePath: file,
       range: [
         [lineStart > 0 ? lineStart - 1 : 0, colStart > 0 ? colStart - 1 : 0],
-        [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0]
-      ]
+        [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
+      ],
     });
-
     rawMatch = compiledRegexp.exec(data);
   }
 
