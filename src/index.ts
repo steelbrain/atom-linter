@@ -36,7 +36,7 @@ export function generateRange(
 
   const columnGiven =
     typeof column === "number" && Number.isFinite(column) && column > -1;
-  const lineText = buffer.lineForRow(lineNumber);
+  const lineText = buffer.lineForRow(lineNumber) ?? ""; // TODO what should we return if it is undefined
   let colEnd = lineText.length;
   let colStart = columnGiven ? column : 0;
 
