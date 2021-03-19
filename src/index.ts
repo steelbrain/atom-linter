@@ -76,7 +76,7 @@ export async function findAsync(
   name: string | Array<string>
 ): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
@@ -108,7 +108,7 @@ export async function findCachedAsync(
   name: string | Array<string>
 ): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const cacheKey = `${directory}:${names.join(",")}`;
   const cachedFilePath = FindCache.get(cacheKey);
 
@@ -133,7 +133,7 @@ export function find(
   name: string | Array<string>
 ): string | null | undefined {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
@@ -165,7 +165,7 @@ export function findCached(
   name: string | Array<string>
 ): string | null | undefined {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const cacheKey = `${directory}:${names.join(",")}`;
   const cachedFilePath = FindCache.get(cacheKey);
 
