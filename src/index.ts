@@ -6,7 +6,7 @@ import type { TextEditor, RangeCompatible } from "atom";
 import * as Helpers from "./helpers";
 import type { TempFiles } from "./types";
 
-let NamedRegexp = null;
+let NamedRegexp: typeof import("named-js-regexp") | null = null;
 export const FindCache: Map<string, string> = new Map();
 
 export function generateRange(
@@ -283,7 +283,7 @@ export function parse(
   }
 
   const messages = [];
-  const compiledRegexp = new NamedRegexp(regex, options.flags);
+  const compiledRegexp = NamedRegexp(regex, options.flags);
   let rawMatch = compiledRegexp.exec(data);
 
   while (rawMatch !== null) {
