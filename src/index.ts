@@ -291,10 +291,10 @@ export function parse(
     const { type } = match;
     const text = match.message;
     const file = match.file || options.filePath || null;
-    const lineStart = match.lineStart || match.line || 0;
-    const colStart = match.colStart || match.col || 0;
-    const lineEnd = match.lineEnd || match.line || 0;
-    const colEnd = match.colEnd || match.col || 0;
+    const lineStart = parseInt(match.lineStart || match.line, 10) || 0;
+    const colStart = parseInt(match.colStart || match.col, 10) || 0;
+    const lineEnd = parseInt(match.lineEnd || match.line, 10) || 0;
+    const colEnd = parseInt(match.colEnd || match.col, 10) || 0;
     messages.push({
       type,
       text,
