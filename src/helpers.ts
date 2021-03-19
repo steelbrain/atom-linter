@@ -1,11 +1,12 @@
 import FS from "fs";
+const FSP = FS.promises;
 import Temp from "tmp";
 
 import type { TextEditor, PointCompatible } from "atom";
 import type { TempDirectory } from "./types";
 
-export const writeFile = FS.promises.writeFile;
-export const unlinkFile = FS.promises.unlink;
+export const writeFile = FSP.writeFile;
+export const unlinkFile = FSP.unlink;
 
 function escapeRegexp(string: string): string {
   // Shamelessly stolen from https://github.com/atom/underscore-plus/blob/130913c179fe1d718a14034f4818adaf8da4db12/src/underscore-plus.coffee#L138
@@ -47,12 +48,13 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
   });
 }
 
-export function fileExists(filePath: string): Promise<boolean> {
-  return new Promise(function (resolve) {
-    FS.access(filePath, FS.constants.R_OK, function (error) {
-      resolve(error === null);
-    });
-  });
+export async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await FSP.access(filePath, FS.constants.R_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 export function validateExec(
