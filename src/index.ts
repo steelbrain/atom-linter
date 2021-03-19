@@ -2,8 +2,7 @@ import * as Path from "path";
 import * as FS from "fs";
 import { exec, execNode } from "sb-exec";
 import { deprecate } from "grim";
-// eslint-disable-next-line import/no-unresolved
-import type { TextEditor, Range } from "atom";
+import type { TextEditor, RangeCompatible } from "atom";
 import * as Helpers from "./helpers";
 import type { TempFiles } from "./types";
 
@@ -14,7 +13,7 @@ export function generateRange(
   textEditor: TextEditor,
   line: number | null | undefined,
   column: number | null | undefined
-): Range {
+): RangeCompatible {
   Helpers.validateEditor(textEditor);
   let lineNumber = line;
 
