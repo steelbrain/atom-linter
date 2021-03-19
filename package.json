@@ -35,7 +35,8 @@
   "devDependencies": {
     "@types/atom": "^1.40.10",
     "@types/jasmine": "^3.6.7",
-    "eslint-config-steelbrain": "^7.0.0",
+    "eslint": "^7.22.0",
+    "eslint-config-atomic": "^1.12.2",
     "jasmine-fix": "^1.0.1",
     "rimraf": "^3.0.0",
     "typescript": "^4.2.3"
