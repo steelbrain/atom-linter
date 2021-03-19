@@ -269,9 +269,7 @@ export function parse(
   }
 
   if (NamedRegexp === null) {
-    /* eslint-disable global-require */
     NamedRegexp = require("named-js-regexp");
-    /* eslint-enable global-require */
   }
 
   const defaultOptions = {
@@ -283,21 +281,35 @@ export function parse(
     options.flags += "g";
   }
 
-  const messages = [];
-  const compiledRegexp = NamedRegexp(regex, options.flags);
+  // old Diagnostic type
+  type DiagnosticType = "Error" | "Warning" | "Info";
+  const messages: Array<{
+    type: DiagnosticType;
+    text?: string;
+    filePath: string | null;
+    range: RangeCompatible;
+  }> = [];
+
+  const compiledRegexp = NamedRegexp!(regex, options.flags);
   let rawMatch = compiledRegexp.exec(data);
 
   while (rawMatch !== null) {
     const match = rawMatch.groups();
-    const { type } = match;
-    const text = match.message;
-    const file = match.file || options.filePath || null;
-    const lineStart = parseInt(match.lineStart || match.line, 10) || 0;
-    const colStart = parseInt(match.colStart || match.col, 10) || 0;
-    const lineEnd = parseInt(match.lineEnd || match.line, 10) || 0;
-    const colEnd = parseInt(match.colEnd || match.col, 10) || 0;
+    const text = match?.message;
+    const file = match?.file || options.filePath || null;
+
+    type parseIntLoose = (input: any, radix?: number) => typeof NaN | number;
+    const lineStart =
+      (parseInt as parseIntLoose)(match?.lineStart ?? match?.line, 10) || 0;
+    const colStart =
+      (parseInt as parseIntLoose)(match?.colStart ?? match?.col, 10) || 0;
+    const lineEnd =
+      (parseInt as parseIntLoose)(match?.lineEnd ?? match?.line, 10) || 0;
+    const colEnd =
+      (parseInt as parseIntLoose)(match?.colEnd ?? match?.col, 10) || 0;
+      
     messages.push({
-      type,
+      type: (match?.type ?? "Error") as DiagnosticType,
       text,
       filePath: file,
       range: [
