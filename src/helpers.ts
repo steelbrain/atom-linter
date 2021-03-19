@@ -95,12 +95,13 @@ export function validateFind(directory: string, name: string | Array<string>) {
   }
 }
 
-const processMap: Map<string, (...args: Array<any>) => any> = new Map();
+const processMap: Map<string, () => void> = new Map();
 
 export function wrapExec(callback: typeof exec) {
   return function (
     filePath: string,
     parameters: Array<string>,
+    // eslint-disable-next-line @typescript-eslint/ban-types
     options: ({ uniqueKey: string } & OptionsAccepted) | {} = {}
   ) {
     let killed = false;

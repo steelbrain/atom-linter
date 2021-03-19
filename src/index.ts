@@ -189,7 +189,7 @@ export function findCached(
 
 export async function tempFiles<T>(
   files: Array<TempFiles>,
-  callback: (filePaths: Array<string>) => Promise<T>
+  callback: (_filePaths: Array<string>) => Promise<T>
 ): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error("Invalid or no `files` provided");
@@ -298,7 +298,10 @@ export function parse(
     const text = match?.message;
     const file = match?.file || options.filePath || null;
 
-    type parseIntLoose = (input: any, radix?: number) => typeof NaN | number;
+    type parseIntLoose = (
+      input: string | undefined,
+      radix?: number
+    ) => typeof NaN | number;
     const lineStart =
       (parseInt as parseIntLoose)(match?.lineStart ?? match?.line, 10) || 0;
     const colStart =
@@ -307,7 +310,7 @@ export function parse(
       (parseInt as parseIntLoose)(match?.lineEnd ?? match?.line, 10) || 0;
     const colEnd =
       (parseInt as parseIntLoose)(match?.colEnd ?? match?.col, 10) || 0;
-      
+
     messages.push({
       type: (match?.type ?? "Error") as DiagnosticType,
       text,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 declare module "sb-exec" {
   import type { SpawnOptions } from "child_process";
 
