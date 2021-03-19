@@ -96,6 +96,8 @@ export function validateFind(directory: string, name: string | Array<string>) {
 
 const processMap: Map<string, (...args: Array<any>) => any> = new Map();
 
+type WrapExecError = Error & { code: string; path: string };
+
 export function wrapExec(
   callback: (...args: Array<any>) => any
 ): (...args: Array<any>) => any {
@@ -132,13 +134,13 @@ export function wrapExec(
         spawned.kill();
       });
       mirror = mirror.then(
-        function (value) {
+        function (value: unknown): unknown {
           if (killed) {
             return null;
           }
           return value;
         },
-        function (error) {
+        function (error: WrapExecError): WrapExecError {
           if (killed) {
             return null;
           }
@@ -147,13 +149,12 @@ export function wrapExec(
       );
     }
 
-    return mirror.catch(function (error) {
+    return mirror.catch(function (error: WrapExecError) {
       if (error.code === "ENOENT") {
         const newError = new Error(
           `Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`
         );
-        // @ts-ignore: Custom property
-        newError.code = "ENOENT";
+        (newError as WrapExecError).code = "ENOENT";
         throw newError;
       }
 
