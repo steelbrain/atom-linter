@@ -1,12 +1,12 @@
 import FS from "fs";
 import Temp from "tmp";
-import promisify from "sb-promisify";
+
 // eslint-disable-next-line import/no-unresolved
 import type { TextEditor, Range } from "atom";
 import type { TempDirectory } from "./types";
 
-export const writeFile = promisify(FS.writeFile);
-export const unlinkFile = promisify(FS.unlink);
+export const writeFile = FS.promises.writeFile;
+export const unlinkFile = FS.promises.unlink;
 
 function escapeRegexp(string: string): string {
   // Shamelessly stolen from https://github.com/atom/underscore-plus/blob/130913c179fe1d718a14034f4818adaf8da4db12/src/underscore-plus.coffee#L138
