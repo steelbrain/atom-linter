@@ -1,10 +1,10 @@
 declare module "sb-exec" {
-  import type { SpawnOptions, ChildProcess } from "child_process";
+  import type { SpawnOptions } from "child_process";
 
-  type OptionsAccepted = {
+  export type OptionsAccepted = {
     timeout?: number | typeof Infinity; // In milliseconds
     stream?: "stdout" | "stderr" | "both";
-    env: Record<string, string>;
+    env?: Record<string, string>;
     stdin?: string | Buffer;
     local?: {
       directory: string;
@@ -27,10 +27,24 @@ declare module "sb-exec" {
     | string
     | { stdout: string; stderr: string; exitCode: number };
 
-  type PromisedProcess = {
-    then(callback: (spawnedProcess: ChildProcess) => void): Promise<Result>;
-    catch(callback: (spawnedProcess: ChildProcess) => void): Promise<Result>;
-    kill(signal: number): void;
+  export type ENOENTError = Error & {
+    code: "ENOENT";
+    errno: "ENOENT";
+    syscall: string;
+    path: string;
+    spawnargs: Array<string>;
+  };
+
+  export type RejectReason = Error | ENOENTError;
+
+  /** PromiseLike Object */
+  export type PromisedProcess = {
+    then(
+      callback: (result: Result) => any,
+      onrejected: (reason: RejectReason) => any
+    ): any;
+    catch(callback: (reason: RejectReason) => any): any;
+    kill?(signal?: string): void;
   };
 
   export function exec(

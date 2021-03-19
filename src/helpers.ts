@@ -2,6 +2,7 @@ import FS from "fs";
 const FSP = FS.promises;
 import Temp from "tmp";
 
+import type { exec, OptionsAccepted, ENOENTError } from "sb-exec";
 import type { TextEditor, PointCompatible } from "atom";
 import type { TempDirectory } from "./types";
 
@@ -96,15 +97,11 @@ export function validateFind(directory: string, name: string | Array<string>) {
 
 const processMap: Map<string, (...args: Array<any>) => any> = new Map();
 
-type WrapExecError = Error & { code: string; path: string };
-
-export function wrapExec(
-  callback: (...args: Array<any>) => any
-): (...args: Array<any>) => any {
+export function wrapExec(callback: typeof exec) {
   return function (
     filePath: string,
     parameters: Array<string>,
-    options: Record<string, any> = {}
+    options: ({ uniqueKey: string } & OptionsAccepted) | {} = {}
   ) {
     let killed = false;
     const spawned = callback(
@@ -119,7 +116,7 @@ export function wrapExec(
     );
     let mirror = spawned;
 
-    if (options.uniqueKey) {
+    if ("uniqueKey" in options) {
       if (typeof options.uniqueKey !== "string") {
         throw new Error("options.uniqueKey must be a string");
       }
@@ -134,13 +131,13 @@ export function wrapExec(
         spawned.kill();
       });
       mirror = mirror.then(
-        function (value: unknown): unknown {
+        function (value) {
           if (killed) {
             return null;
           }
           return value;
         },
-        function (error: WrapExecError): WrapExecError {
+        function (error) {
           if (killed) {
             return null;
           }
@@ -149,12 +146,12 @@ export function wrapExec(
       );
     }
 
-    return mirror.catch(function (error: WrapExecError) {
-      if (error.code === "ENOENT") {
+    return mirror.catch(function (error) {
+      if ("code" in error && error.code === "ENOENT") {
         const newError = new Error(
           `Failed to spawn command \`${error.path}\`. Make sure \`${error.path}\` is installed and on your PATH`
         );
-        (newError as WrapExecError).code = "ENOENT";
+        (newError as ENOENTError).code = "ENOENT";
         throw newError;
       }
 

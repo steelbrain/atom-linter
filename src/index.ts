@@ -273,7 +273,7 @@ export function parse(
     /* eslint-enable global-require */
   }
 
-  const defaultOptions: Record<string, any> = {
+  const defaultOptions = {
     flags: "",
   };
   const options = Object.assign(defaultOptions, givenOptions);
