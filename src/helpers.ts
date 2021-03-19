@@ -128,7 +128,7 @@ export function wrapExec(callback: typeof exec) {
 
       processMap.set(options.uniqueKey, function () {
         killed = true;
-        spawned.kill();
+        spawned.kill?.();
       });
       mirror = mirror.then(
         function (value) {
