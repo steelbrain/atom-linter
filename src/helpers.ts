@@ -46,7 +46,7 @@ export function getTempDirectory(prefix: string): Promise<TempDirectory> {
 
 export function fileExists(filePath: string): Promise<boolean> {
   return new Promise(function (resolve) {
-    FS.access(filePath, FS.R_OK, function (error) {
+    FS.access(filePath, FS.constants.R_OK, function (error) {
       resolve(error === null);
     });
   });

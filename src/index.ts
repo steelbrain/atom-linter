@@ -146,7 +146,7 @@ export function find(
       const filePath = Path.join(currentDir, fileName);
 
       try {
-        FS.accessSync(filePath, FS.R_OK);
+        FS.accessSync(filePath, FS.constants.R_OK);
         return filePath;
       } catch (_) {
         // Do nothing
@@ -170,7 +170,7 @@ export function findCached(
 
   if (cachedFilePath) {
     try {
-      FS.accessSync(cachedFilePath, FS.R_OK);
+      FS.accessSync(cachedFilePath, FS.constants.R_OK);
       return cachedFilePath;
     } catch (_) {
       FindCache.delete(cacheKey);
