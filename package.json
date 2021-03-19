@@ -4,6 +4,7 @@
   "description": "Helper module for atom linter providers",
   "main": "lib/index.js",
   "scripts": {
+    "format": "prettier ./src --write",
     "lint": "eslint .",
     "test": "atom --test spec",
     "clean": "rimraf lib",
@@ -37,6 +38,7 @@
     "eslint": "^7.22.0",
     "eslint-config-atomic": "^1.12.2",
     "jasmine-fix": "^1.0.1",
+    "prettier": "^2.2.1",
     "rimraf": "^3.0.0",
     "typescript": "^4.2.3"
   }
