@@ -1,24 +1,19 @@
-"use babel";
-
-/* @flow */
-
 import * as Path from "path";
 import * as FS from "fs";
 import { exec, execNode } from "sb-exec";
 import { deprecate } from "grim";
-// eslint-disable-next-line import/no-unresolved
-import type { TextEditor, Range } from "atom";
+import type { TextEditor, RangeCompatible } from "atom";
 import * as Helpers from "./helpers";
 import type { TempFiles } from "./types";
 
-let NamedRegexp = null;
+let NamedRegexp: typeof import("named-js-regexp") | null = null;
 export const FindCache: Map<string, string> = new Map();
 
 export function generateRange(
   textEditor: TextEditor,
-  line: ?number,
-  column: ?number
-): Range {
+  line: number | null | undefined,
+  column: number | null | undefined
+): RangeCompatible {
   Helpers.validateEditor(textEditor);
   let lineNumber = line;
 
@@ -39,25 +34,30 @@ export function generateRange(
     );
   }
 
-  const columnGiven =
-    typeof column === "number" && Number.isFinite(column) && column > -1;
-  const lineText = buffer.lineForRow(lineNumber);
+  const lineText = buffer.lineForRow(lineNumber) ?? ""; // TODO what should we return if it is undefined
   let colEnd = lineText.length;
-  let colStart = columnGiven ? column : 0;
-  if (columnGiven) {
+
+  let colStart = 0;
+  if (typeof column === "number" && Number.isFinite(column) && column > -1) {
+    // columnGiven
+    colStart = column;
+
     const match = Helpers.getWordRegexp(textEditor, [
       lineNumber,
-      colStart
+      colStart,
     ]).exec(lineText.substr(column));
+
     if (match) {
       colEnd = colStart + match.index + match[0].length;
     }
   } else {
     const indentation = lineText.match(/^\s+/);
+
     if (indentation) {
       colStart = indentation[0].length;
     }
   }
+
   if (colStart > lineText.length) {
     throw new Error(
       `Column start (${colStart || 0}) greater than line length (${
@@ -66,24 +66,29 @@ export function generateRange(
     );
   }
 
-  return [[lineNumber, colStart], [lineNumber, colEnd]];
+  return [
+    [lineNumber, colStart],
+    [lineNumber, colEnd],
+  ];
 }
-
 export async function findAsync(
   directory: string,
   name: string | Array<string>
-): Promise<?string> {
+): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
     let currentDir = chunks.join(Path.sep);
+
     if (currentDir === "") {
       currentDir = Path.resolve(directory, "/");
     }
+
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName);
+
       // NOTE: This delays each loop iteration until it is complete... but
       // since the desired result is the _first_ file that exists and not all,
       // that will have to suffice.
@@ -92,18 +97,18 @@ export async function findAsync(
         return filePath;
       }
     }
+
     chunks.pop();
   }
 
   return null;
 }
-
 export async function findCachedAsync(
   directory: string,
   name: string | Array<string>
-): Promise<?string> {
+): Promise<string | null | undefined> {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const cacheKey = `${directory}:${names.join(",")}`;
   const cachedFilePath = FindCache.get(cacheKey);
 
@@ -111,35 +116,44 @@ export async function findCachedAsync(
     if (await Helpers.fileExists(cachedFilePath)) {
       return cachedFilePath;
     }
+
     FindCache.delete(cacheKey);
   }
+
   const filePath = await findAsync(directory, names);
+
   if (filePath) {
     FindCache.set(cacheKey, filePath);
   }
+
   return filePath;
 }
-
-export function find(directory: string, name: string | Array<string>): ?string {
+export function find(
+  directory: string,
+  name: string | Array<string>
+): string | null | undefined {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const chunks = directory.split(Path.sep);
 
   while (chunks.length) {
     let currentDir = chunks.join(Path.sep);
+
     if (currentDir === "") {
       currentDir = Path.resolve(directory, "/");
     }
+
     for (const fileName of names) {
       const filePath = Path.join(currentDir, fileName);
 
       try {
-        FS.accessSync(filePath, FS.R_OK);
+        FS.accessSync(filePath, FS.constants.R_OK);
         return filePath;
       } catch (_) {
         // Do nothing
       }
     }
+
     chunks.pop();
   }
 
@@ -149,30 +163,33 @@ export function find(directory: string, name: string | Array<string>): ?string {
 export function findCached(
   directory: string,
   name: string | Array<string>
-): ?string {
+): string | null | undefined {
   Helpers.validateFind(directory, name);
-  const names = [].concat(name);
+  const names = Array.isArray(name) ? name : [name];
   const cacheKey = `${directory}:${names.join(",")}`;
   const cachedFilePath = FindCache.get(cacheKey);
 
   if (cachedFilePath) {
     try {
-      FS.accessSync(cachedFilePath, FS.R_OK);
+      FS.accessSync(cachedFilePath, FS.constants.R_OK);
       return cachedFilePath;
     } catch (_) {
       FindCache.delete(cacheKey);
     }
   }
+
   const filePath = find(directory, names);
+
   if (filePath) {
     FindCache.set(cacheKey, filePath);
   }
+
   return filePath;
 }
 
 export async function tempFiles<T>(
   files: Array<TempFiles>,
-  callback: (filePaths: Array<string>) => Promise<T>
+  callback: (_filePaths: Array<string>) => Promise<T>
 ): Promise<T> {
   if (!Array.isArray(files)) {
     throw new Error("Invalid or no `files` provided");
@@ -181,10 +198,9 @@ export async function tempFiles<T>(
   }
 
   const tempDirectory = await Helpers.getTempDirectory("atom-linter_");
-  const filePaths = [];
-
+  const filePaths: string[] = [];
   await Promise.all(
-    files.map(function(file) {
+    files.map(function (file) {
       const fileName = file.name;
       const fileContents = file.contents;
       const filePath = Path.join(tempDirectory.path, fileName);
@@ -192,11 +208,12 @@ export async function tempFiles<T>(
       return Helpers.writeFile(filePath, fileContents);
     })
   );
+
   try {
     return await callback(filePaths);
   } finally {
     await Promise.all(
-      filePaths.map(function(filePath) {
+      filePaths.map(function (filePath) {
         return Helpers.unlinkFile(filePath);
       })
     );
@@ -221,10 +238,10 @@ export function tempFile<T>(
     [
       {
         name: fileName,
-        contents: fileContents
-      }
+        contents: fileContents,
+      },
     ],
-    function(results) {
+    function (results) {
       return callback(results[0]);
     }
   );
@@ -233,12 +250,16 @@ export function tempFile<T>(
 export function parse(
   data: string,
   regex: string,
-  givenOptions: { flags?: string, filePath?: string } = {}
+  givenOptions: {
+    flags?: string;
+    filePath?: string;
+  } = {}
 ) {
   // TODO: Remove this in atom-linter v11.
   deprecate(
     "The `parse` method is deprecated and will be removed in the next major release of atom-linter."
   );
+
   if (typeof data !== "string") {
     throw new Error("Invalid or no `data` provided");
   } else if (typeof regex !== "string") {
@@ -248,42 +269,57 @@ export function parse(
   }
 
   if (NamedRegexp === null) {
-    /* eslint-disable global-require */
     NamedRegexp = require("named-js-regexp");
-    /* eslint-enable global-require */
   }
 
-  const defaultOptions: Object = { flags: "" };
+  const defaultOptions = {
+    flags: "",
+  };
   const options = Object.assign(defaultOptions, givenOptions);
+
   if (options.flags.indexOf("g") === -1) {
     options.flags += "g";
   }
 
-  const messages = [];
-  const compiledRegexp = new NamedRegexp(regex, options.flags);
+  // old Diagnostic type
+  type DiagnosticType = "Error" | "Warning" | "Info";
+  const messages: Array<{
+    type: DiagnosticType;
+    text?: string;
+    filePath: string | null;
+    range: RangeCompatible;
+  }> = [];
+
+  const compiledRegexp = NamedRegexp!(regex, options.flags);
   let rawMatch = compiledRegexp.exec(data);
 
   while (rawMatch !== null) {
     const match = rawMatch.groups();
-    const { type } = match;
-    const text = match.message;
-    const file = match.file || options.filePath || null;
+    const text = match?.message;
+    const file = match?.file || options.filePath || null;
 
-    const lineStart = match.lineStart || match.line || 0;
-    const colStart = match.colStart || match.col || 0;
-    const lineEnd = match.lineEnd || match.line || 0;
-    const colEnd = match.colEnd || match.col || 0;
+    type parseIntLoose = (
+      input: string | undefined,
+      radix?: number
+    ) => typeof NaN | number;
+    const lineStart =
+      (parseInt as parseIntLoose)(match?.lineStart ?? match?.line, 10) || 0;
+    const colStart =
+      (parseInt as parseIntLoose)(match?.colStart ?? match?.col, 10) || 0;
+    const lineEnd =
+      (parseInt as parseIntLoose)(match?.lineEnd ?? match?.line, 10) || 0;
+    const colEnd =
+      (parseInt as parseIntLoose)(match?.colEnd ?? match?.col, 10) || 0;
 
     messages.push({
-      type,
+      type: (match?.type ?? "Error") as DiagnosticType,
       text,
       filePath: file,
       range: [
         [lineStart > 0 ? lineStart - 1 : 0, colStart > 0 ? colStart - 1 : 0],
-        [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0]
-      ]
+        [lineEnd > 0 ? lineEnd - 1 : 0, colEnd > 0 ? colEnd - 1 : 0],
+      ],
     });
-
     rawMatch = compiledRegexp.exec(data);
   }
 
